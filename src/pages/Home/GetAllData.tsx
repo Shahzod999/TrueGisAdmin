@@ -18,14 +18,10 @@ import { userTypeData } from "../../app/types/userType";
 import { useNavigate } from "react-router-dom";
 
 const GetAllData: React.FC = () => {
-  const navigate = useNavigate;
+  const navigate = useNavigate();
   const { data, isLoading, isError, error } = useGetAllUserQuery({});
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Проверяем ширину экрана
-
-  const handleNavigate = () => {
-    navigate(`/${user._id}`);
-  };
 
   if (isLoading) {
     return (
@@ -51,6 +47,7 @@ const GetAllData: React.FC = () => {
       </Typography>
     );
   }
+  
 
   return (
     <TableContainer
@@ -75,7 +72,7 @@ const GetAllData: React.FC = () => {
               sx={{
                 "&:hover": { backgroundColor: "#f5f5f5", cursor: "pointer" },
               }}
-              onClick={handleNavigate} // Используем navigate для перехода
+              onClick={() => navigate(`/${user._id}`)} // Используем navigate для перехода
             >
               <TableCell>{user._id}</TableCell>
               <TableCell>{user.full_name}</TableCell>
