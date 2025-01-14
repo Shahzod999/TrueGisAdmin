@@ -86,6 +86,17 @@ const Header: React.FC = () => {
               }}>
               Создать пользователя
             </Button>
+            <Button
+              component={Link}
+              to="delivery"
+              color="primary"
+              variant="outlined"
+              sx={{
+                textTransform: "none",
+                fontWeight: "bold",
+              }}>
+              Delivery
+            </Button>
           </Box>
         ) : (
           // Навигация для мобильных устройств
