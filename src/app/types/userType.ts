@@ -22,7 +22,17 @@ export interface InputUserInfo {
 }
 
 export interface AllUserData {
-    status: string;
-    data: userTypeData[];
-  }
-  
+  status: string;
+  data: userTypeData[];
+}
+
+export interface ErrorType {
+  status: number;
+  data: ErrorTypeData;
+}
+
+export interface ErrorTypeData {
+  status: string;
+  message: string;
+  error_name: string;
+}

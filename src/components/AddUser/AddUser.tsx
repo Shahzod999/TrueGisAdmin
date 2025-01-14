@@ -8,9 +8,12 @@ import {
 } from "@mui/material";
 
 import { useAddnewUserMutation } from "../../app/api/companySlice";
+import { ErrorType } from "../../app/types/userType";
+import useSnackbar from "../../app/types/callSnackBar";
 
 const AddUser = () => {
-  const [addNewUser, { isLoading }] = useAddnewUserMutation(); // Хук для API-запроса
+  const triggerSnackbar = useSnackbar();
+  const [addNewUser, { isLoading }] = useAddnewUserMutation();
   const [formData, setFormData] = useState({
     full_name: "",
     username: "",
@@ -28,16 +31,31 @@ const AddUser = () => {
     e.preventDefault();
     setError(null);
     setSuccessMessage(null);
+    console.log(formData);
 
     try {
       const response = await addNewUser({
-        body: formData, // Передаем данные из формы
-      }).unwrap(); // Разворачиваем ответ
-
+        data: formData,
+      }).unwrap();
       setSuccessMessage(`Пользователь ${response.status} успешно создан!`);
-      setFormData({ full_name: "", username: "", password: "" }); // Очищаем форму
-    } catch (err: any) {
-      setError(err?.message || "Ошибка при создании пользователя");
+      triggerSnackbar(
+        `Пользователь ${response.status} успешно создан!`,
+        "success",
+      );
+      setFormData({ full_name: "", username: "", password: "" });
+    } catch (error: any) {
+      if (
+        error &&
+        typeof error === "object" &&
+        "data" in error &&
+        "message" in (error as any).data
+      ) {
+        setError((error as ErrorType).data.message);
+        triggerSnackbar((error as ErrorType).data.message, "error");
+      } else {
+        setError("Ошибка при создании пользователя");
+        triggerSnackbar("Произошла неизвестная ошибка", "error");
+      }
     }
   };
 

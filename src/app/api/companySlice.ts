@@ -16,11 +16,13 @@ export const companyApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["User"],
     }),
     getAllUser: builder.query({
       query: ({}) => ({
         url: "/root/root",
       }),
+      providesTags: ["User"],
     }),
     getOneUser: builder.query({
       query: ({ id }) => ({
@@ -30,9 +32,17 @@ export const companyApiSlice = apiSlice.injectEndpoints({
     updateOneUser: builder.mutation({
       query: ({ id, body }) => ({
         url: `/root/root/${id}`,
-        method:"PUT",
+        method: "PUT",
         body,
       }),
+      invalidatesTags: ["User"],
+    }),
+    deleteUser: builder.mutation({
+      query: ({ id }) => ({
+        url: `/root/root/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["User"],
     }),
   }),
 });
@@ -42,4 +52,5 @@ export const {
   useGetAllUserQuery,
   useGetOneUserQuery,
   useUpdateOneUserMutation,
+  useDeleteUserMutation,
 } = companyApiSlice;

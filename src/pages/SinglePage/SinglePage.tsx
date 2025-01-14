@@ -12,8 +12,10 @@ import {
   useGetOneUserQuery,
   useUpdateOneUserMutation,
 } from "../../app/api/companySlice";
+import useSnackbar from "../../app/types/callSnackBar";
 
 const SinglePage: React.FC = () => {
+  const triggerSnackbar = useSnackbar();
   const { id } = useParams(); // Получаем ID пользователя из параметров маршрута
   const { data, isLoading, isError, error } = useGetOneUserQuery({ id });
   const [updateUser, { isLoading: isUpdating }] = useUpdateOneUserMutation();
@@ -43,11 +45,11 @@ const SinglePage: React.FC = () => {
   const handleSave = async () => {
     try {
       await updateUser({ id, body: formData }).unwrap();
-      alert("Данные успешно обновлены!");
+      triggerSnackbar("Данные успешно обновлены!", "success");
       setIsEditing(false); // Завершаем режим редактирования
     } catch (err) {
       console.error("Ошибка обновления данных:", err);
-      alert("Не удалось обновить данные");
+      triggerSnackbar("Не удалось обновить данные", "error");
     }
   };
 
