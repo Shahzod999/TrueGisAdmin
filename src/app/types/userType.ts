@@ -12,6 +12,8 @@ export interface userTypeData {
   password: string;
   created_at: string;
   updated_at: string;
+  created_by: string
+  deleted: boolean
 }
 
 export interface InputUserInfo {
