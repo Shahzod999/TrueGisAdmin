@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -11,13 +11,15 @@ import {
   ListItemText,
   Divider,
   Typography,
+  Button,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate, Outlet } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-const DeliveryPages: React.FC = () => {
+const DeliveryPages = () => {
   const navigate = useNavigate();
-  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
@@ -95,9 +97,22 @@ const DeliveryPages: React.FC = () => {
             sx={{ marginRight: 2 }}>
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+
+          <Typography variant="h6" sx={{ flexGrow: 1, marginRight: 2 }}>
             Delivery App
           </Typography>
+
+          <Button
+            component={Link}
+            to="/"
+            color="primary"
+            variant="outlined"
+            sx={{
+              textTransform: "none",
+              fontWeight: "bold",
+            }}>
+            Home
+          </Button>
         </Toolbar>
       </AppBar>
 

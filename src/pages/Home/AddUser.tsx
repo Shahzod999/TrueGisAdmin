@@ -9,7 +9,7 @@ import {
 
 import { useAddnewUserMutation } from "../../app/api/companySlice";
 import { ErrorType } from "../../app/types/userType";
-import useSnackbar from "../../app/types/callSnackBar";
+import useSnackbar from "../../app/hook/callSnackBar";
 
 const AddUser = () => {
   const triggerSnackbar = useSnackbar();

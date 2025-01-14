@@ -11,12 +11,12 @@ import {
 import {
   useGetOneUserQuery,
   useUpdateOneUserMutation,
-} from "../../app/api/companySlice";
-import useSnackbar from "../../app/types/callSnackBar";
-import NotFound from "../NotFound/NotFound";
-import { ErrorType } from "../../app/types/userType";
+} from "../../../app/api/companySlice";
+import useSnackbar from "../../../app/hook/callSnackBar";
+import NotFound from "../../NotFound/NotFound";
+import { ErrorType } from "../../../app/types/userType";
 
-const SinglePage: React.FC = () => {
+const SinglePage = () => {
   const triggerSnackbar = useSnackbar();
   const { id } = useParams();
   const { data, isLoading, isError, error } = useGetOneUserQuery({ id });

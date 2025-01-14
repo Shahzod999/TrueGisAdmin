@@ -12,12 +12,12 @@ import {
   MenuItem,
 } from "@mui/material";
 import { LuLogOut, LuMenu } from "react-icons/lu";
-import { clearUserInfo } from "../../app/features/userSlice";
+import { clearUserInfo } from "../../../app/features/userSlice";
 import { useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-const Header: React.FC = () => {
+const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -123,6 +123,12 @@ const Header: React.FC = () => {
                 component={Link}
                 to="/add-user">
                 Создать пользователя
+              </MenuItem>
+              <MenuItem
+                onClick={handleMenuClose}
+                component={Link}
+                to="/delivery">
+                Delivery
               </MenuItem>
             </Menu>
           </>

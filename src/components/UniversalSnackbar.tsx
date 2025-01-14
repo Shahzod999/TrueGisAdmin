@@ -1,11 +1,11 @@
 // components/UniversalSnackbar.tsx
-import React from "react";
+
 import { useDispatch, useSelector } from "react-redux";
 import { Snackbar, Alert } from "@mui/material";
 import { hideSnackbar } from "../app/features/snackbarSlice";
 import { RootState } from "../app/store";
 
-const UniversalSnackbar: React.FC = () => {
+const UniversalSnackbar = () => {
   const dispatch = useDispatch();
   const { message, severity, open } = useSelector(
     (state: RootState) => state.snackbar,

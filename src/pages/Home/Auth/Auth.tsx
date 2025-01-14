@@ -7,11 +7,11 @@ import {
   Paper,
   CircularProgress,
 } from "@mui/material";
-import { useLoginMutation } from "../../app/api/companySlice";
-import { useAppDispatch } from "../../app/hook/reduxHooks";
-import { setUserInfo } from "../../app/features/userSlice";
+import { useLoginMutation } from "../../../app/api/companySlice";
+import { useAppDispatch } from "../../../app/hook/reduxHooks";
+import { setUserInfo } from "../../../app/features/userSlice";
 
-const Auth: React.FC = () => {
+const Auth = () => {
   const dispatch = useAppDispatch();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

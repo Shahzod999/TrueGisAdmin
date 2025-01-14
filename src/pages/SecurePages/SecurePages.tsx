@@ -1,7 +1,7 @@
 import { Outlet } from "react-router";
 import { useAppSelector } from "../../app/hook/reduxHooks";
 import { selectedUserinfoSlice } from "../../app/features/userSlice";
-import Auth from "../Auth/Auth";
+import Auth from "../Home/Auth/Auth";
 
 const SecurePages = () => {
   const status = useAppSelector(selectedUserinfoSlice);
