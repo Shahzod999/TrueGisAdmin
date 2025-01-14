@@ -16,11 +16,11 @@ import useSnackbar from "../../app/types/callSnackBar";
 
 const SinglePage: React.FC = () => {
   const triggerSnackbar = useSnackbar();
-  const { id } = useParams(); // Получаем ID пользователя из параметров маршрута
+  const { id } = useParams(); 
   const { data, isLoading, isError, error } = useGetOneUserQuery({ id });
   const [updateUser, { isLoading: isUpdating }] = useUpdateOneUserMutation();
 
-  const [isEditing, setIsEditing] = useState(false); // Состояние редактирования
+  const [isEditing, setIsEditing] = useState(false); 
   const [formData, setFormData] = useState({
     full_name: "",
     username: "",
@@ -32,7 +32,7 @@ const SinglePage: React.FC = () => {
       setFormData({
         full_name: data.data.full_name,
         username: data.data.username,
-        password: "", // Пароль остаётся пустым при загрузке
+        password: "", 
       });
     }
   }, [data]);
@@ -46,7 +46,7 @@ const SinglePage: React.FC = () => {
     try {
       await updateUser({ id, body: formData }).unwrap();
       triggerSnackbar("Данные успешно обновлены!", "success");
-      setIsEditing(false); // Завершаем режим редактирования
+      setIsEditing(false); 
     } catch (err) {
       console.error("Ошибка обновления данных:", err);
       triggerSnackbar("Не удалось обновить данные", "error");
