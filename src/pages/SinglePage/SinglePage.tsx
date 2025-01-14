@@ -13,14 +13,16 @@ import {
   useUpdateOneUserMutation,
 } from "../../app/api/companySlice";
 import useSnackbar from "../../app/types/callSnackBar";
+import NotFound from "../NotFound/NotFound";
+import { ErrorType } from "../../app/types/userType";
 
 const SinglePage: React.FC = () => {
   const triggerSnackbar = useSnackbar();
-  const { id } = useParams(); 
+  const { id } = useParams();
   const { data, isLoading, isError, error } = useGetOneUserQuery({ id });
   const [updateUser, { isLoading: isUpdating }] = useUpdateOneUserMutation();
 
-  const [isEditing, setIsEditing] = useState(false); 
+  const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     full_name: "",
     username: "",
@@ -32,7 +34,7 @@ const SinglePage: React.FC = () => {
       setFormData({
         full_name: data.data.full_name,
         username: data.data.username,
-        password: "", 
+        password: "",
       });
     }
   }, [data]);
@@ -46,7 +48,7 @@ const SinglePage: React.FC = () => {
     try {
       await updateUser({ id, body: formData }).unwrap();
       triggerSnackbar("Данные успешно обновлены!", "success");
-      setIsEditing(false); 
+      setIsEditing(false);
     } catch (err) {
       console.error("Ошибка обновления данных:", err);
       triggerSnackbar("Не удалось обновить данные", "error");
@@ -73,7 +75,15 @@ const SinglePage: React.FC = () => {
         color="error"
         variant="h6"
         sx={{ textAlign: "center", marginTop: "2rem" }}>
-        Ошибка загрузки данных: {error && JSON.stringify(error)}
+        Ошибка загрузки данных:
+        {error &&
+        typeof error === "object" &&
+        "data" in error &&
+        "message" in (error as any).data ? (
+          (error as ErrorType)?.data?.message
+        ) : (
+          <NotFound />
+        )}
       </Typography>
     );
   }

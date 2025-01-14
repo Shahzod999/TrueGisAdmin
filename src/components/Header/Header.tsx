@@ -35,7 +35,6 @@ const Header: React.FC = () => {
 
   const handleLogout = () => {
     dispatch(clearUserInfo());
-    navigate("/login"); // Перенаправляем на страницу логина после выхода
   };
 
   return (
@@ -50,7 +49,6 @@ const Header: React.FC = () => {
           justifyContent: "space-between",
           alignItems: "center",
         }}>
-        {/* Название приложения */}
         <Typography
           variant="h6"
           sx={{
@@ -62,7 +60,6 @@ const Header: React.FC = () => {
           TrueGis
         </Typography>
 
-        {/* Навигация для десктопа */}
         {!isMobile ? (
           <Box sx={{ display: "flex", gap: "1rem" }}>
             <Button

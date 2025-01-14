@@ -63,7 +63,7 @@ const Auth: React.FC = () => {
         <form onSubmit={handleSubmit}>
           <TextField
             fullWidth
-            label="Text"
+            label="Имя пользователя"
             type="text"
             margin="normal"
             value={username}
