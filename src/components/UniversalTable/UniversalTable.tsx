@@ -8,13 +8,13 @@ import {
   TableRow,
   Paper,
   Typography,
-  CircularProgress,
   Box,
   Button,
   useMediaQuery,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import useSnackbar from "../../app/hook/callSnackBar";
+import Loading from "../Loading";
 
 interface Column {
   field: string;
@@ -43,15 +43,7 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
   const triggerSnackbar = useSnackbar();
 
   if (isLoading) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="50vh">
-        <CircularProgress />
-      </Box>
-    );
+    return <Loading />;
   }
 
   if (!data || data.length === 0) {

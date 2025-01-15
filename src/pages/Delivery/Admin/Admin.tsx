@@ -17,7 +17,7 @@ const Admin = () => {
             backgroundColor: "#1976d2",
             "&:hover": { backgroundColor: "#125ea8" },
           }}>
-          Создать пользователя
+          Создать Админа
         </Button>
       </Box>
       <Outlet />

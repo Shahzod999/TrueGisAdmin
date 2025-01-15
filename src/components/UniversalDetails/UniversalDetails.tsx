@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Typography,
-  CircularProgress,
-  Paper,
-  TextField,
-  Button,
-} from "@mui/material";
+import { Box, Typography, Paper, TextField, Button } from "@mui/material";
 import useSnackbar from "../../app/hook/callSnackBar";
+import Loading from "../Loading";
 
 interface UniversalDetailsProps {
   title: string;
@@ -78,6 +72,8 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
       triggerSnackbar("Данные успешно обновлены!", "success");
       setIsEditing(false);
     } catch (error) {
+      console.log(error);
+
       triggerSnackbar("Не удалось обновить данные", "error");
     } finally {
       setIsUpdating(false);
@@ -97,17 +93,7 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
   };
 
   if (isLoading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}>
-        <CircularProgress />
-      </Box>
-    );
+    return <Loading />;
   }
 
   if (!data) {

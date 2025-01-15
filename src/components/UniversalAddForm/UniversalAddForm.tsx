@@ -5,6 +5,8 @@ import {
   Typography,
   Box,
   CircularProgress,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import useSnackbar from "../../app/hook/callSnackBar";
 
@@ -102,19 +104,36 @@ const UniversalAddForm: React.FC<UniversalAddFormProps> = ({
         {title}
       </Typography>
       <form onSubmit={handleSubmit}>
-        {fields.map((field) => (
-          <TextField
-            key={field.name}
-            fullWidth
-            label={field.label}
-            name={field.name}
-            value={formData[field.name]}
-            onChange={handleChange}
-            margin="normal"
-            required={field.required}
-            type={field.type || "text"}
-          />
-        ))}
+        {fields.map((field) =>
+          field.type === "checkbox" ? (
+            <FormControlLabel
+              key={field.name}
+              control={
+                <Checkbox
+                  name={field.name}
+                  checked={formData[field.name] === "true"}
+                  onChange={handleChange}
+                  color="primary"
+                />
+              }
+              label={field.label}
+              labelPlacement="end"
+              sx={{ display: "flex", justifyContent: "space-between" }}
+            />
+          ) : (
+            <TextField
+              key={field.name}
+              fullWidth
+              label={field.label}
+              name={field.name}
+              value={formData[field.name]}
+              onChange={handleChange}
+              margin="normal"
+              required={field.required}
+              type={field.type || "text"}
+            />
+          ),
+        )}
         {error && (
           <Typography color="error" variant="body2" sx={{ margin: "1rem 0" }}>
             {error}

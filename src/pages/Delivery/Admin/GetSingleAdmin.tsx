@@ -5,7 +5,8 @@ import {
 } from "../../../app/api/deliverySlice";
 import { useParams, useNavigate } from "react-router-dom";
 import UniversalDetails from "../../../components/UniversalDetails/UniversalDetails";
-import { Box, CircularProgress } from "@mui/material";
+
+import Loading from "../../../components/Loading";
 
 const GetSingleAdmin = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,11 +20,15 @@ const GetSingleAdmin = () => {
     if (!data) {
       throw new Error("Данные еще не загружены");
     }
-    return data;
+    return data.data;
   };
 
-  const updateData = async (id: string, updatedData: Record<string, any>) => {
-    await updateSingleAdmin({ id, ...updatedData }).unwrap();
+  const updateData = async (
+    id: string,
+    updatedNewData: Record<string, any>,
+  ) => {
+    console.log({ id, data: updatedNewData });
+    await updateSingleAdmin({ id, data: updatedNewData }).unwrap();
   };
 
   const deleteData = async (id: string) => {
@@ -33,21 +38,13 @@ const GetSingleAdmin = () => {
 
   const fields = [
     { name: "full_name", label: "Full Name" },
-    { name: "username", label: "Username" },
+    { name: "username", label: "username" },
+    { name: "password", label: "password" },
+    { name: "admin_role", label: "admin_role" },
   ];
 
   if (isLoading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}>
-        <CircularProgress />
-      </Box>
-    );
+    return <Loading />;
   }
 
   return (

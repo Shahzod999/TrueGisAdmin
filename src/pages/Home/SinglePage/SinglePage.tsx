@@ -5,7 +5,8 @@ import {
 } from "../../../app/api/companySlice";
 import { useParams } from "react-router-dom";
 import UniversalDetails from "../../../components/UniversalDetails/UniversalDetails";
-import { Box, CircularProgress } from "@mui/material";
+
+import Loading from "../../../components/Loading";
 
 const SinglePage = () => {
   const { id } = useParams<{ id: string }>();
@@ -15,6 +16,9 @@ const SinglePage = () => {
   const { data, isLoading } = useGetOneUserQuery({ id });
 
   const fetchData = async () => {
+    if (!data) {
+      throw new Error("Данные еще не загружены");
+    }
     return data?.data;
   };
 
@@ -34,17 +38,7 @@ const SinglePage = () => {
   ];
 
   if (isLoading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}>
-        <CircularProgress />
-      </Box>
-    );
+    return <Loading />;
   }
 
   return (
