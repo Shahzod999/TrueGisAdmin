@@ -97,6 +97,21 @@ export const deliverySlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Comments"],
     }),
+    updateOneReply: builder.mutation({
+      query: ({ reply_id, comment_id, data }) => ({
+        url: `/delivery/root/comment/reply/${comment_id}/${reply_id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Comments"],
+    }),
+    deleteOneReply: builder.mutation({
+      query: ({ reply_id, comment_id }) => ({
+        url: `/delivery/root/comment/reply/${comment_id}/${reply_id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Comments"],
+    }),
     updateOneComment: builder.mutation({
       query: ({ id, data }) => ({
         url: `/delivery/root/comment/${id}`,
@@ -111,19 +126,6 @@ export const deliverySlice = apiSlice.injectEndpoints({
         method: "DELETE",
       }),
       invalidatesTags: ["Comments"],
-    }),
-    updateOneReply: builder.mutation({
-      query: ({ reply_id, comment_id, data }) => ({
-        url: `/delivery/root/comment/${comment_id}/${reply_id}`,
-        method: "PUT",
-        body: data,
-      }),
-    }),
-    deleteOneReply: builder.mutation({
-      query: ({ reply_id, comment_id }) => ({
-        url: `/delivery/root/comment/${comment_id}/${reply_id}`,
-        method: "DELETE",
-      }),
     }),
   }),
 });
