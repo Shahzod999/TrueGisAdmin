@@ -3,12 +3,13 @@ import {
   useGetOneUserQuery,
   useUpdateOneUserMutation,
 } from "../../../app/api/companySlice";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import UniversalDetails from "../../../components/UniversalDetails/UniversalDetails";
 
 import Loading from "../../../components/Loading";
 
 const SinglePage = () => {
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
 
   const [deleteUser] = useDeleteUserMutation();
@@ -28,7 +29,7 @@ const SinglePage = () => {
 
   const deleteData = async (id: string) => {
     await deleteUser({ id }).unwrap();
-    window.location.href = "/users"; // Redirect after delete
+    navigate(-1); // Redirect after delete
   };
 
   const fields = [

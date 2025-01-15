@@ -17,7 +17,6 @@ import CompanySinglePage from "./pages/Delivery/Company/CompanySinglePage";
 import AddNewCompany from "./pages/Delivery/Company/AddNewCompany";
 import GetAllComments from "./pages/Delivery/Comments/GetAllComments";
 import CommentSinglePage from "./pages/Delivery/Comments/CommentSinglePage";
-import AddReplyTomment from "./pages/Delivery/Comments/AddReplyTomment";
 
 const App = () => {
   return (
@@ -41,7 +40,6 @@ const App = () => {
           <Route path="delivery-comments" element={<Comments />}>
             <Route index element={<GetAllComments />} />
             <Route path=":id" element={<CommentSinglePage />} />
-            <Route path="add-comment" element={<AddReplyTomment />} />
           </Route>
         </Route>
 

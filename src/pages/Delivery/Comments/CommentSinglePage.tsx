@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   useGetOneCommentQuery,
   useUpdateOneCommentMutation,
@@ -9,9 +9,11 @@ import Loading from "../../../components/Loading";
 import ImageSlider from "../../../components/ImageSlider";
 
 const CommentSinglePage = () => {
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
 
   const { data, isLoading } = useGetOneCommentQuery({ id });
+  console.log(data);
 
   const [updateOneComment] = useUpdateOneCommentMutation();
   const [deleteOneComment] = useDeleteOneCommentMutation();
@@ -33,12 +35,14 @@ const CommentSinglePage = () => {
   };
 
   const updateData = async (id: string, updatedData: Record<string, any>) => {
-    await updateOneComment({ id, data: updatedData });
+    let res = await updateOneComment({ id, data: updatedData });
+    console.log(res);
   };
 
   const deleteData = async (id: string) => {
-    await deleteOneComment({ id });
-    window.location.href = "/delivery-comments"; // Перенаправление после удаления
+    let res = await deleteOneComment({ id });
+    console.log(res);
+    navigate(-1);
   };
 
   const fields = [
@@ -73,7 +77,7 @@ const CommentSinglePage = () => {
         updateData={updateData}
         deleteData={deleteData}
         fields={fields}
-        redirectAfterDelete="/comments"
+        redirectAfterDelete="/delivery-comments"
       />
     </>
   );

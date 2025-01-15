@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   useGetSingleCompanyQuery,
   useUpdateCompanyMutation,
@@ -8,6 +8,7 @@ import UniversalDetails from "../../../components/UniversalDetails/UniversalDeta
 import Loading from "../../../components/Loading";
 
 const CompanySinglePage = () => {
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
 
   const { data, isLoading } = useGetSingleCompanyQuery({ id });
@@ -25,9 +26,8 @@ const CompanySinglePage = () => {
 
   const deleteData = async (id: string) => {
     await deleteCompany({ id });
-    console.log('sss');
-    
-    window.location.href = "/companies"; // Перенаправление после удаления
+
+    navigate(-1); // Перенаправление после удаления
   };
 
   const fields = [

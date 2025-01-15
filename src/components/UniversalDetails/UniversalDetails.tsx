@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Box, Typography, Paper, TextField, Button } from "@mui/material";
 import useSnackbar from "../../app/hook/callSnackBar";
 import Loading from "../Loading";
+import { useNavigate } from "react-router";
 
 interface UniversalDetailsProps {
   title: string;
@@ -22,12 +23,22 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
   fields,
   redirectAfterDelete,
 }) => {
+  const navigate = useNavigate();
   const triggerSnackbar = useSnackbar();
   const [data, setData] = useState<Record<string, any> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [isUpdating, setIsUpdating] = useState(false);
+
+  const getNestedValue = (obj: Record<string, any>, path: string): any => {
+    return path
+      .split(".")
+      .reduce(
+        (acc, key) => (acc && acc[key] !== undefined ? acc[key] : ""),
+        obj,
+      );
+  };
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -44,7 +55,7 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
         // Инициализируем форму на основе полученных данных
         const initialFormData: Record<string, any> = {};
         fields.forEach((field) => {
-          initialFormData[field.name] = response[field.name] || "";
+          initialFormData[field.name] = getNestedValue(response, field.name);
         });
         setFormData(initialFormData);
       } catch (error) {
@@ -60,6 +71,25 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
     fetchDetails();
   }, [id, fetchData, fields, triggerSnackbar]);
 
+  const setNestedValue = (
+    obj: Record<string, any>,
+    path: string,
+    value: any,
+  ): void => {
+    const keys = path.split(".");
+    let current = obj;
+
+    for (let i = 0; i < keys.length - 1; i++) {
+      const key = keys[i];
+      if (!current[key]) {
+        current[key] = {};
+      }
+      current = current[key];
+    }
+
+    current[keys[keys.length - 1]] = value;
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -68,12 +98,15 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
   const handleSave = async () => {
     setIsUpdating(true);
     try {
-      await updateData(id, formData);
+      const updatedData: Record<string, any> = {};
+      Object.entries(formData).forEach(([key, value]) => {
+        setNestedValue(updatedData, key, value);
+      });
+
+      await updateData(id, updatedData);
       triggerSnackbar("Данные успешно обновлены!", "success");
       setIsEditing(false);
     } catch (error) {
-      console.log(error);
-
       triggerSnackbar("Не удалось обновить данные", "error");
     } finally {
       setIsUpdating(false);
@@ -85,7 +118,7 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
       await deleteData(id);
       triggerSnackbar("Данные успешно удалены", "success");
       if (redirectAfterDelete) {
-        window.location.href = redirectAfterDelete;
+        navigate(redirectAfterDelete);
       }
     } catch (error) {
       triggerSnackbar("Ошибка удаления данных", "error");

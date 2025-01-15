@@ -20,7 +20,7 @@ interface Column {
   field: string;
   headerName: string;
 }
-
+// 
 interface UniversalTableProps {
   title: string;
   data: Array<Record<string, any>>;
@@ -28,6 +28,7 @@ interface UniversalTableProps {
   isLoading: boolean;
   onDelete: (_id: string) => Promise<void>;
   onView: (_id: string) => void;
+  handleOpenReplyModal?: (id: string) => void;
 }
 
 const UniversalTable: React.FC<UniversalTableProps> = ({
@@ -37,10 +38,20 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
   isLoading,
   onDelete,
   onView,
+  handleOpenReplyModal,
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const triggerSnackbar = useSnackbar();
+
+  const getNestedValue = (obj: Record<string, any>, path: string): any => {
+    return path
+      .split(".")
+      .reduce(
+        (acc, key) => (acc && acc[key] !== undefined ? acc[key] : ""),
+        obj,
+      );
+  };
 
   if (isLoading) {
     return <Loading />;
@@ -62,7 +73,6 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
       triggerSnackbar("Ошибка при удалении", "error");
     }
   };
-  console.log(data);
 
   return (
     <Box p={2}>
@@ -77,10 +87,20 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
               sx={{ mb: 2, p: 2, display: "flex", flexDirection: "column" }}>
               {columns.map((col) => (
                 <Typography key={col.field} variant="body1">
-                  <strong>{col.headerName}:</strong> {row[col.field]}
+                  <strong>{col.headerName}:</strong>{" "}
+                  {getNestedValue(row, col.field)}
                 </Typography>
               ))}
               <Box mt={1} display="flex" justifyContent="space-between">
+                {handleOpenReplyModal && (
+                  <Button
+                    variant="outlined"
+                    color="success"
+                    size="small"
+                    onClick={() => handleOpenReplyModal(row._id)}>
+                    Ответить
+                  </Button>
+                )}
                 <Button
                   variant="outlined"
                   color="primary"
@@ -114,20 +134,36 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
               {data.map((row, index) => (
                 <TableRow key={row._id || index}>
                   {columns.map((col) => (
-                    <TableCell key={col.field}>{row[col.field]}</TableCell>
+                    <TableCell key={col.field}>
+                      {getNestedValue(row, col.field)}
+                    </TableCell>
                   ))}
+
                   <TableCell>
+                    {handleOpenReplyModal && (
+                      <Button
+                        variant="outlined"
+                        color="success"
+                        size="small"
+                        sx={{ margin: "5px" }}
+                        onClick={() => handleOpenReplyModal(row._id)}>
+                        Ответить
+                      </Button>
+                    )}
+
                     <Button
                       variant="outlined"
                       color="primary"
                       size="small"
-                      onClick={() => onView(row._id)}>
+                      onClick={() => onView(row._id)}
+                      sx={{ margin: "5px" }}>
                       Подробнее
                     </Button>
                     <Button
                       variant="outlined"
                       color="error"
                       size="small"
+                      sx={{ margin: "5px" }}
                       onClick={() => handleDelete(row._id)}>
                       Удалить
                     </Button>

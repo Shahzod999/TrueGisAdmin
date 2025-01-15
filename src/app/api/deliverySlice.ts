@@ -81,11 +81,13 @@ export const deliverySlice = apiSlice.injectEndpoints({
           page,
         },
       }),
+      providesTags: ["Comments"],
     }),
     getOneComment: builder.query({
       query: ({ id }) => ({
         url: `/delivery/root/comment/${id}`,
       }),
+      providesTags: ["Comments"],
     }),
     replyToOneComment: builder.mutation({
       query: ({ id, data }) => ({
@@ -93,17 +95,33 @@ export const deliverySlice = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["Comments"],
     }),
     updateOneComment: builder.mutation({
       query: ({ id, data }) => ({
-        url: `/delivery/root/comment/reply/${id}`,
+        url: `/delivery/root/comment/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Comments"],
+    }),
+    deleteOneComment: builder.mutation({
+      query: ({ id }) => ({
+        url: `/delivery/root/comment/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Comments"],
+    }),
+    updateOneReply: builder.mutation({
+      query: ({ reply_id, comment_id, data }) => ({
+        url: `/delivery/root/comment/${comment_id}/${reply_id}`,
         method: "PUT",
         body: data,
       }),
     }),
-    deleteOneComment: builder.mutation({
-      query: ({ id }) => ({
-        url: `/delivery/root/cities/${id}`,
+    deleteOneReply: builder.mutation({
+      query: ({ reply_id, comment_id }) => ({
+        url: `/delivery/root/comment/${comment_id}/${reply_id}`,
         method: "DELETE",
       }),
     }),
@@ -128,4 +146,6 @@ export const {
   useReplyToOneCommentMutation,
   useUpdateOneCommentMutation,
   useDeleteOneCommentMutation,
+  useUpdateOneReplyMutation,
+  useDeleteOneReplyMutation,
 } = deliverySlice;
