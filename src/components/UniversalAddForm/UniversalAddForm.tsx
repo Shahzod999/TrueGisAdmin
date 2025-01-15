@@ -36,7 +36,7 @@ const UniversalAddForm: React.FC<UniversalAddFormProps> = ({
   const [formData, setFormData] = useState<Record<string, string>>(() => {
     const initialState: Record<string, string> = {};
     fields.forEach((field) => {
-      initialState[field.name] = "";
+      initialState[field.name] = field.type === "checkbox" ? "false" : "";
     });
     return initialState;
   });
@@ -45,8 +45,11 @@ const UniversalAddForm: React.FC<UniversalAddFormProps> = ({
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? String(checked) : value,
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -67,7 +70,7 @@ const UniversalAddForm: React.FC<UniversalAddFormProps> = ({
       setFormData(() => {
         const resetState: Record<string, string> = {};
         fields.forEach((field) => {
-          resetState[field.name] = "";
+          resetState[field.name] = field.type === "checkbox" ? "false" : "";
         });
         return resetState;
       });

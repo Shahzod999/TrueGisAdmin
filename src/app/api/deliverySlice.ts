@@ -41,11 +41,13 @@ export const deliverySlice = apiSlice.injectEndpoints({
           page,
         },
       }),
+      providesTags: ["Company"],
     }),
     getSingleCompany: builder.query({
       query: ({ id }) => ({
         url: `/delivery/root/company/${id}`,
       }),
+      providesTags: ["Company"],
     }),
     updateCompany: builder.mutation({
       query: ({ id, data }) => ({
@@ -53,12 +55,14 @@ export const deliverySlice = apiSlice.injectEndpoints({
         method: "PUT",
         body: data,
       }),
+      invalidatesTags: ["Company"],
     }),
     deleteCompany: builder.mutation({
       query: ({ id }) => ({
         url: `/delivery/root/company/${id}`,
         method: "DELETE",
       }),
+      invalidatesTags: ["Company"],
     }),
     addNewCompany: builder.mutation({
       query: ({ data }) => ({
@@ -66,6 +70,7 @@ export const deliverySlice = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["Company"],
     }),
   }),
 });

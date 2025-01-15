@@ -62,7 +62,11 @@ const AddNewCompany = () => {
       subtypes: data.subtypes ? data.subtypes.split(",") : [],
     };
 
-    await addNewCompany({ data: formattedData }).unwrap();
+    console.log(formattedData, "22");
+
+    let res = await addNewCompany({ data: formattedData }).unwrap();
+    console.log(res);
+    
     navigate("/companies");
   };
 
