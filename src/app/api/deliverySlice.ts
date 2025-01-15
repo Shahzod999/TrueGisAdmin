@@ -34,6 +34,7 @@ export const deliverySlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["DeliverAdmin"],
     }),
+    // company
     getAllCompany: builder.query<CompanyType, any>({
       query: ({ page }) => ({
         url: "/delivery/root/company",
@@ -72,6 +73,40 @@ export const deliverySlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Company"],
     }),
+    // comments
+    getAllComments: builder.query({
+      query: ({ page }) => ({
+        url: "/delivery/root/comment",
+        params: {
+          page,
+        },
+      }),
+    }),
+    getOneComment: builder.query({
+      query: ({ id }) => ({
+        url: `/delivery/root/comment/${id}`,
+      }),
+    }),
+    replyToOneComment: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/delivery/root/comment/reply/${id}`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+    updateOneComment: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/delivery/root/comment/reply/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+    }),
+    deleteOneComment: builder.mutation({
+      query: ({ id }) => ({
+        url: `/delivery/root/cities/${id}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
@@ -81,9 +116,16 @@ export const {
   useUpdateSingleAdminMutation,
   useDeleteSingleAdminMutation,
   useAddNewAdminDeliveryMutation,
+  // company
   useGetAllCompanyQuery,
   useGetSingleCompanyQuery,
   useUpdateCompanyMutation,
   useDeleteCompanyMutation,
   useAddNewCompanyMutation,
+  // comments
+  useGetAllCommentsQuery,
+  useGetOneCommentQuery,
+  useReplyToOneCommentMutation,
+  useUpdateOneCommentMutation,
+  useDeleteOneCommentMutation,
 } = deliverySlice;

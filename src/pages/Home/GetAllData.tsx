@@ -6,6 +6,8 @@ import { useNavigate } from "react-router";
 import useSnackbar from "../../app/hook/callSnackBar";
 import UniversalTable from "../../components/UniversalTable/UniversalTable";
 import { userTypeData } from "../../app/types/userType";
+import { Box, Button } from "@mui/material";
+import { Link } from "react-router-dom";
 
 const GetAllData = () => {
   const navigate = useNavigate();
@@ -46,14 +48,32 @@ const GetAllData = () => {
   }
 
   return (
-    <UniversalTable
-      title="Пользователи"
-      data={tableData}
-      columns={columns}
-      isLoading={isLoading}
-      onDelete={handleDelete}
-      onView={handleView}
-    />
+    <>
+      <Box sx={{ textAlign: "right" }}>
+        <Button
+          component={Link}
+          to="add-user"
+          color="secondary"
+          variant="contained"
+          sx={{
+            textTransform: "none",
+            fontWeight: "bold",
+            backgroundColor: "#1976d2",
+            "&:hover": { backgroundColor: "#125ea8" },
+          }}>
+          Создать пользователя
+        </Button>
+      </Box>
+
+      <UniversalTable
+        title="Пользователи"
+        data={tableData}
+        columns={columns}
+        isLoading={isLoading}
+        onDelete={handleDelete}
+        onView={handleView}
+      />
+    </>
   );
 };
 

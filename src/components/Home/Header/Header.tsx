@@ -115,14 +115,9 @@ const Header = () => {
                 component={Link}
                 to="/"
                 onClick={handleDrawerToggle}>
-                <ListItemText primary="Главная" />
+                <ListItemText primary="Пользователи" />
               </ListItemButton>
-              <ListItemButton
-                component={Link}
-                to="/add-user"
-                onClick={handleDrawerToggle}>
-                <ListItemText primary="Создать пользователя" />
-              </ListItemButton>
+
               <ListItemButton onClick={handleDeliveryToggle}>
                 <ListItemText primary="Delivery" />
                 {isDeliveryOpen ? <ExpandLess /> : <ExpandMore />}

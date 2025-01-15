@@ -15,6 +15,9 @@ import AddNewAdmin from "./pages/Delivery/Admin/AddNewAdmin";
 import GetAllCompany from "./pages/Delivery/Company/GetAllCompany";
 import CompanySinglePage from "./pages/Delivery/Company/CompanySinglePage";
 import AddNewCompany from "./pages/Delivery/Company/AddNewCompany";
+import GetAllComments from "./pages/Delivery/Comments/GetAllComments";
+import CommentSinglePage from "./pages/Delivery/Comments/CommentSinglePage";
+import AddReplyTomment from "./pages/Delivery/Comments/AddReplyTomment";
 
 const App = () => {
   return (
@@ -29,14 +32,17 @@ const App = () => {
             <Route index element={<GetAllCompany />} />
             <Route path=":id" element={<CompanySinglePage />} />
             <Route path="add-newCompany" element={<AddNewCompany />} />
-
           </Route>
           <Route path="delivery-admin" element={<Admin />}>
             <Route index element={<GetAllAdmin />} />
             <Route path=":id" element={<GetSingleAdmin />} />
             <Route path="add-newAdmin" element={<AddNewAdmin />} />
           </Route>
-          <Route path="delivery-comments" element={<Comments />} />
+          <Route path="delivery-comments" element={<Comments />}>
+            <Route index element={<GetAllComments />} />
+            <Route path=":id" element={<CommentSinglePage />} />
+            <Route path="add-comment" element={<AddReplyTomment />} />
+          </Route>
         </Route>
 
         <Route path="*" element={<NotFound />} />

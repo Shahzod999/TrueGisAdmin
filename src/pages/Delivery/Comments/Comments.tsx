@@ -1,5 +1,11 @@
+import { Outlet } from "react-router-dom";
+
 const Comments = () => {
-  return <div>Comments</div>;
+  return (
+    <div>
+      <Outlet />
+    </div>
+  );
 };
 
 export default Comments;
