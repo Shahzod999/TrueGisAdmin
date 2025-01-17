@@ -6,6 +6,7 @@ import {
 } from "../../../app/api/deliverySlice";
 import UniversalDetails from "../../../components/UniversalDetails/UniversalDetails";
 import Loading from "../../../components/Loading";
+import ImageSlider from "../../../components/ImageSlider";
 
 const CompanySinglePage = () => {
   const navigate = useNavigate();
@@ -20,8 +21,12 @@ const CompanySinglePage = () => {
     return data?.data;
   };
 
-  const updateData = async (id: string, updatedData: Record<string, any>) => {
-    await updateCompany({ id, data: updatedData });
+  const updateOneData = async (
+    id: string,
+    updatedData: Record<string, any>,
+  ) => {
+    let res = await updateCompany({ id, data: updatedData }).unwrap();
+    console.log(res, updatedData);
   };
 
   const deleteData = async (id: string) => {
@@ -59,17 +64,34 @@ const CompanySinglePage = () => {
     { name: "updated_at", label: "Дата обновления" },
   ];
 
+  const renderImages = () => {
+    const images = [];
+    if (data?.data?.logo) images.push(data.data.logo);
+    if (data?.data?.photos_sample) {
+      images.push(
+        ...data.data.photos_sample.map((photo: any) => photo.photo_url),
+      );
+    }
+    console.log(images);
+    
+    return images.length ? <ImageSlider images={images} /> : null;
+  };
+
   if (isLoading) return <Loading />;
   return (
-    <UniversalDetails
-      title="Детали компании"
-      id={id || ""}
-      fetchData={fetchData}
-      updateData={updateData}
-      deleteData={deleteData}
-      fields={fields}
-      redirectAfterDelete="/companies"
-    />
+    <>
+      {renderImages()}
+
+      <UniversalDetails
+        title="Детали компании"
+        id={id || ""}
+        fetchData={fetchData}
+        updateData={updateOneData}
+        deleteData={deleteData}
+        fields={fields}
+        redirectAfterDelete="/companies"
+      />
+    </>
   );
 };
 

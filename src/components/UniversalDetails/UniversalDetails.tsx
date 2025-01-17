@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Paper, TextField, Button } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Paper,
+  TextField,
+  Button,
+  Checkbox,
+  FormControlLabel,
+} from "@mui/material";
 import useSnackbar from "../../app/hook/callSnackBar";
 import Loading from "../Loading";
 import { useNavigate } from "react-router";
@@ -39,6 +47,24 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
         obj,
       );
   };
+  const setNestedValue = (
+    obj: Record<string, any>,
+    path: string,
+    value: any,
+  ): void => {
+    const keys = path.split(".");
+    let current = obj;
+
+    for (let i = 0; i < keys.length - 1; i++) {
+      const key = keys[i];
+      if (!current[key]) {
+        current[key] = {};
+      }
+      current = current[key];
+    }
+
+    current[keys[keys.length - 1]] = value;
+  };
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -71,39 +97,25 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
     fetchDetails();
   }, [id, fetchData, fields, triggerSnackbar]);
 
-  const setNestedValue = (
-    obj: Record<string, any>,
-    path: string,
-    value: any,
-  ): void => {
-    const keys = path.split(".");
-    let current = obj;
-
-    for (let i = 0; i < keys.length - 1; i++) {
-      const key = keys[i];
-      if (!current[key]) {
-        current[key] = {};
-      }
-      current = current[key];
-    }
-
-    current[keys[keys.length - 1]] = value;
-  };
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   const handleSave = async () => {
     setIsUpdating(true);
     try {
       const updatedData: Record<string, any> = {};
-      Object.entries(formData).forEach(([key, value]) => {
-        setNestedValue(updatedData, key, value);
+      fields.forEach((field) => {
+        setNestedValue(updatedData, field.name, formData[field.name]);
       });
 
-      await updateData(id, updatedData);
+      const res  = await updateData(id, updatedData);
+      console.log(res);
+      
       triggerSnackbar("Данные успешно обновлены!", "success");
       setIsEditing(false);
     } catch (error) {
@@ -154,21 +166,39 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
         {title}
       </Typography>
       <Box>
-        {fields.map((field) => (
-          <TextField
-            key={field.name}
-            fullWidth
-            label={field.label}
-            name={field.name}
-            value={formData[field.name] || ""}
-            onChange={handleInputChange}
-            margin="normal"
-            type={field.type || "text"}
-            InputProps={{
-              readOnly: !isEditing,
-            }}
-          />
-        ))}
+        {fields.map((field) => {
+          if (field.type === "checkbox") {
+            return (
+              <FormControlLabel
+                key={field.name}
+                control={
+                  <Checkbox
+                    name={field.name}
+                    checked={formData[field.name] || false}
+                    onChange={handleInputChange}
+                    disabled={!isEditing}
+                  />
+                }
+                label={field.label}
+              />
+            );
+          }
+          return (
+            <TextField
+              key={field.name}
+              fullWidth
+              label={field.label}
+              name={field.name}
+              value={formData[field.name] || ""}
+              onChange={handleInputChange}
+              margin="normal"
+              type={field.type || "text"}
+              InputProps={{
+                readOnly: !isEditing,
+              }}
+            />
+          );
+        })}
         <Box sx={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
           {!isEditing ? (
             <Button

@@ -28,6 +28,7 @@ export const companyApiSlice = apiSlice.injectEndpoints({
       query: ({ id }) => ({
         url: `/root/root/${id}`,
       }),
+      providesTags: ["User"],
     }),
     updateOneUser: builder.mutation({
       query: ({ id, body }) => ({

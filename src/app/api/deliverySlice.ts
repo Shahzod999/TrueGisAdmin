@@ -10,6 +10,7 @@ export const deliverySlice = apiSlice.injectEndpoints({
     }),
     getSingleAdmin: builder.query({
       query: ({ id }) => `/delivery/root/admin/${id}`,
+      providesTags: ["DeliverAdmin"],
     }),
     updateSingleAdmin: builder.mutation({
       query: ({ id, data }) => ({

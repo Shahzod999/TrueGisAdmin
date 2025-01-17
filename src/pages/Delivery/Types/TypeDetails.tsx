@@ -5,6 +5,7 @@ import {
   useUpdateTypeMutation,
 } from "../../../app/api/deliverySlice";
 import UniversalDetails from "../../../components/UniversalDetails/UniversalDetails";
+import Loading from "../../../components/Loading";
 
 type TypeData = {
   _id: string;
@@ -14,7 +15,7 @@ type TypeData = {
 const TypeDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { data: typeData } = useGetAllTypesQuery({});
+  const { data: typeData, isLoading } = useGetAllTypesQuery({});
   const [updateType] = useUpdateTypeMutation();
   const [deleteType] = useDeleteTypeMutation();
 
@@ -28,6 +29,7 @@ const TypeDetails = () => {
   };
 
   const fields = [{ name: "name", label: "Название типа", required: true }];
+  if (isLoading) return <Loading />;
 
   return (
     <UniversalDetails

@@ -35,7 +35,7 @@ const CommentSinglePage = () => {
   };
 
   const updateData = async (id: string, updatedData: Record<string, any>) => {
-    let res = await updateOneComment({ id, data: updatedData });
+    let res = await updateOneComment({ id, data: updatedData }).unwrap();
     console.log(res);
   };
 

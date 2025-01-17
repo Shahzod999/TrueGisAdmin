@@ -22,6 +22,9 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ images }) => {
     slidesToShow: 1,
     slidesToScroll: 1,
   };
+  const getFullImageUrl = (image: string): string => {
+    return image.startsWith("http") ? image : `https://dev.admin13.uz${image}`;
+  };
 
   console.log("Unique Images for slider:", uniqueImages);
 
@@ -31,7 +34,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ images }) => {
         {uniqueImages.map((image, index) => (
           <div key={index}>
             <img
-              src={`https://dev.admin13.uz${image}`}
+              src={getFullImageUrl(image)}
               alt={`Image ${index + 1}`}
               style={{
                 width: "100%",
