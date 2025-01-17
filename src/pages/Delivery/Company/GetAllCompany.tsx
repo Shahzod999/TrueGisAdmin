@@ -4,11 +4,12 @@ import {
   useGetAllCompanyQuery,
 } from "../../../app/api/deliverySlice";
 import UniversalTable from "../../../components/UniversalTable/UniversalTable";
-import { Box, Stack, Pagination, PaginationItem } from "@mui/material";
+import { Box, Stack, Pagination, PaginationItem, Button } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useNavigate } from "react-router";
 import useSnackbar from "../../../app/hook/callSnackBar";
+import { Link } from "react-router-dom";
 
 const GetAllCompany = () => {
   const navigate = useNavigate();
@@ -50,6 +51,21 @@ const GetAllCompany = () => {
 
   return (
     <div>
+      <Box sx={{ textAlign: "right" }}>
+        <Button
+          component={Link}
+          to="add-newCompany"
+          color="secondary"
+          variant="contained"
+          sx={{
+            textTransform: "none",
+            fontWeight: "bold",
+            backgroundColor: "#1976d2",
+            "&:hover": { backgroundColor: "#125ea8" },
+          }}>
+          Создать Компанию
+        </Button>
+      </Box>
       <UniversalTable
         title="Компании"
         data={data?.data || []}

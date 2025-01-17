@@ -24,6 +24,7 @@ const Header = () => {
   const navigate = useNavigate();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isDeliveryOpen, setIsDeliveryOpen] = useState(false);
+  const [isCompanyOpen, setiIsCompanyOpen] = useState(false);
 
   const handleDrawerToggle = () => {
     setIsDrawerOpen((prev) => !prev);
@@ -31,6 +32,10 @@ const Header = () => {
 
   const handleDeliveryToggle = () => {
     setIsDeliveryOpen((prev) => !prev);
+  };
+
+  const handleCompanyToggle = () => {
+    setiIsCompanyOpen((prev) => !prev);
   };
 
   const handleLogout = () => {
@@ -124,13 +129,26 @@ const Header = () => {
               </ListItemButton>
               <Collapse in={isDeliveryOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                  <ListItemButton
-                    sx={{ pl: 4 }}
-                    component={Link}
-                    to="/delivery-company"
-                    onClick={handleDrawerToggle}>
+                  <ListItemButton sx={{ pl: 4 }} onClick={handleCompanyToggle}>
                     <ListItemText primary="Company" />
+                    {isCompanyOpen ? <ExpandLess /> : <ExpandMore />}
                   </ListItemButton>
+                  <Collapse in={isCompanyOpen} timeout="auto" unmountOnExit>
+                    <ListItemButton
+                      sx={{ pl: 8 }}
+                      component={Link}
+                      to="/delivery-company"
+                      onClick={handleDrawerToggle}>
+                      <ListItemText primary="Get All Company" />
+                    </ListItemButton>
+                    <ListItemButton
+                      sx={{ pl: 8 }}
+                      component={Link}
+                      to="/delivery-updateCompany"
+                      onClick={handleDrawerToggle}>
+                      <ListItemText primary="Update Request" />
+                    </ListItemButton>
+                  </Collapse>
                   <ListItemButton
                     sx={{ pl: 4 }}
                     component={Link}

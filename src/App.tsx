@@ -24,6 +24,9 @@ import TypeDetails from "./pages/Delivery/Types/TypeDetails";
 import User from "./pages/Delivery/User/User";
 import UserDetails from "./pages/Delivery/User/UserDetails";
 import UserTable from "./pages/Delivery/User/UserTable";
+import UpdateCompany from "./pages/Delivery/UpdateCompany/UpdateCompany";
+import UpdateCompanySinglePage from "./pages/Delivery/UpdateCompany/UpdateCompanySinglePage";
+import GetAllUpdateCompany from "./pages/Delivery/UpdateCompany/GetAllUpdateCompany";
 
 const App = () => {
   return (
@@ -34,10 +37,14 @@ const App = () => {
           <Route path="add-user" element={<AddUser />} />
           <Route path=":id" element={<SinglePage />} />
 
-          <Route path="delivery-company" element={<Company />}>
+          <Route path="delivery-company" element={<UpdateCompany />}>
             <Route index element={<GetAllCompany />} />
             <Route path=":id" element={<CompanySinglePage />} />
             <Route path="add-newCompany" element={<AddNewCompany />} />
+          </Route>
+          <Route path="delivery-updateCompany" element={<Company />}>
+            <Route index element={<GetAllUpdateCompany />} />
+            <Route path=":id" element={<UpdateCompanySinglePage />} />
           </Route>
           <Route path="delivery-admin" element={<Admin />}>
             <Route index element={<GetAllAdmin />} />

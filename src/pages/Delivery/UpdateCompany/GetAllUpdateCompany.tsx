@@ -1,0 +1,81 @@
+import React, { useState } from "react";
+import {
+  useDeleteUpdateCompanyMutation,
+  useGetUpdateCompanyQuery,
+} from "../../../app/api/deliverySlice";
+import UniversalTable from "../../../components/UniversalTable/UniversalTable";
+import { Box, Stack, Pagination, PaginationItem } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+
+import { useNavigate } from "react-router";
+import useSnackbar from "../../../app/hook/callSnackBar";
+
+const GetAllUpdateCompany = () => {
+  const navigate = useNavigate();
+  const triggerSnackbar = useSnackbar();
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [deleteCompany] = useDeleteUpdateCompanyMutation();
+  const { data, isLoading, isFetching } = useGetUpdateCompanyQuery({
+    page: currentPage,
+  });
+
+  const handlePageChange = (
+    _event: React.ChangeEvent<unknown>,
+    newPage: number,
+  ) => {
+    setCurrentPage(newPage);
+  };
+
+  const handleView = (id: string) => {
+    navigate(id);
+  };
+  const handleDelete = async (id: string) => {
+    try {
+      let res = await deleteCompany(id).unwrap();
+
+      triggerSnackbar(res?.message || "Данные успешно удалены!", "success");
+    } catch (error: any) {
+      console.log(error);
+      triggerSnackbar(error.message || "Не удалось удалить данные", "error");
+    }
+  };
+
+  const columns = [
+    { field: "name", headerName: "Название" },
+    { field: "status", headerName: "Статус" },
+    { field: "updated_at", headerName: "Дата обновления" },
+    { field: "requested_by", headerName: "Инициатор" },
+  ];
+
+  return (
+    <div>
+      <UniversalTable
+        title="Запросы на обновление компаний"
+        data={data?.data || []}
+        columns={columns}
+        isLoading={isLoading || isFetching}
+        onDelete={handleDelete} // Здесь нет функционала удаления
+        onView={handleView}
+      />
+      <Box display="flex" justifyContent="center" mt={2}>
+        <Stack spacing={2}>
+          <Pagination
+            count={data?.pagination?.totalPages || 1}
+            page={currentPage}
+            onChange={handlePageChange}
+            renderItem={(item) => (
+              <PaginationItem
+                slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
+                {...item}
+              />
+            )}
+          />
+        </Stack>
+      </Box>
+    </div>
+  );
+};
+
+export default GetAllUpdateCompany;

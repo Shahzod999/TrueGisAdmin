@@ -13,14 +13,14 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import useSnackbar from "../../app/hook/callSnackBar";
+
 import Loading from "../Loading";
 
 interface Column {
   field: string;
   headerName: string;
 }
-// 
+//
 interface UniversalTableProps {
   title: string;
   data: Array<Record<string, any>>;
@@ -42,7 +42,6 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const triggerSnackbar = useSnackbar();
 
   const getNestedValue = (obj: Record<string, any>, path: string): any => {
     return path
@@ -66,12 +65,7 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
   }
 
   const handleDelete = async (_id: string) => {
-    try {
-      await onDelete(_id);
-      triggerSnackbar("Успешно удалено", "success");
-    } catch (error) {
-      triggerSnackbar("Ошибка при удалении", "error");
-    }
+    await onDelete(_id);
   };
 
   return (

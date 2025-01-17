@@ -183,6 +183,35 @@ export const deliverySlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["User"],
     }),
+
+    // updateCompany
+    getUpdateCompany: builder.query({
+      query: ({ page }) => ({
+        url: "/delivery/root/company/update-request",
+        params: {
+          page,
+        },
+      }),
+
+      providesTags: ["UPDATECOMPANY"],
+    }),
+    getSingleUpdateCompany: builder.query({
+      query: (id) => `/delivery/root/company/update-request/${id}`,
+      providesTags: ["UPDATECOMPANY"],
+    }),
+    putUpdateCompany: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/delivery/root/company/update-request/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+    }),
+    deleteUpdateCompany: builder.mutation({
+      query: (id) => ({
+        url: `/delivery/root/company/update-request/${id}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
@@ -216,4 +245,9 @@ export const {
   useGetDeliveryUserQuery,
   useUpdateDeliveryUserMutation,
   useDeleteDeliveryUserMutation,
+  // updateCompany
+  useGetUpdateCompanyQuery,
+  useGetSingleUpdateCompanyQuery,
+  usePutUpdateCompanyMutation,
+  useDeleteUpdateCompanyMutation,
 } = deliverySlice;
