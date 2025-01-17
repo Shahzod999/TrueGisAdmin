@@ -145,6 +145,20 @@ const Header = () => {
                     onClick={handleDrawerToggle}>
                     <ListItemText primary="Comments" />
                   </ListItemButton>
+                  <ListItemButton
+                    sx={{ pl: 4 }}
+                    component={Link}
+                    to="/delivery-types"
+                    onClick={handleDrawerToggle}>
+                    <ListItemText primary="Types" />
+                  </ListItemButton>
+                  <ListItemButton
+                    sx={{ pl: 4 }}
+                    component={Link}
+                    to="/delivery-user"
+                    onClick={handleDrawerToggle}>
+                    <ListItemText primary="User" />
+                  </ListItemButton>
                 </List>
               </Collapse>
               <ListItemButton

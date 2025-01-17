@@ -60,11 +60,8 @@ const UniversalAddForm: React.FC<UniversalAddFormProps> = ({
     try {
       const response = await onSubmit(formData);
 
-      setSuccessMessage(`Пользователь ${response.status} успешно создан!`);
-      triggerSnackbar(
-        `Пользователь ${response.status} успешно создан!`,
-        "success",
-      );
+      setSuccessMessage(`${response.status} успешно создан!`);
+      triggerSnackbar(`${response.status} успешно создан!`, "success");
 
       // Сброс формы
       setFormData(() => {
@@ -75,6 +72,8 @@ const UniversalAddForm: React.FC<UniversalAddFormProps> = ({
         return resetState;
       });
     } catch (err: any) {
+      console.log(err);
+
       // Обработка ошибок с типом unknown
       if (
         err &&
@@ -87,7 +86,7 @@ const UniversalAddForm: React.FC<UniversalAddFormProps> = ({
         setError((err.data as any).message);
         triggerSnackbar((err.data as any).message, "error");
       } else {
-        setError("Ошибка при создании пользователя");
+        setError("Ошибка при создании");
         triggerSnackbar("Произошла неизвестная ошибка", "error");
       }
     }

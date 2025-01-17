@@ -17,6 +17,13 @@ import CompanySinglePage from "./pages/Delivery/Company/CompanySinglePage";
 import AddNewCompany from "./pages/Delivery/Company/AddNewCompany";
 import GetAllComments from "./pages/Delivery/Comments/GetAllComments";
 import CommentSinglePage from "./pages/Delivery/Comments/CommentSinglePage";
+import Types from "./pages/Delivery/Types/Types";
+import TypeList from "./pages/Delivery/Types/TypeList";
+import AddTypeForm from "./pages/Delivery/Types/AddTypeForm";
+import TypeDetails from "./pages/Delivery/Types/TypeDetails";
+import User from "./pages/Delivery/User/User";
+import UserDetails from "./pages/Delivery/User/UserDetails";
+import UserTable from "./pages/Delivery/User/UserTable";
 
 const App = () => {
   return (
@@ -40,6 +47,15 @@ const App = () => {
           <Route path="delivery-comments" element={<Comments />}>
             <Route index element={<GetAllComments />} />
             <Route path=":id" element={<CommentSinglePage />} />
+          </Route>
+          <Route path="delivery-types" element={<Types />}>
+            <Route index element={<TypeList />} />
+            <Route path=":id" element={<TypeDetails />} />
+            <Route path="add-newTypes" element={<AddTypeForm />} />
+          </Route>
+          <Route path="delivery-user" element={<User />}>
+            <Route index element={<UserTable />} />
+            <Route path=":id" element={<UserDetails />} />
           </Route>
         </Route>
 

@@ -127,6 +127,61 @@ export const deliverySlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Comments"],
     }),
+    // Get all types
+    getAllTypes: builder.query({
+      query: () => "/delivery/root/type",
+      providesTags: ["Type"],
+    }),
+    addNewType: builder.mutation({
+      query: (data) => ({
+        url: "/delivery/root/type",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Type"],
+    }),
+    updateType: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/delivery/root/type/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Type"],
+    }),
+    deleteType: builder.mutation({
+      query: (id) => ({
+        url: `/delivery/root/type/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Type"],
+    }),
+    // user
+    getAllDeliveryUsers: builder.query({
+      query: ({ page = 1, limit = 15, search = "" }) => ({
+        url: "/delivery/root/user",
+        params: { page, limit, search },
+      }),
+      providesTags: ["User"],
+    }),
+    getDeliveryUser: builder.query({
+      query: (id) => `/delivery/root/user/${id}`,
+      providesTags: ["User"],
+    }),
+    updateDeliveryUser: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/delivery/root/user/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["User"],
+    }),
+    deleteDeliveryUser: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/delivery/root/user/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["User"],
+    }),
   }),
 });
 
@@ -150,4 +205,14 @@ export const {
   useDeleteOneCommentMutation,
   useUpdateOneReplyMutation,
   useDeleteOneReplyMutation,
+  // types
+  useGetAllTypesQuery,
+  useAddNewTypeMutation,
+  useUpdateTypeMutation,
+  useDeleteTypeMutation,
+  // user
+  useGetAllDeliveryUsersQuery,
+  useGetDeliveryUserQuery,
+  useUpdateDeliveryUserMutation,
+  useDeleteDeliveryUserMutation,
 } = deliverySlice;
