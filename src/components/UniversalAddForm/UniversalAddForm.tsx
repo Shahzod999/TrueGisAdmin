@@ -60,8 +60,13 @@ const UniversalAddForm: React.FC<UniversalAddFormProps> = ({
     try {
       const response = await onSubmit(formData);
 
-      setSuccessMessage(`${response.status} успешно создан!`);
-      triggerSnackbar(`${response.status} успешно создан!`, "success");
+      setSuccessMessage(
+        `${response?.status} успешно создан!` || "успешно создан!",
+      );
+      triggerSnackbar(
+        `${response?.status} успешно создан!` || "успешно создан!",
+        "success",
+      );
 
       // Сброс формы
       setFormData(() => {

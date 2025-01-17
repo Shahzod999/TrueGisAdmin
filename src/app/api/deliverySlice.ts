@@ -212,6 +212,37 @@ export const deliverySlice = apiSlice.injectEndpoints({
         method: "DELETE",
       }),
     }),
+    // category
+    getAllCategory: builder.query({
+      query: ({ page }) => ({
+        url: "/delivery/root/category",
+        params: { page },
+      }),
+      providesTags: ["Type"],
+    }),
+    addNewCategory: builder.mutation({
+      query: ({ data, id }) => ({
+        url: `/delivery/root/category/${id}`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Type"],
+    }),
+    updateCategory: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/delivery/root/category/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Type"],
+    }),
+    deleteCategory: builder.mutation({
+      query: (id) => ({
+        url: `/delivery/root/category/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Type"],
+    }),
   }),
 });
 
@@ -250,4 +281,9 @@ export const {
   useGetSingleUpdateCompanyQuery,
   usePutUpdateCompanyMutation,
   useDeleteUpdateCompanyMutation,
+  // category
+  useGetAllCategoryQuery,
+  useAddNewCategoryMutation,
+  useDeleteCategoryMutation,
+  useUpdateCategoryMutation,
 } = deliverySlice;

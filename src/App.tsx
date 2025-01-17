@@ -5,7 +5,6 @@ import Home from "./pages/Home/Home";
 import AddUser from "./pages/Home/AddUser";
 import GetAllData from "./pages/Home/GetAllData";
 import SinglePage from "./pages/Home/SinglePage/SinglePage";
-
 import Company from "./pages/Delivery/Company/Company";
 import Admin from "./pages/Delivery/Admin/Admin";
 import Comments from "./pages/Delivery/Comments/Comments";
@@ -27,6 +26,10 @@ import UserTable from "./pages/Delivery/User/UserTable";
 import UpdateCompany from "./pages/Delivery/UpdateCompany/UpdateCompany";
 import UpdateCompanySinglePage from "./pages/Delivery/UpdateCompany/UpdateCompanySinglePage";
 import GetAllUpdateCompany from "./pages/Delivery/UpdateCompany/GetAllUpdateCompany";
+import Categories from "./pages/Delivery/Categories/Categories";
+import AddNewCategory from "./pages/Delivery/Categories/AddNewCategory";
+import CategoryList from "./pages/Delivery/Categories/CategoryList";
+import CategoryDetails from "./pages/Delivery/Categories/CategoryDetails";
 
 const App = () => {
   return (
@@ -63,6 +66,11 @@ const App = () => {
           <Route path="delivery-user" element={<User />}>
             <Route index element={<UserTable />} />
             <Route path=":id" element={<UserDetails />} />
+          </Route>
+          <Route path="delivery-categories" element={<Categories />}>
+            <Route index element={<CategoryList />} />
+            <Route path=":id" element={<CategoryDetails />} />
+            <Route path="add-categories" element={<AddNewCategory />} />
           </Route>
         </Route>
 

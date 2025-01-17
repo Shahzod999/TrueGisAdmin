@@ -173,6 +173,13 @@ const Header = () => {
                   <ListItemButton
                     sx={{ pl: 4 }}
                     component={Link}
+                    to="/delivery-categories"
+                    onClick={handleDrawerToggle}>
+                    <ListItemText primary="Category" />
+                  </ListItemButton>
+                  <ListItemButton
+                    sx={{ pl: 4 }}
+                    component={Link}
                     to="/delivery-user"
                     onClick={handleDrawerToggle}>
                     <ListItemText primary="User" />
