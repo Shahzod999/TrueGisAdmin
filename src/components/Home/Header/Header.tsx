@@ -109,11 +109,12 @@ const Header = () => {
             <Typography
               variant="h6"
               sx={{
+                cursor: "pointer",
                 fontWeight: "bold",
                 textAlign: "center",
                 marginBottom: 2,
-              }}>
-              Меню
+              }} onClick={handleDrawerToggle}>
+              Навигация
             </Typography>
             <List>
               <ListItemButton
