@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import {
   useAddNewProductsMutation,
   useGetAllCategoryQuery,
@@ -8,12 +7,13 @@ import { useEffect, useState } from "react";
 
 import CategorySelect from "../../../components/CategorySelect/CategorySelect";
 import Discount from "../../../components/Discount/Discount";
+import Loading from "../../../components/Loading";
+import { Box } from "@mui/material";
 
 const AddNewProducts = () => {
   const [addNewProduct, { isLoading }] = useAddNewProductsMutation();
   const { data: categoryData, isLoading: categoryLoading } =
     useGetAllCategoryQuery({ page: 1 });
-  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [discount, setDiscount] = useState({
     price: 0,
@@ -41,14 +41,15 @@ const AddNewProducts = () => {
     { name: "description", label: "Описание" },
     { name: "price", label: "Цена", required: true, type: "number" },
     { name: "weight", label: "Вес", type: "text" },
-    { name: "currency", label: "Валюта", required: true },
+    { name: "currency", label: "USD", required: true },
     { name: "active", label: "Активный", type: "checkbox", position: "end" },
   ];
 
   const handleSubmit = async (data: Record<string, string>) => {
     const formattedData = {
       ...data,
-      price: parseFloat(data.price),
+      image: "//",
+      price: data?.price,
       category_id: selectedCategory,
       discount: discount.price ? discount : undefined,
       active: data.active === "true",
@@ -56,21 +57,23 @@ const AddNewProducts = () => {
 
     console.log(formattedData);
 
-    try {
-      await addNewProduct({
-        category_id: selectedCategory,
-        data: formattedData,
-      }).unwrap();
-      navigate("/products");
-    } catch (error) {
-      console.error("Ошибка при добавлении продукта", error);
-    }
+    await addNewProduct({
+      category_id: selectedCategory,
+      data: formattedData,
+    }).unwrap();
   };
 
-  if (categoryLoading) return <p>Загрузка категорий...</p>;
+  if (categoryLoading) return <Loading />;
 
   return (
-    <>
+    <Box
+      display="flex"
+      gap={4}
+      flexWrap={"wrap"}
+      justifyContent={"center"}
+      alignItems={"center"}
+      maxWidth={"80%"}
+      margin={"0 auto"}>
       <UniversalAddForm
         title="Добавить новый продукт"
         fields={fields}
@@ -78,13 +81,16 @@ const AddNewProducts = () => {
         isLoading={isLoading}
       />
 
-      <Discount discount={discount} handleDiscount={handleDiscountChange} />
-      <CategorySelect
-        categoryData={categoryData}
-        selectedCategory={selectedCategory}
-        handleCategoryChange={handleCategoryChange}
-      />
-    </>
+      <Box>
+        <CategorySelect
+          categoryData={categoryData}
+          selectedCategory={selectedCategory}
+          handleCategoryChange={handleCategoryChange}
+        />
+
+        <Discount discount={discount} handleDiscount={handleDiscountChange} />
+      </Box>
+    </Box>
   );
 };
 

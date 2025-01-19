@@ -24,8 +24,10 @@ const ProductDetails = () => {
     useGetAllCategoryQuery({
       page: 1,
     });
-  const [updateProduct] = useUpdateProductsMutation();
-  const [deleteProduct] = useDeleteProductsMutation();
+  const [updateProduct, { isLoading: updateLoading }] =
+    useUpdateProductsMutation();
+  const [deleteProduct, { isLoading: deleteLoading }] =
+    useDeleteProductsMutation();
 
   const [discount, setDiscount] = useState({
     price: data?.data?.discount?.price,
@@ -88,11 +90,21 @@ const ProductDetails = () => {
   const fields = [
     { name: "name", label: "Название" },
     { name: "description", label: "Описание" },
-    { name: "price", label: "Цена" },
-    { name: "weight", label: "Вес" },
+    { name: "price", label: "Цена", type: "number" },
+    { name: "weight", label: "Вес", type: "number" },
     { name: "active", label: "Активный", type: "checkbox" },
-    { name: "created_at", label: "Дата создания" },
-    { name: "updated_at", label: "Дата обновления" },
+    {
+      name: "created_at",
+      label: "Дата создания",
+      type: "text",
+      editable: false,
+    },
+    {
+      name: "updated_at",
+      label: "Дата обновления",
+      type: "text",
+      editable: false,
+    },
   ];
 
   const renderImages = () => {
@@ -105,6 +117,7 @@ const ProductDetails = () => {
   if (isLoading || categoryLoading) return <Loading />;
   return (
     <>
+      {updateLoading || (deleteLoading && <Loading />)}
       {renderImages()}
       <Box
         display="flex"
@@ -123,62 +136,12 @@ const ProductDetails = () => {
           fields={fields}
         />
         <Box>
-          <Discount discount={discount} handleDiscount={handleDiscount} />
-          {/* <Typography variant="h6" sx={{ marginBottom: 3 }}>
-            Скидка
-          </Typography>
-          <TextField
-            name="price"
-            label="Цена со скидкой"
-            fullWidth
-            value={discount.price || ""}
-            InputLabelProps={{ shrink: true }}
-            sx={{ marginBottom: 3 }}
-            onChange={handleDiscount}
-          />
-          <TextField
-            name="start_date"
-            label="Дата начала скидки"
-            type="date"
-            fullWidth
-            value={discount.start_date || ""}
-            InputLabelProps={{ shrink: true }}
-            sx={{ marginBottom: 3 }}
-            onChange={handleDiscount}
-          />
-          <TextField
-            name="end_date"
-            label="Дата окончания скидки"
-            type="date"
-            fullWidth
-            value={discount.end_date || ""}
-            InputLabelProps={{ shrink: true }}
-            sx={{ marginBottom: 3 }}
-            onChange={handleDiscount}
-          /> */}
-
           <CategorySelect
             categoryData={categoryData}
             selectedCategory={selectedCategory}
             handleCategoryChange={handleCategoryChange}
           />
-          {/* <Typography variant="h6" sx={{ marginBottom: 3 }}>
-            Категория
-          </Typography>
-          <TextField
-            select
-            label="Категория"
-            fullWidth
-            value={selectedCategory}
-            onChange={handleCategoryChange}
-            InputLabelProps={{ shrink: true }}
-            sx={{ marginBottom: 3 }}>
-            {categoryData?.data?.map((category: CategoryType) => (
-              <MenuItem key={category._id} value={category._id}>
-                {category.name}
-              </MenuItem>
-            ))}
-          </TextField> */}
+          <Discount discount={discount} handleDiscount={handleDiscount} />
         </Box>
       </Box>
     </>

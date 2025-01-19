@@ -18,7 +18,7 @@ interface UniversalDetailsProps {
   fetchData: (id: string) => Promise<Record<string, any>>;
   updateData: (id: string, data: Record<string, any>) => Promise<void>;
   deleteData: (id: string) => Promise<void>;
-  fields: { name: string; label: string; type?: string }[];
+  fields: { name: string; label: string; type?: string; editable?: boolean }[];
   redirectAfterDelete?: string;
 }
 
@@ -119,7 +119,6 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
       triggerSnackbar("Данные успешно обновлены!", "success");
       setIsEditing(false);
     } catch (error: any) {
-
       triggerSnackbar(
         error.data.error_name || "Не удалось обновить данные",
         "error",
@@ -179,7 +178,7 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
                   name={field.name}
                   checked={formData[field.name] || false}
                   onChange={handleInputChange}
-                  disabled={!isEditing}
+                  disabled={!isEditing || field.editable}
                 />
               }
               label={field.label}
@@ -195,7 +194,7 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
               margin="normal"
               type={field.type || "text"}
               InputProps={{
-                readOnly: !isEditing,
+                readOnly: !isEditing || field.editable,
               }}
             />
           ),
