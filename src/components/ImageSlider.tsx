@@ -26,8 +26,6 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ images }) => {
     return image.startsWith("http") ? image : `https://dev.admin13.uz${image}`;
   };
 
-  console.log("Unique Images for slider:", uniqueImages);
-
   return (
     <div style={{ maxWidth: "200px", margin: "0 auto" }}>
       <Slider {...settings}>

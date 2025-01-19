@@ -113,7 +113,8 @@ const Header = () => {
                 fontWeight: "bold",
                 textAlign: "center",
                 marginBottom: 2,
-              }} onClick={handleDrawerToggle}>
+              }}
+              onClick={handleDrawerToggle}>
               Навигация
             </Typography>
             <List>
@@ -184,6 +185,13 @@ const Header = () => {
                     to="/delivery-user"
                     onClick={handleDrawerToggle}>
                     <ListItemText primary="User" />
+                  </ListItemButton>
+                  <ListItemButton
+                    sx={{ pl: 4 }}
+                    component={Link}
+                    to="/delivery-products"
+                    onClick={handleDrawerToggle}>
+                    <ListItemText primary="Products" />
                   </ListItemButton>
                 </List>
               </Collapse>

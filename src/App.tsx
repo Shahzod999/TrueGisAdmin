@@ -30,6 +30,10 @@ import Categories from "./pages/Delivery/Categories/Categories";
 import AddNewCategory from "./pages/Delivery/Categories/AddNewCategory";
 import CategoryList from "./pages/Delivery/Categories/CategoryList";
 import CategoryDetails from "./pages/Delivery/Categories/CategoryDetails";
+import Products from "./pages/Delivery/Products/Products";
+import ProductsList from "./pages/Delivery/Products/ProductsList";
+import ProductsDetails from "./pages/Delivery/Products/ProductsDetails";
+import AddNewProducts from "./pages/Delivery/Products/AddNewProducts";
 
 const App = () => {
   return (
@@ -71,6 +75,11 @@ const App = () => {
             <Route index element={<CategoryList />} />
             <Route path=":id" element={<CategoryDetails />} />
             <Route path="add-categories" element={<AddNewCategory />} />
+          </Route>
+          <Route path="delivery-products" element={<Products />}>
+            <Route index element={<ProductsList />} />
+            <Route path=":id" element={<ProductsDetails />} />
+            <Route path="add-newProduct" element={<AddNewProducts />} />
           </Route>
         </Route>
 

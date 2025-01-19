@@ -6,10 +6,11 @@ type FormData = Record<string, string>;
 const AddNewCategory = () => {
   const [addNewCategory, { isLoading }] = useAddNewCategoryMutation();
 
+  // мы тут
   const handleSubmit = async (data: FormData) => {
     await addNewCategory({
       data,
-      id: "673a89577d6d20cabf0ad3d5",
+      companyID: "673a89577d6d20cabf0ad3d5",
     }).unwrap();
   };
 

@@ -21,6 +21,8 @@ export const apiSlice = createApi({
     "Comments",
     "Type",
     "UPDATECOMPANY",
+    "Category",
+    "Products",
   ],
   endpoints: () => ({}),
 });

@@ -1,5 +1,9 @@
 import { CompanyType } from "../types/companyType";
 import { getAdminType } from "../types/deliveryType";
+import {
+  ProductsTypesAll,
+  SingleProductTypesAll,
+} from "../types/productsTypes";
 import { apiSlice } from "./apiSlice";
 
 export const deliverySlice = apiSlice.injectEndpoints({
@@ -205,12 +209,14 @@ export const deliverySlice = apiSlice.injectEndpoints({
         method: "PUT",
         body: data,
       }),
+      invalidatesTags: ["UPDATECOMPANY"],
     }),
     deleteUpdateCompany: builder.mutation({
       query: (id) => ({
         url: `/delivery/root/company/update-request/${id}`,
         method: "DELETE",
       }),
+      invalidatesTags: ["UPDATECOMPANY"],
     }),
     // category
     getAllCategory: builder.query({
@@ -218,15 +224,19 @@ export const deliverySlice = apiSlice.injectEndpoints({
         url: "/delivery/root/category",
         params: { page },
       }),
-      providesTags: ["Type"],
+      providesTags: ["Category"],
     }),
     addNewCategory: builder.mutation({
-      query: ({ data, id }) => ({
-        url: `/delivery/root/category/${id}`,
+      query: ({ data, companyID }) => ({
+        url: `/delivery/root/category/${companyID}`,
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Type"],
+      invalidatesTags: ["Category"],
+    }),
+    getSingleCategory: builder.query({
+      query: (id) => `/delivery/root/category/${id}`,
+      providesTags: ["Category"],
     }),
     updateCategory: builder.mutation({
       query: ({ id, data }) => ({
@@ -234,14 +244,58 @@ export const deliverySlice = apiSlice.injectEndpoints({
         method: "PUT",
         body: data,
       }),
-      invalidatesTags: ["Type"],
+      invalidatesTags: ["Category"],
     }),
     deleteCategory: builder.mutation({
       query: (id) => ({
         url: `/delivery/root/category/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Type"],
+      invalidatesTags: ["Category"],
+    }),
+    // products
+    getAllProducts: builder.query<
+      ProductsTypesAll,
+      { page: string; limit: string }
+    >({
+      query: ({ page, limit = 15 }) => ({
+        url: "/delivery/root/product",
+        params: {
+          page,
+          limit,
+        },
+      }),
+      providesTags: ["Products"],
+    }),
+    getSingleProducts: builder.query<
+      SingleProductTypesAll,
+      { id: string | undefined }
+    >({
+      query: ({ id }) => `/delivery/root/product/${id}`,
+      providesTags: ["Products"],
+    }),
+    updateProducts: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/delivery/root/product/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Products"],
+    }),
+    deleteProducts: builder.mutation({
+      query: ({ id }) => ({
+        url: `/delivery/root/product/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Products"],
+    }),
+    addNewProducts: builder.mutation({
+      query: ({ category_id, data }) => ({
+        url: `/delivery/root/product/${category_id}`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Products"],
     }),
   }),
 });
@@ -286,4 +340,11 @@ export const {
   useAddNewCategoryMutation,
   useDeleteCategoryMutation,
   useUpdateCategoryMutation,
+  useGetSingleCategoryQuery,
+  // products
+  useGetAllProductsQuery,
+  useGetSingleProductsQuery,
+  useUpdateProductsMutation,
+  useDeleteProductsMutation,
+  useAddNewProductsMutation,
 } = deliverySlice;

@@ -72,8 +72,7 @@ const CompanySinglePage = () => {
         ...data.data.photos_sample.map((photo: any) => photo.photo_url),
       );
     }
-    console.log(images);
-    
+
     return images.length ? <ImageSlider images={images} /> : null;
   };
 

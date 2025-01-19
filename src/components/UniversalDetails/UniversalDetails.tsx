@@ -113,13 +113,17 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
         setNestedValue(updatedData, field.name, formData[field.name]);
       });
 
-      const res  = await updateData(id, updatedData);
+      const res = await updateData(id, updatedData);
       console.log(res);
-      
+
       triggerSnackbar("Данные успешно обновлены!", "success");
       setIsEditing(false);
-    } catch (error) {
-      triggerSnackbar("Не удалось обновить данные", "error");
+    } catch (error: any) {
+
+      triggerSnackbar(
+        error.data.error_name || "Не удалось обновить данные",
+        "error",
+      );
     } finally {
       setIsUpdating(false);
     }
@@ -166,24 +170,21 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
         {title}
       </Typography>
       <Box>
-        {fields.map((field) => {
-          if (field.type === "checkbox") {
-            return (
-              <FormControlLabel
-                key={field.name}
-                control={
-                  <Checkbox
-                    name={field.name}
-                    checked={formData[field.name] || false}
-                    onChange={handleInputChange}
-                    disabled={!isEditing}
-                  />
-                }
-                label={field.label}
-              />
-            );
-          }
-          return (
+        {fields.map((field) =>
+          field.type === "checkbox" ? (
+            <FormControlLabel
+              key={field.name}
+              control={
+                <Checkbox
+                  name={field.name}
+                  checked={formData[field.name] || false}
+                  onChange={handleInputChange}
+                  disabled={!isEditing}
+                />
+              }
+              label={field.label}
+            />
+          ) : (
             <TextField
               key={field.name}
               fullWidth
@@ -197,8 +198,8 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
                 readOnly: !isEditing,
               }}
             />
-          );
-        })}
+          ),
+        )}
         <Box sx={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
           {!isEditing ? (
             <Button
