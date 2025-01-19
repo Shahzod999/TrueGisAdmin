@@ -24,6 +24,7 @@ const ProductDetails = () => {
     useGetAllCategoryQuery({
       page: 1,
     });
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [updateProduct, { isLoading: updateLoading }] =
     useUpdateProductsMutation();
   const [deleteProduct, { isLoading: deleteLoading }] =
@@ -35,8 +36,6 @@ const ProductDetails = () => {
     end_date: data?.data?.discount?.end_date,
   });
 
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-
   useEffect(() => {
     if (data?.data?.category_id && categoryData?.data) {
       const category = categoryData.data.find(
@@ -45,6 +44,9 @@ const ProductDetails = () => {
       setSelectedCategory(category?._id || "");
     }
   }, [data, categoryData]);
+
+  console.log(data);
+  
 
   const fetchData = async () => {
     if (!data) throw new Error("Данные отсутствуют");
@@ -74,8 +76,7 @@ const ProductDetails = () => {
 
   const deleteData = async (id: string) => {
     await deleteProduct({ id });
-
-    navigate(-1); // Перенаправление после удаления
+    navigate(-1);
   };
 
   const handleDiscount = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,6 +86,7 @@ const ProductDetails = () => {
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedCategory(e.target.value);
+    
   };
 
   const fields = [
@@ -97,13 +99,13 @@ const ProductDetails = () => {
       name: "created_at",
       label: "Дата создания",
       type: "text",
-      editable: false,
+      noteditable: true,
     },
     {
       name: "updated_at",
       label: "Дата обновления",
       type: "text",
-      editable: false,
+      noteditable: true,
     },
   ];
 

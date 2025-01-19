@@ -25,7 +25,7 @@ export const deliverySlice = apiSlice.injectEndpoints({
       invalidatesTags: ["DeliverAdmin"],
     }),
     deleteSingleAdmin: builder.mutation({
-      query: (id) => ({
+      query: ({ id }) => ({
         url: `/delivery/root/admin/${id}`,
         method: "DELETE",
       }),

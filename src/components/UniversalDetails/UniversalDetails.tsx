@@ -18,7 +18,12 @@ interface UniversalDetailsProps {
   fetchData: (id: string) => Promise<Record<string, any>>;
   updateData: (id: string, data: Record<string, any>) => Promise<void>;
   deleteData: (id: string) => Promise<void>;
-  fields: { name: string; label: string; type?: string; editable?: boolean }[];
+  fields: {
+    name: string;
+    label: string;
+    type?: string;
+    noteditable?: boolean;
+  }[];
   redirectAfterDelete?: string;
 }
 
@@ -95,7 +100,9 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
     };
 
     fetchDetails();
-  }, [id, fetchData, fields, triggerSnackbar]);
+  }, [id]);
+
+  //, fetchData, fields, triggerSnackbar
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -178,7 +185,7 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
                   name={field.name}
                   checked={formData[field.name] || false}
                   onChange={handleInputChange}
-                  disabled={!isEditing || field.editable}
+                  disabled={!isEditing || field.noteditable}
                 />
               }
               label={field.label}
@@ -194,7 +201,7 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
               margin="normal"
               type={field.type || "text"}
               InputProps={{
-                readOnly: !isEditing || field.editable,
+                readOnly: !isEditing || field.noteditable,
               }}
             />
           ),

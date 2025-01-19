@@ -14,7 +14,7 @@ const GetAllAdmin = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteSingleAdmin(id).unwrap();
+      await deleteSingleAdmin({ id }).unwrap();
       triggerSnackbar("Пользователь успешно удален", "success");
     } catch (error) {
       triggerSnackbar("Произошла ошибка при удалении", "error");

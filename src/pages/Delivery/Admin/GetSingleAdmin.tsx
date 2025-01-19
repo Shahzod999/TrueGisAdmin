@@ -33,7 +33,7 @@ const GetSingleAdmin = () => {
 
   const deleteData = async (id: string) => {
     await deleteSingleAdmin({ id }).unwrap();
-    navigate("/delivery/admin");
+    navigate(-1);
   };
 
   const fields = [
