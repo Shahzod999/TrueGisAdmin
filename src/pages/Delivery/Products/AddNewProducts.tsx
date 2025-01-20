@@ -13,7 +13,6 @@ import UniversalImgUploader from "../../../components/UniversalImgUploader/Unive
 const AddNewProducts = () => {
   const [imageUploaded, setImageUploaded] = useState<string[]>([]);
 
-  
   const [addNewProduct, { isLoading }] = useAddNewProductsMutation();
   const { data: categoryData, isLoading: categoryLoading } =
     useGetAllCategoryQuery({ page: 1 });
@@ -49,6 +48,11 @@ const AddNewProducts = () => {
   ];
 
   const handleSubmit = async (data: Record<string, string>) => {
+    if (imageUploaded.length == 0) {
+      throw {
+        data: { message: "Вы забыли загрузить фотографию" },
+      };
+    }
     const formattedData = {
       ...data,
       image: imageUploaded[0] || "",
@@ -64,6 +68,7 @@ const AddNewProducts = () => {
       category_id: selectedCategory,
       data: formattedData,
     }).unwrap();
+    setImageUploaded([]);
   };
 
   if (categoryLoading) return <Loading />;
@@ -77,7 +82,7 @@ const AddNewProducts = () => {
       alignItems={"center"}
       maxWidth={"80%"}
       margin={"0 auto"}>
-      <UniversalImgUploader setImageUploaded={setImageUploaded} maxLenght={1}/>
+      <UniversalImgUploader setImageUploaded={setImageUploaded} maxLenght={1} />
 
       <UniversalAddForm
         title="Добавить новый продукт"

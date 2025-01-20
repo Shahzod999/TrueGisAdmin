@@ -3,6 +3,7 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import useUploadImage from "../../app/hook/useUploadImage";
 import { useRef, useState } from "react";
 import StandardImageList from "./StandardImageList";
+import useSnackbar from "../../app/hook/callSnackBar";
 
 export interface imgUploadedType {
   status: string;
@@ -16,6 +17,7 @@ interface imgProps {
 }
 
 const UniversalImgUploader = ({ setImageUploaded, maxLenght }: imgProps) => {
+  const triggerSnackbar = useSnackbar();
   const { handleImageUpload, isLoading, isError, isSuccess } = useUploadImage();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [imageQueue, setImageQueue] = useState<File[]>([]);
@@ -26,7 +28,11 @@ const UniversalImgUploader = ({ setImageUploaded, maxLenght }: imgProps) => {
       const filesArray = Array.from(e.target.files);
 
       if (imageQueue.length + filesArray.length > maxLenght) {
-        alert(`Вы можете загрузить не более ${maxLenght} изображений.`);
+        triggerSnackbar(
+          `Вы можете загрузить не более ${maxLenght} изображений.`,
+          "error",
+        );
+
         return;
       }
 
