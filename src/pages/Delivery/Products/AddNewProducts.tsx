@@ -11,10 +11,9 @@ import { Box } from "@mui/material";
 import UniversalImgUploader from "../../../components/UniversalImgUploader/UniversalImgUploader";
 
 const AddNewProducts = () => {
-  const [imageUploaded, setImageUploaded] = useState<string | null>("");
+  const [imageUploaded, setImageUploaded] = useState<string[]>([]);
 
-  console.log(imageUploaded, "mi tut");
-
+  
   const [addNewProduct, { isLoading }] = useAddNewProductsMutation();
   const { data: categoryData, isLoading: categoryLoading } =
     useGetAllCategoryQuery({ page: 1 });
@@ -52,7 +51,7 @@ const AddNewProducts = () => {
   const handleSubmit = async (data: Record<string, string>) => {
     const formattedData = {
       ...data,
-      image: "//",
+      image: imageUploaded[0] || "",
       price: data?.price,
       category_id: selectedCategory,
       discount: discount.price ? discount : undefined,
@@ -78,7 +77,7 @@ const AddNewProducts = () => {
       alignItems={"center"}
       maxWidth={"80%"}
       margin={"0 auto"}>
-      <UniversalImgUploader setImageUploaded={setImageUploaded} />
+      <UniversalImgUploader setImageUploaded={setImageUploaded} maxLenght={1}/>
 
       <UniversalAddForm
         title="Добавить новый продукт"

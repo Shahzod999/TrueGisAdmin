@@ -11,10 +11,11 @@ export interface imgUploadedType {
 }
 
 interface imgProps {
-  setImageUploaded: (file: string | null) => void;
+  setImageUploaded: React.Dispatch<React.SetStateAction<string[]>>;
+  maxLenght: number;
 }
 
-const UniversalImgUploader = ({ setImageUploaded }: imgProps) => {
+const UniversalImgUploader = ({ setImageUploaded, maxLenght }: imgProps) => {
   const { handleImageUpload, isLoading, isError, isSuccess } = useUploadImage();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [imageQueue, setImageQueue] = useState<File[]>([]);
@@ -23,6 +24,12 @@ const UniversalImgUploader = ({ setImageUploaded }: imgProps) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
+
+      if (imageQueue.length + filesArray.length > maxLenght) {
+        alert(`Вы можете загрузить не более ${maxLenght} изображений.`);
+        return;
+      }
+
       const imageUrls = filesArray.map((file) => URL.createObjectURL(file));
 
       setPreviewImages((prev) => [...prev, ...imageUrls]);
@@ -35,7 +42,7 @@ const UniversalImgUploader = ({ setImageUploaded }: imgProps) => {
       try {
         const img = (await handleImageUpload(file)) as imgUploadedType;
         console.log(img);
-        setImageUploaded(img.image);
+        setImageUploaded((prev) => [...prev, img.image]);
       } catch (error) {
         console.log(error);
       }
@@ -44,41 +51,41 @@ const UniversalImgUploader = ({ setImageUploaded }: imgProps) => {
   };
 
   return (
-    <Box
-      sx={{
-        padding: "2rem",
-        textAlign: "center",
-        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-        backgroundColor: "#fff",
-      }}>
-      <Typography variant="h6">Добавьте Фотографию</Typography>
-      <FormLabel
-        sx={{ cursor: "pointer" }}
-        onClick={() => fileInputRef.current?.click()}>
+    <FormLabel sx={{ cursor: "pointer" }}>
+      <Box
+        sx={{
+          padding: "2rem",
+          textAlign: "center",
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+          backgroundColor: "#fff",
+        }}>
+        <Typography variant="h6">
+          Добавьте Фотографию (макс. {maxLenght})
+        </Typography>
         <AddPhotoAlternateIcon sx={{ fontSize: 50, cursor: "pointer" }} />
-      </FormLabel>
-      <input
-        ref={fileInputRef}
-        type="file"
-        multiple
-        style={{ display: "none" }}
-        onChange={handleFileChange}
-      />
+        <input
+          ref={fileInputRef}
+          type="file"
+          multiple
+          style={{ display: "none" }}
+          onChange={handleFileChange}
+        />
 
-      <StandardImageList imageData={previewImages} />
+        <StandardImageList imageData={previewImages} />
 
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleUploadImages}
-        disabled={isLoading || imageQueue.length === 0}>
-        {isLoading ? "Загрузка..." : "Загрузить"}
-      </Button>
-      {isError && <Typography color="error">Ошибка загрузки</Typography>}
-      {isSuccess && (
-        <Typography color="success">Изображение загружено!</Typography>
-      )}
-    </Box>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleUploadImages}
+          disabled={isLoading || imageQueue.length === 0}>
+          {isLoading ? "Загрузка..." : "Загрузить"}
+        </Button>
+        {isError && <Typography color="error">Ошибка загрузки</Typography>}
+        {isSuccess && (
+          <Typography color="success">Изображение загружено!</Typography>
+        )}
+      </Box>
+    </FormLabel>
   );
 };
 
