@@ -4,13 +4,17 @@ import {
 } from "../../../app/api/deliverySlice";
 import UniversalAddForm from "../../../components/UniversalAddForm/UniversalAddForm";
 import { useEffect, useState } from "react";
-
 import CategorySelect from "../../../components/CategorySelect/CategorySelect";
 import Discount from "../../../components/Discount/Discount";
 import Loading from "../../../components/Loading";
 import { Box } from "@mui/material";
+import UniversalImgUploader from "../../../components/UniversalImgUploader/UniversalImgUploader";
 
 const AddNewProducts = () => {
+  const [imageUploaded, setImageUploaded] = useState<string | null>("");
+
+  console.log(imageUploaded, "mi tut");
+
   const [addNewProduct, { isLoading }] = useAddNewProductsMutation();
   const { data: categoryData, isLoading: categoryLoading } =
     useGetAllCategoryQuery({ page: 1 });
@@ -74,6 +78,8 @@ const AddNewProducts = () => {
       alignItems={"center"}
       maxWidth={"80%"}
       margin={"0 auto"}>
+      <UniversalImgUploader setImageUploaded={setImageUploaded} />
+
       <UniversalAddForm
         title="Добавить новый продукт"
         fields={fields}
