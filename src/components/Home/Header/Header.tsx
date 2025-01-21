@@ -55,6 +55,15 @@ const Header = () => {
           justifyContent: "space-between",
           alignItems: "center",
         }}>
+        <IconButton
+          edge="start"
+          color="inherit"
+          onClick={handleDrawerToggle}
+          sx={{
+            marginRight: "auto",
+          }}>
+          <LuMenu />
+        </IconButton>
         <Typography
           variant="h6"
           sx={{
@@ -77,16 +86,6 @@ const Header = () => {
           onClick={() => navigate("/")}>
           TrueGis
         </Typography>
-
-        <IconButton
-          edge="start"
-          color="inherit"
-          onClick={handleDrawerToggle}
-          sx={{
-            marginLeft: "auto",
-          }}>
-          <LuMenu />
-        </IconButton>
 
         <Drawer
           anchor="left"
@@ -192,6 +191,20 @@ const Header = () => {
                     to="/delivery-products"
                     onClick={handleDrawerToggle}>
                     <ListItemText primary="Products" />
+                  </ListItemButton>
+                  <ListItemButton
+                    sx={{ pl: 4 }}
+                    component={Link}
+                    to="/delivery-report"
+                    onClick={handleDrawerToggle}>
+                    <ListItemText primary="Report" />
+                  </ListItemButton>
+                  <ListItemButton
+                    sx={{ pl: 4 }}
+                    component={Link}
+                    to="/delivery-orders"
+                    onClick={handleDrawerToggle}>
+                    <ListItemText primary="Orders" />
                   </ListItemButton>
                 </List>
               </Collapse>

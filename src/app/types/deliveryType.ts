@@ -12,3 +12,6 @@ export interface getAdminTypeData {
   created_at: number;
   deleted: boolean;
 }
+
+
+

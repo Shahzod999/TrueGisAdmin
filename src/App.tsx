@@ -34,6 +34,12 @@ import Products from "./pages/Delivery/Products/Products";
 import ProductsList from "./pages/Delivery/Products/ProductsList";
 import ProductsDetails from "./pages/Delivery/Products/ProductsDetails";
 import AddNewProducts from "./pages/Delivery/Products/AddNewProducts";
+import Report from "./pages/Delivery/Report/Report";
+import Orders from "./pages/Delivery/Orders/Orders";
+import ReportSingle from "./pages/Delivery/Report/ReportSingle";
+import ReportList from "./pages/Delivery/Report/ReportList";
+import OrderList from "./pages/Delivery/Orders/OrderList";
+import OrderSingle from "./pages/Delivery/Orders/OrderSingle";
 
 const App = () => {
   return (
@@ -80,6 +86,14 @@ const App = () => {
             <Route index element={<ProductsList />} />
             <Route path=":id" element={<ProductsDetails />} />
             <Route path="add-newProduct" element={<AddNewProducts />} />
+          </Route>
+          <Route path="delivery-report" element={<Report />}>
+            <Route index element={<ReportList />} />
+            <Route path=":id" element={<ReportSingle />} />
+          </Route>
+          <Route path="delivery-orders" element={<Orders />}>
+            <Route index element={<OrderList />} />
+            <Route path=":id" element={<OrderSingle />} />
           </Route>
         </Route>
 

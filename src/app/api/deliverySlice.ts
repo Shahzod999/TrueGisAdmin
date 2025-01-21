@@ -297,6 +297,53 @@ export const deliverySlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Products"],
     }),
+
+    // orders
+    getAllOrders: builder.query({
+      query: ({ page, limit = 16 }) => ({
+        url: "/delivery/root/order",
+        params: {
+          company_id: "324729384723489",
+          page,
+          limit,
+        },
+      }),
+      providesTags: ["Orders"],
+    }),
+    getSingleOrder: builder.query({
+      query: ({ id }) => `/delivery/root/order/${id}`,
+      providesTags: ["Orders"],
+    }),
+    deleteOrder: builder.mutation({
+      query: ({ id }) => ({
+        url: `/delivery/root/order/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Orders"],
+    }),
+    // reports
+    getAllReports: builder.query({
+      query: ({ page, limit = 15 }) => ({
+        url: "/delivery/root/report/",
+        params: {
+          page,
+          limit,
+        },
+      }),
+      providesTags: ["Reports"],
+    }),
+    getSingleReport: builder.query({
+      query: ({ id }) => `/delivery/root/report/${id}`,
+      providesTags: ["Reports"],
+    }),
+    updateReport: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/delivery/root/report/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Reports"],
+    }),
   }),
 });
 
@@ -347,4 +394,12 @@ export const {
   useUpdateProductsMutation,
   useDeleteProductsMutation,
   useAddNewProductsMutation,
+  // orders
+  useGetAllOrdersQuery,
+  useGetSingleOrderQuery,
+  useDeleteOrderMutation,
+  // reports
+  useGetAllReportsQuery,
+  useGetSingleReportQuery,
+  useUpdateReportMutation,
 } = deliverySlice;
