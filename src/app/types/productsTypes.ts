@@ -59,16 +59,16 @@ export interface DiscountType {
 }
 
 export interface CategoryType {
-  _id: string;
-  name: string;
-  image: any;
-  imageThumbnail: any;
-  company_id: string;
-  created_by: string;
-  created_at: number;
-  deleted: boolean;
-  updated_at: number;
-  updated_by: string;
-  deleted_at: number;
-  deleted_by: string;
+  _id?: string;
+  name?: string;
+  image?: any;
+  imageThumbnail?: any;
+  company_id?: string;
+  created_by?: string;
+  created_at?: number;
+  deleted?: boolean;
+  updated_at?: number;
+  updated_by?: string;
+  deleted_at?: number;
+  deleted_by?: string;
 }

@@ -12,8 +12,9 @@ import {
 } from "../../../app/api/deliverySlice";
 import { useEffect, useState } from "react";
 import { CategoryType } from "../../../app/types/productsTypes";
-import CategorySelect from "../../../components/CategorySelect/CategorySelect";
+
 import Discount from "../../../components/Discount/Discount";
+import DropDownSelect from "../../../components/DropDownSelect/DropDownSelect";
 
 const ProductDetails = () => {
   const navigate = useNavigate();
@@ -44,9 +45,6 @@ const ProductDetails = () => {
       setSelectedCategory(category?._id || "");
     }
   }, [data, categoryData]);
-
-  console.log(data);
-  
 
   const fetchData = async () => {
     if (!data) throw new Error("Данные отсутствуют");
@@ -86,7 +84,6 @@ const ProductDetails = () => {
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedCategory(e.target.value);
-    
   };
 
   const fields = [
@@ -138,10 +135,11 @@ const ProductDetails = () => {
           fields={fields}
         />
         <Box>
-          <CategorySelect
-            categoryData={categoryData}
-            selectedCategory={selectedCategory}
-            handleCategoryChange={handleCategoryChange}
+          <DropDownSelect
+            data={categoryData?.data}
+            selectedValue={selectedCategory}
+            handleChange={handleCategoryChange}
+            label="Категория"
           />
           <Discount discount={discount} handleDiscount={handleDiscount} />
         </Box>

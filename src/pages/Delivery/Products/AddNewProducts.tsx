@@ -4,15 +4,17 @@ import {
 } from "../../../app/api/deliverySlice";
 import UniversalAddForm from "../../../components/UniversalAddForm/UniversalAddForm";
 import { useEffect, useState } from "react";
-import CategorySelect from "../../../components/CategorySelect/CategorySelect";
+
 import Discount from "../../../components/Discount/Discount";
 import Loading from "../../../components/Loading";
 import { Box } from "@mui/material";
 import UniversalImgUploader from "../../../components/UniversalImgUploader/UniversalImgUploader";
+import DropDownSelect from "../../../components/DropDownSelect/DropDownSelect";
 
 const AddNewProducts = () => {
   const [imageUploaded, setImageUploaded] = useState<string[]>([]);
-
+  const [currency, setCurrency] = useState<string>("");
+  const [choosenCurrency, setChoosenCurrency] = useState<string | undefined>();
   const [addNewProduct, { isLoading }] = useAddNewProductsMutation();
   const { data: categoryData, isLoading: categoryLoading } =
     useGetAllCategoryQuery({ page: 1 });
@@ -36,14 +38,21 @@ const AddNewProducts = () => {
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedCategory(e.target.value);
+    console.log(e.target.value);
+  };
+  const handleSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let selectedId = e.target.value;
+    const newCurrency = variants.find((variant) => variant._id === selectedId);
+    setCurrency(e.target.value);
+
+    setChoosenCurrency(newCurrency?.name);
   };
 
   const fields = [
     { name: "name", label: "Название", required: true },
     { name: "description", label: "Описание" },
     { name: "price", label: "Цена", required: true, type: "number" },
-    { name: "weight", label: "Вес", type: "text" },
-    { name: "currency", label: "USD", required: true },
+    { name: "weight", label: "Вес", type: "number" },
     { name: "active", label: "Активный", type: "checkbox", position: "end" },
   ];
 
@@ -53,13 +62,20 @@ const AddNewProducts = () => {
         data: { message: "Вы забыли загрузить фотографию" },
       };
     }
+    if (choosenCurrency == "" || choosenCurrency == undefined) {
+      throw {
+        data: { message: "Выберите валюту" },
+      };
+    }
+
     const formattedData = {
       ...data,
       image: imageUploaded[0] || "",
       price: data?.price,
       category_id: selectedCategory,
       discount: discount.price ? discount : undefined,
-      active: data.active === "true",
+      active: data.active == "true",
+      currency: choosenCurrency,
     };
 
     console.log(formattedData);
@@ -70,6 +86,16 @@ const AddNewProducts = () => {
     }).unwrap();
     setImageUploaded([]);
   };
+
+  //поменять на бек чтобы значения приходили через бек
+  const variants = [
+    { _id: "1", name: "USD" },
+    { _id: "2", name: "EUR" },
+    { _id: "3", name: "RUB" },
+    { _id: "4", name: "UZS" },
+    { _id: "5", name: "KZT" },
+    { _id: "6", name: "KGS" },
+  ];
 
   if (categoryLoading) return <Loading />;
 
@@ -92,10 +118,20 @@ const AddNewProducts = () => {
       />
 
       <Box>
-        <CategorySelect
-          categoryData={categoryData}
-          selectedCategory={selectedCategory}
-          handleCategoryChange={handleCategoryChange}
+        <Box sx={{ marginBottom: 3 }}>
+          <DropDownSelect
+            data={variants}
+            selectedValue={currency}
+            handleChange={handleSelection}
+            label="Валюта"
+          />
+        </Box>
+
+        <DropDownSelect
+          data={categoryData?.data}
+          selectedValue={selectedCategory}
+          handleChange={handleCategoryChange}
+          label="Категория"
         />
 
         <Discount discount={discount} handleDiscount={handleDiscountChange} />
