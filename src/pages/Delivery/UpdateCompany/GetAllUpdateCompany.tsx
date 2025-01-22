@@ -10,12 +10,17 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 import { useNavigate } from "react-router";
 import useSnackbar from "../../../app/hook/callSnackBar";
+import Loading from "../../../components/Loading";
+import DropDownSelect from "../../../components/DropDownSelect/DropDownSelect";
+import { UpdateCompanyType } from "../../../app/types/UpdateCompanyTypes";
 
 const GetAllUpdateCompany = () => {
   const navigate = useNavigate();
   const triggerSnackbar = useSnackbar();
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [filterStatus, setFilterStatus] = useState("all");
+
   const [deleteCompany] = useDeleteUpdateCompanyMutation();
   const { data, isLoading, isFetching } = useGetUpdateCompanyQuery({
     page: currentPage,
@@ -42,20 +47,47 @@ const GetAllUpdateCompany = () => {
     }
   };
 
+  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilterStatus(e.target.value);
+  };
+
   const columns = [
-    { field: "name", headerName: "Название" },
+    { field: "company_id", headerName: "ID Company" },
     { field: "status", headerName: "Статус" },
     { field: "updated_at", headerName: "Дата обновления" },
-    { field: "requested_by", headerName: "Инициатор" },
+    { field: "requester_name", headerName: "Инициатор" },
+    { field: "requester_position", headerName: "Позиция" },
   ];
+  const statusOptions = [
+    { _id: "all", name: "Все" },
+    { _id: "approved", name: "Одобрено" },
+    { _id: "pending", name: "В ожидании" },
+  ];
+
+  const filteredData =
+    filterStatus === "all"
+      ? data?.data || []
+      : (data?.data || []).filter(
+          (item: UpdateCompanyType) => item.status === filterStatus,
+        );
 
   return (
     <div>
+      {isFetching && <Loading />}
+      <Box>
+        <DropDownSelect
+          data={statusOptions}
+          selectedValue={filterStatus}
+          handleChange={handleFilterChange}
+          label="Фильтр по статусу"
+        />
+      </Box>
+
       <UniversalTable
         title="Запросы на обновление компаний"
-        data={data?.data || []}
+        data={filteredData}
         columns={columns}
-        isLoading={isLoading || isFetching}
+        isLoading={isLoading}
         onDelete={handleDelete} // Здесь нет функционала удаления
         onView={handleView}
       />

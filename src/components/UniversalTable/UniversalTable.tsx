@@ -78,10 +78,16 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
           {data.map((row, index) => (
             <Paper
               key={row._id || index}
-              sx={{ mb: 2, p: 2, display: "flex", flexDirection: "column" }}>
+              sx={{
+                mb: 2,
+                p: 2,
+                display: "flex",
+                flexDirection: "column",
+                background: row.status == "approved" ? "#e8f5e9" : "",
+              }}>
               {columns.map((col) => (
                 <Typography key={col.field} variant="body1">
-                  <strong>{col.headerName}:</strong>{" "}
+                  <strong>{col.headerName}:</strong>
                   {getNestedValue(row, col.field)}
                 </Typography>
               ))}
@@ -126,7 +132,11 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
             </TableHead>
             <TableBody>
               {data.map((row, index) => (
-                <TableRow key={row._id || index}>
+                <TableRow
+                  key={row._id || index}
+                  sx={{
+                    background: row.status == "approved" ? "#e8f5e9" : "",
+                  }}>
                   {columns.map((col) => (
                     <TableCell key={col.field}>
                       {getNestedValue(row, col.field)}
