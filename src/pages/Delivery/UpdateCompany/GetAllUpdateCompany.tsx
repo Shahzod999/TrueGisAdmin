@@ -43,7 +43,10 @@ const GetAllUpdateCompany = () => {
       triggerSnackbar(res?.message || "Данные успешно удалены!", "success");
     } catch (error: any) {
       console.log(error);
-      triggerSnackbar(error.message || "Не удалось удалить данные", "error");
+      triggerSnackbar(
+        error.data.message || "Не удалось удалить данные",
+        "error",
+      );
     }
   };
 
