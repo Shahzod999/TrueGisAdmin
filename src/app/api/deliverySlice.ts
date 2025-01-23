@@ -41,10 +41,11 @@ export const deliverySlice = apiSlice.injectEndpoints({
     }),
     // company
     getAllCompany: builder.query<CompanyType, any>({
-      query: ({ page }) => ({
+      query: ({ page, keyword }) => ({
         url: "/delivery/root/company",
         params: {
           page,
+          keyword,
         },
       }),
       providesTags: ["Company"],

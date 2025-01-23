@@ -1,10 +1,17 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   useDeleteCompanyMutation,
   useGetAllCompanyQuery,
 } from "../../../app/api/deliverySlice";
 import UniversalTable from "../../../components/UniversalTable/UniversalTable";
-import { Box, Stack, Pagination, PaginationItem, Button } from "@mui/material";
+import {
+  Box,
+  Stack,
+  Pagination,
+  PaginationItem,
+  Button,
+  TextField,
+} from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useNavigate } from "react-router";
@@ -15,10 +22,16 @@ const GetAllCompany = () => {
   const navigate = useNavigate();
   const triggerSnackbar = useSnackbar();
   const [currentPage, setCurrentPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const timerRef = useRef<null | ReturnType<typeof setTimeout>>(null);
   const [deleteCompany] = useDeleteCompanyMutation();
-  const { data, isLoading, isFetching } = useGetAllCompanyQuery({
+
+  const { data, isLoading, isFetching, refetch } = useGetAllCompanyQuery({
     page: currentPage,
+    keyword: debouncedSearch,
   });
+
   const handleDelete = async (id: string) => {
     console.log(id);
 
@@ -41,6 +54,22 @@ const GetAllCompany = () => {
     setCurrentPage(newPage);
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setSearch(value);
+
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    timerRef.current = setTimeout(() => {
+      setDebouncedSearch(value);
+      refetch();
+    }, 500);
+  };
+
+  console.log(data, debouncedSearch);
+  
   const columns = [
     { field: "name", headerName: "Название" },
     { field: "city", headerName: "Город" },
@@ -65,6 +94,16 @@ const GetAllCompany = () => {
           }}>
           Создать Компанию
         </Button>
+      </Box>
+
+      <Box>
+        <TextField
+          label="Поиск продуктов"
+          variant="outlined"
+          fullWidth
+          value={search}
+          onChange={handleChange}
+        />
       </Box>
       <UniversalTable
         title="Компании"
