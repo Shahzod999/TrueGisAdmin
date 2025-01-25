@@ -55,6 +55,7 @@ const UniversalImgUploader = ({
     e.target.value = "";
   };
 
+  
   const handleUploadImages = async () => {
     if (!imageQueue.length) return;
 
