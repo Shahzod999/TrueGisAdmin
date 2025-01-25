@@ -9,13 +9,13 @@ export const UploadImgSlice = apiSlice.injectEndpoints({
         body: formData,
       }),
     }),
-    deleteIMg: builder.mutation({
-      query: (deleteData) => ({
-        url: "/image/upload",
+    deleteImg: builder.mutation({
+      query: ({ data }) => ({
+        url: "/image/delete",
         method: "DELETE",
-        body: deleteData,
+        body: data,
       }),
     }),
   }),
 });
-export const { useUploadImgMutation, useDeleteIMgMutation } = UploadImgSlice;
+export const { useUploadImgMutation, useDeleteImgMutation } = UploadImgSlice;

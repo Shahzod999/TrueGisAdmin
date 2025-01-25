@@ -10,6 +10,49 @@ import Loading from "../../../components/Loading";
 import { Box, Typography } from "@mui/material";
 import UniversalImgUploader from "../../../components/UniversalImgUploader/UniversalImgUploader";
 
+const fields = [
+  { name: "name", label: "Название" },
+  { name: "description", label: "Описание" },
+  { name: "city", label: "Город" },
+  { name: "country", label: "Страна" },
+  { name: "phone_number", label: "Телефон" },
+  { name: "full_address", label: "Адрес" },
+  { name: "latitude", label: "Широта" },
+  { name: "longitude", label: "Долгота" },
+  { name: "rating", label: "Рейтинг" },
+  { name: "review_count", label: "Количество отзывов" },
+  { name: "verified", label: "Подтверждено" },
+  { name: "business_status", label: "Статус бизнеса" },
+  { name: "type", label: "Тип" },
+  { name: "subtypes", label: "Подтипы" },
+  { name: "district", label: "Район" },
+  { name: "street_address", label: "Улица" },
+  { name: "zipcode", label: "Почтовый индекс" },
+  { name: "state", label: "Штат" },
+  { name: "timezone", label: "Часовой пояс" },
+  { name: "social_media.telegram", label: "Telegram" },
+  { name: "social_media.instagram", label: "Instagram" },
+  { name: "social_media.facebook", label: "Facebook" },
+  { name: "owner_name", label: "Имя владельца" },
+  { name: "owner_link", label: "Ссылка на владельца" },
+  { name: "support_chat_id", label: "Чат для поддержки" },
+  { name: "support_number", label: "Номер поддержки" },
+  { name: "requester_name", label: "Имя отправителя" },
+  {
+    name: "requester_phone_number",
+    label: "Номер отправителя",
+    type: "number",
+  },
+  { name: "requester_position", label: "Позиция отправителя" },
+  { name: "is_partner", label: "Партнер", type: "checkbox", position: "end" },
+  {
+    name: "is_accept_orders",
+    label: "Принимает заказы",
+    type: "checkbox",
+    position: "end",
+  },
+];
+
 const CompanySinglePage = () => {
   const navigate = useNavigate();
   const [imageUploaded, setImageUploaded] = useState<
@@ -19,10 +62,11 @@ const CompanySinglePage = () => {
       thumbnail: string;
     }[]
   >([]);
-  const [previewImages, setPreviewImages] = useState<string[]>([]);
 
-  //logo
+  // 1
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [logoPrev, setLogoPrev] = useState<string[]>([]);
+
   const [logoUpload, setLogoUpload] = useState<
     {
       image: string;
@@ -30,7 +74,8 @@ const CompanySinglePage = () => {
       thumbnail: string;
     }[]
   >([]);
-  //
+
+  console.log(imageUploaded);
 
   const { id } = useParams<{ id: string }>();
   const { data, isLoading } = useGetSingleCompanyQuery({ id });
@@ -47,8 +92,12 @@ const CompanySinglePage = () => {
     updatedData: Record<string, any>,
   ) => {
     const updatedPhotos = [
-      ...data?.data?.photos_sample,
-      ...imageUploaded.map((item) => ({
+      ...previewImages?.map((item) => ({
+        photo_url_thumbnail: item,
+        photo_url: item,
+        photo_url_large: item,
+      })),
+      ...imageUploaded?.map((item) => ({
         photo_url_thumbnail: item.thumbnail,
         photo_url: item.image,
         photo_url_large: item.image,
@@ -62,67 +111,22 @@ const CompanySinglePage = () => {
     };
 
     console.log(updatedCompanyData);
-    // try {
-    //   await updateCompany({
-    //     id,
-    //     data: updatedCompanyData,
-    //   }).unwrap();
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    try {
+      await updateCompany({
+        id,
+        data: updatedCompanyData,
+      }).unwrap();
+    } catch (error) {
+      console.log(error);
+    }
   };
-
-  console.log(previewImages, "prevImg");
-  console.log(imageUploaded, "uploaded");
+  console.log(data);
 
   const deleteData = async (id: string) => {
     await deleteCompany({ id });
 
     navigate(-1); // Перенаправление после удаления
   };
-
-  const fields = [
-    { name: "name", label: "Название" },
-    { name: "description", label: "Описание" },
-    { name: "city", label: "Город" },
-    { name: "country", label: "Страна" },
-    { name: "phone_number", label: "Телефон" },
-    { name: "full_address", label: "Адрес" },
-    { name: "latitude", label: "Широта" },
-    { name: "longitude", label: "Долгота" },
-    { name: "rating", label: "Рейтинг" },
-    { name: "review_count", label: "Количество отзывов" },
-    { name: "verified", label: "Подтверждено" },
-    { name: "business_status", label: "Статус бизнеса" },
-    { name: "type", label: "Тип" },
-    { name: "subtypes", label: "Подтипы" },
-    { name: "district", label: "Район" },
-    { name: "street_address", label: "Улица" },
-    { name: "zipcode", label: "Почтовый индекс" },
-    { name: "state", label: "Штат" },
-    { name: "timezone", label: "Часовой пояс" },
-    { name: "social_media.telegram", label: "Telegram" },
-    { name: "social_media.instagram", label: "Instagram" },
-    { name: "social_media.facebook", label: "Facebook" },
-    { name: "owner_name", label: "Имя владельца" },
-    { name: "owner_link", label: "Ссылка на владельца" },
-    { name: "support_chat_id", label: "Чат для поддержки" },
-    { name: "support_number", label: "Номер поддержки" },
-    { name: "requester_name", label: "Имя отправителя" },
-    {
-      name: "requester_phone_number",
-      label: "Номер отправителя",
-      type: "number",
-    },
-    { name: "requester_position", label: "Позиция отправителя" },
-    { name: "is_partner", label: "Партнер", type: "checkbox", position: "end" },
-    {
-      name: "is_accept_orders",
-      label: "Принимает заказы",
-      type: "checkbox",
-      position: "end",
-    },
-  ];
 
   const renderImages = () => {
     if (data?.data?.logo) {

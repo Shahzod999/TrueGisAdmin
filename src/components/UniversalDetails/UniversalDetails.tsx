@@ -128,7 +128,7 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
       console.log(error);
 
       triggerSnackbar(
-        error.data?.error_name || "Не удалось обновить данные",
+        error?.data?.error_name || "Не удалось обновить данные",
         "error",
       );
     } finally {
