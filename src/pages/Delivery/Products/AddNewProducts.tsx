@@ -12,7 +12,13 @@ import UniversalImgUploader from "../../../components/UniversalImgUploader/Unive
 import DropDownSelect from "../../../components/DropDownSelect/DropDownSelect";
 
 const AddNewProducts = () => {
-  const [imageUploaded, setImageUploaded] = useState<string[]>([]);
+  const [imageUploaded, setImageUploaded] = useState<
+    {
+      image: string;
+      status: string;
+      thumbnail: string;
+    }[]
+  >([]);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
 
   const [currency, setCurrency] = useState<string>("");
@@ -72,7 +78,7 @@ const AddNewProducts = () => {
 
     const formattedData = {
       ...data,
-      image: imageUploaded[0] || "",
+      image: imageUploaded?.[0].image || "",
       price: data?.price,
       category_id: selectedCategory,
       discount: discount.price ? discount : undefined,
@@ -110,6 +116,7 @@ const AddNewProducts = () => {
       alignItems={"center"}
       maxWidth={"80%"}
       margin={"0 auto"}>
+        
       <UniversalImgUploader
         setImageUploaded={setImageUploaded}
         setPreviewImages={setPreviewImages}

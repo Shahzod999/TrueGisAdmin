@@ -12,7 +12,7 @@ export interface imgUploadedType {
 }
 
 interface imgProps {
-  setImageUploaded: React.Dispatch<React.SetStateAction<string[]>>;
+  setImageUploaded: React.Dispatch<React.SetStateAction<imgUploadedType[]>>;
   maxLenght: number;
   previewImages: string[];
   setPreviewImages: React.Dispatch<React.SetStateAction<string[]>>;
@@ -33,7 +33,10 @@ const UniversalImgUploader = ({
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
 
-      if (imageQueue.length + filesArray.length > maxLenght) {
+      if (
+        imageQueue.length + filesArray.length > maxLenght ||
+        previewImages.length >= maxLenght
+      ) {
         triggerSnackbar(
           `Вы можете загрузить не более ${maxLenght} изображений.`,
           "error",
@@ -53,8 +56,8 @@ const UniversalImgUploader = ({
     for (const file of imageQueue) {
       try {
         const img = (await handleImageUpload(file)) as imgUploadedType;
-        console.log(img);
-        setImageUploaded((prev) => [...prev, img.image]);
+
+        setImageUploaded((prev) => [...prev, img]);
       } catch (error) {
         console.log(error);
       }

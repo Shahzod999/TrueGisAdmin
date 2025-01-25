@@ -125,6 +125,8 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
       triggerSnackbar("Данные успешно обновлены!", "success");
       setIsEditing(false);
     } catch (error: any) {
+      console.log(error);
+
       triggerSnackbar(
         error.data?.error_name || "Не удалось обновить данные",
         "error",

@@ -7,17 +7,32 @@ import {
 } from "../../../app/api/deliverySlice";
 import UniversalDetails from "../../../components/UniversalDetails/UniversalDetails";
 import Loading from "../../../components/Loading";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import UniversalImgUploader from "../../../components/UniversalImgUploader/UniversalImgUploader";
 
 const CompanySinglePage = () => {
   const navigate = useNavigate();
-  const [imageUploaded, setImageUploaded] = useState<string[]>([]);
+  const [imageUploaded, setImageUploaded] = useState<
+    {
+      image: string;
+      status: string;
+      thumbnail: string;
+    }[]
+  >([]);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
 
-  const { id } = useParams<{ id: string }>();
-  // console.log(imageUploaded, "33");
+  //logo
+  const [logoPrev, setLogoPrev] = useState<string[]>([]);
+  const [logoUpload, setLogoUpload] = useState<
+    {
+      image: string;
+      status: string;
+      thumbnail: string;
+    }[]
+  >([]);
+  //
 
+  const { id } = useParams<{ id: string }>();
   const { data, isLoading } = useGetSingleCompanyQuery({ id });
   const [updateCompany] = useUpdateCompanyMutation();
   const [deleteCompany] = useDeleteCompanyMutation();
@@ -31,9 +46,34 @@ const CompanySinglePage = () => {
     id: string,
     updatedData: Record<string, any>,
   ) => {
-    let res = await updateCompany({ id, data: updatedData }).unwrap();
-    console.log(res, updatedData);
+    const updatedPhotos = [
+      ...data?.data?.photos_sample,
+      ...imageUploaded.map((item) => ({
+        photo_url_thumbnail: item.thumbnail,
+        photo_url: item.image,
+        photo_url_large: item.image,
+      })),
+    ];
+
+    const updatedCompanyData = {
+      ...updatedData,
+      logo: logoUpload.length > 0 ? logoUpload[0].image : logoPrev[0] || "", // Используем существующий или новый логотип
+      photos_sample: updatedPhotos, // Обновляем все фото
+    };
+
+    console.log(updatedCompanyData);
+    // try {
+    //   await updateCompany({
+    //     id,
+    //     data: updatedCompanyData,
+    //   }).unwrap();
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
+
+  console.log(previewImages, "prevImg");
+  console.log(imageUploaded, "uploaded");
 
   const deleteData = async (id: string) => {
     await deleteCompany({ id });
@@ -68,6 +108,13 @@ const CompanySinglePage = () => {
     { name: "owner_link", label: "Ссылка на владельца" },
     { name: "support_chat_id", label: "Чат для поддержки" },
     { name: "support_number", label: "Номер поддержки" },
+    { name: "requester_name", label: "Имя отправителя" },
+    {
+      name: "requester_phone_number",
+      label: "Номер отправителя",
+      type: "number",
+    },
+    { name: "requester_position", label: "Позиция отправителя" },
     { name: "is_partner", label: "Партнер", type: "checkbox", position: "end" },
     {
       name: "is_accept_orders",
@@ -78,35 +125,53 @@ const CompanySinglePage = () => {
   ];
 
   const renderImages = () => {
-    const images = [];
-    if (data?.data?.logo) images.push(data.data.logo);
-    if (data?.data?.photos_sample) {
-      images.push(
-        ...data.data.photos_sample.map((photo: any) => photo.photo_url),
-      );
+    if (data?.data?.logo) {
+      setLogoPrev([data.data.logo]);
+    } else {
+      setLogoPrev([]);
     }
 
-    return setPreviewImages(images);
-    // return images.length ? <ImageSlider images={images} /> : null;
+    if (data?.data?.photos_sample) {
+      setPreviewImages(
+        data.data.photos_sample.map((photo: any) => photo.photo_url),
+      );
+    } else {
+      setPreviewImages([]);
+    }
   };
 
   useEffect(() => {
     renderImages();
   }, [data]);
 
-  console.log([...data?.data?.photos_sample, ...imageUploaded], "9999");
-
   if (isLoading) return <Loading />;
+
   return (
     <>
-      <Box>
-        {/* {renderImages()} */}
-        <UniversalImgUploader
-          setImageUploaded={setImageUploaded}
-          maxLenght={99}
-          previewImages={previewImages}
-          setPreviewImages={setPreviewImages}
-        />
+      <Box display={"flex"} justifyContent={"space-between"} flexWrap={"wrap"}>
+        <Box flex={1}>
+          <Typography variant="h5" sx={{ marginBottom: "0.5rem" }}>
+            Добавьте Изображения
+          </Typography>
+          <UniversalImgUploader
+            setImageUploaded={setImageUploaded}
+            maxLenght={99}
+            previewImages={previewImages}
+            setPreviewImages={setPreviewImages}
+          />
+        </Box>
+
+        <Box flex={1}>
+          <Typography variant="h5" sx={{ marginBottom: "0.5rem" }}>
+            {logoPrev?.length ? "Изменить логотип" : "Добавить логотип"}
+          </Typography>
+          <UniversalImgUploader
+            setImageUploaded={setLogoUpload}
+            maxLenght={1}
+            previewImages={logoPrev}
+            setPreviewImages={setLogoPrev}
+          />
+        </Box>
       </Box>
 
       <UniversalDetails
