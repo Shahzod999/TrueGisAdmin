@@ -5,8 +5,10 @@ import {
   Paper,
   TextField,
   Button,
-  Checkbox,
   FormControlLabel,
+  Grid,
+  Divider,
+  Switch, // <--- Добавляем Switch
 } from "@mui/material";
 import useSnackbar from "../../app/hook/callSnackBar";
 import Loading from "../Loading";
@@ -44,6 +46,7 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [isUpdating, setIsUpdating] = useState(false);
 
+  // --- Вспомогательные функции для вложенных полей ---
   const getNestedValue = (obj: Record<string, any>, path: string): any => {
     return path
       .split(".")
@@ -71,19 +74,17 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
     current[keys[keys.length - 1]] = value;
   };
 
+  // --- Загрузка данных при монтировании/смене id ---
   useEffect(() => {
     const fetchDetails = async () => {
       try {
         const response = await fetchData(id);
-
-        // Подождем, пока данные полностью загрузятся
         if (!response || Object.keys(response).length === 0) {
-          return; // Никакой ошибки не бросаем, просто ждем следующего обновления
+          return; // Нет данных — не обновляем state
         }
-
         setData(response);
 
-        // Инициализируем форму на основе полученных данных
+        // Инициализируем formData на основе полученных данных
         const initialFormData: Record<string, any> = {};
         fields.forEach((field) => {
           initialFormData[field.name] = getNestedValue(response, field.name);
@@ -102,13 +103,12 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
     fetchDetails();
   }, [id]);
 
-  //, fetchData, fields, triggerSnackbar
-
+  // --- Обработчики ---
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === "checkbox" || type === "switch" ? checked : value,
     }));
   };
 
@@ -120,14 +120,13 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
         setNestedValue(updatedData, field.name, formData[field.name]);
       });
 
-      const res = await updateData(id, updatedData);
-      console.log(res);
+      await updateData(id, updatedData);
 
       triggerSnackbar("Данные успешно обновлены!", "success");
       setIsEditing(false);
     } catch (error: any) {
       triggerSnackbar(
-        error.data.error_name || "Не удалось обновить данные",
+        error.data?.error_name || "Не удалось обновить данные",
         "error",
       );
     } finally {
@@ -147,10 +146,10 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
     }
   };
 
+  // --- Состояния загрузки/пустых данных ---
   if (isLoading) {
     return <Loading />;
   }
-
   if (!data) {
     return (
       <Typography
@@ -162,81 +161,135 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
     );
   }
 
+  // --- Шаблон визуального отображения ---
   return (
-    <Box
+    <Paper
+      elevation={2}
       sx={{
-        maxWidth: "600px",
-        margin: "2rem auto",
-        padding: "2rem",
-        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-        backgroundColor: "#fff",
-      }}
-      component={Paper}>
-      <Typography variant="h4" sx={{ marginBottom: "1rem" }}>
+        margin: "1rem",
+        padding: "1rem",
+        borderRadius: "8px",
+      }}>
+      {/* Заголовок всего блока */}
+      <Typography variant="h5" sx={{ marginBottom: "0.5rem" }}>
         {title}
       </Typography>
-      <Box>
-        {fields.map((field) =>
-          field.type === "checkbox" ? (
-            <FormControlLabel
-              key={field.name}
-              control={
-                <Checkbox
-                  name={field.name}
-                  checked={formData[field.name] || false}
-                  onChange={handleInputChange}
-                  disabled={!isEditing || field.noteditable}
-                />
-              }
-              label={field.label}
-            />
-          ) : (
-            <TextField
-              key={field.name}
-              fullWidth
-              label={field.label}
-              name={field.name}
-              value={formData[field.name] || ""}
-              onChange={handleInputChange}
-              margin="normal"
-              type={field.type || "text"}
-              InputProps={{
-                readOnly: !isEditing || field.noteditable,
-              }}
-            />
-          ),
-        )}
-        <Box sx={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
-          {!isEditing ? (
+
+      <Typography
+        variant="body2"
+        sx={{
+          marginBottom: "1rem",
+          color: "text.secondary",
+          lineHeight: 1.4,
+        }}>
+        Просмотрите и при необходимости измените данные. Чтобы отредактировать
+        поле — нажмите «Редактировать», внесите изменения и сохраните. Для
+        удаления элемента воспользуйтесь соответствующей кнопкой.
+      </Typography>
+
+      {/* Блок с полями */}
+      <Typography variant="subtitle1" sx={{ marginBottom: "0.5rem" }}>
+        Информация
+      </Typography>
+      <Grid container spacing={1}>
+        {fields.map((field) => (
+          <Grid key={field.name} item xs={12} sm={6}>
+            {field.type === "checkbox" ? (
+              <FormControlLabel
+                sx={{ marginTop: 0 }}
+                control={
+                  <Switch
+                    name={field.name}
+                    checked={!!formData[field.name]}
+                    onChange={handleInputChange}
+                    disabled={!isEditing || field.noteditable}
+                  />
+                }
+                label={
+                  <Typography variant="body2" sx={{ lineHeight: 1.3 }}>
+                    {field.label}
+                  </Typography>
+                }
+              />
+            ) : (
+              <TextField
+                fullWidth
+                variant="outlined"
+                size="medium"
+                margin="dense"
+                label={field.label}
+                name={field.name}
+                value={formData[field.name] || ""}
+                onChange={handleInputChange}
+                type={field.type || "text"}
+                InputProps={{
+                  readOnly: !isEditing || field.noteditable,
+                }}
+              />
+            )}
+          </Grid>
+        ))}
+      </Grid>
+
+      <Divider sx={{ my: 2 }} />
+
+      {/* Блок кнопок редактирования/удаления */}
+      <Typography variant="subtitle1" sx={{ marginBottom: "0.5rem" }}>
+        Действия
+      </Typography>
+      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+        {!isEditing ? (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setIsEditing(true)}
+            size="small">
+            Редактировать
+          </Button>
+        ) : (
+          <>
             <Button
               variant="contained"
-              color="primary"
-              onClick={() => setIsEditing(true)}>
-              Редактировать
+              color="success"
+              onClick={handleSave}
+              disabled={isUpdating}
+              size="small">
+              {isUpdating ? "Сохранение..." : "Сохранить"}
             </Button>
-          ) : (
-            <>
-              <Button
-                variant="contained"
-                color="success"
-                onClick={handleSave}
-                disabled={isUpdating}>
-                {isUpdating ? "Сохранение..." : "Сохранить"}
-              </Button>
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={() => setIsEditing(false)}>
-                Отмена
-              </Button>
-            </>
-          )}
-          <Button variant="outlined" color="error" onClick={handleDelete}>
-            Удалить
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => setIsEditing(false)}
+              size="small">
+              Отмена
+            </Button>
+          </>
+        )}
+        <Button
+          variant="outlined"
+          color="error"
+          onClick={handleDelete}
+          size="small">
+          Удалить
+        </Button>
+      </Box>
+
+      {data.has_menu && (
+        <Box sx={{ mt: 2 }}>
+          <Divider sx={{ mb: 1 }} />
+          <Typography variant="subtitle1" sx={{ mb: 1 }}>
+            Дополнительные действия
+          </Typography>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => navigate(`/companies/${data.companyId}/products`)}
+            size="small">
+            Продукты компании
           </Button>
         </Box>
-      </Box>
-    </Box>
+      )}
+    </Paper>
   );
 };
 

@@ -6,7 +6,10 @@ import {
   Box,
   CircularProgress,
   FormControlLabel,
-  Checkbox,
+  Paper,
+  Grid,
+  Divider,
+  Switch,       
 } from "@mui/material";
 import useSnackbar from "../../app/hook/callSnackBar";
 
@@ -48,7 +51,7 @@ const UniversalAddForm: React.FC<UniversalAddFormProps> = ({
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? String(checked) : value,
+      [name]: type === "checkbox" || type === "switch" ? String(checked) : value,
     }));
   };
 
@@ -59,26 +62,22 @@ const UniversalAddForm: React.FC<UniversalAddFormProps> = ({
 
     try {
       const response = await onSubmit(formData);
-
       setSuccessMessage(
-        `${response?.status} успешно создан!` || "успешно создан!",
+        `${response?.status} успешно создан!` || "успешно создан!"
       );
       triggerSnackbar(
         `${response?.status} успешно создан!` || "успешно создан!",
-        "success",
+        "success"
       );
 
       // Сброс формы
-      setFormData(() => {
-        const resetState: Record<string, string> = {};
-        fields.forEach((field) => {
-          resetState[field.name] = field.type === "checkbox" ? "false" : "";
-        });
-        return resetState;
+      const resetState: Record<string, string> = {};
+      fields.forEach((field) => {
+        resetState[field.name] = field.type === "checkbox" ? "false" : "";
       });
+      setFormData(resetState);
     } catch (err: any) {
       console.log(err);
-
       // Обработка ошибок с типом unknown
       if (
         err &&
@@ -98,74 +97,93 @@ const UniversalAddForm: React.FC<UniversalAddFormProps> = ({
   };
 
   return (
-    <Box
+    <Paper
+      elevation={2}
       sx={{
-        maxWidth: "400px",
-        margin: "0 auto",
-        padding: "2rem",
-        textAlign: "center",
-        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-        backgroundColor: "#fff",
-      }}>
-      <Typography variant="h5" gutterBottom>
+        // Ширина на весь экран, убираем горизонтальное центрирование
+        width: "100%",
+        padding: "1.5rem",
+        borderRadius: "8px",
+        margin: "1rem 0", // небольшой вертикальный отступ
+      }}
+    >
+      {/* Заголовок */}
+      <Typography variant="h5" sx={{ mb: 1 }}>
         {title}
       </Typography>
+
+      {/* Короткое пояснение (опционально) */}
+      <Typography
+        variant="body2"
+        sx={{ mb: 2, color: "text.secondary", lineHeight: 1.4 }}
+      >
+        Заполните поля формы и нажмите «Создать». Обязательные поля помечены как required.
+      </Typography>
+
+      <Divider sx={{ mb: 2 }} />
+
       <form onSubmit={handleSubmit}>
-        {fields.map((field) =>
-          field.type === "checkbox" ? (
-            <FormControlLabel
-              key={field.name}
-              control={
-                <Checkbox
-                  name={field.name}
-                  checked={formData[field.name] === "true"}
-                  onChange={handleChange}
-                  color="primary"
+        <Grid container spacing={2}>
+          {fields.map((field) => (
+            <Grid key={field.name} item xs={12} sm={6}>
+              {field.type === "checkbox" ? (
+                // Вместо Checkbox используем Switch (ползунок)
+                <FormControlLabel
+                  control={
+                    <Switch
+                      name={field.name}
+                      // Для Switch проверяем: "true" => включено
+                      checked={formData[field.name] === "true"}
+                      onChange={handleChange}
+                      color="primary"
+                      size="medium"
+                    />
+                  }
+                  label={field.label}
                 />
-              }
-              label={field.label}
-              labelPlacement="end"
-              sx={{ display: "flex", justifyContent: "space-between" }}
-            />
-          ) : (
-            <TextField
-              key={field.name}
-              fullWidth
-              label={field.label}
-              name={field.name}
-              value={formData[field.name]}
-              onChange={handleChange}
-              margin="normal"
-              required={field.required}
-              type={field.type || "text"}
-            />
-          ),
-        )}
+              ) : (
+                <TextField
+                  fullWidth
+                  label={field.label}
+                  name={field.name}
+                  value={formData[field.name]}
+                  onChange={handleChange}
+                  required={field.required}
+                  type={field.type || "text"}
+                  variant="outlined"
+                  size="small"
+                  margin="dense"
+                />
+              )}
+            </Grid>
+          ))}
+        </Grid>
+
+        {/* Блок с сообщениями об ошибке или успехе */}
         {error && (
-          <Typography color="error" variant="body2" sx={{ margin: "1rem 0" }}>
+          <Typography color="error" variant="body2" sx={{ mt: 2 }}>
             {error}
           </Typography>
         )}
         {successMessage && (
-          <Typography color="primary" variant="body2" sx={{ margin: "1rem 0" }}>
+          <Typography color="primary" variant="body2" sx={{ mt: 2 }}>
             {successMessage}
           </Typography>
         )}
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          disabled={isLoading}
-          sx={{ marginTop: "1rem" }}>
-          {isLoading ? (
-            <CircularProgress size={24} color="inherit" />
-          ) : (
-            "Создать"
-          )}
-        </Button>
+
+        <Box sx={{ mt: 3 }}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={isLoading}
+            sx={{ minWidth: "120px" }}
+          >
+            {isLoading ? <CircularProgress size={24} color="inherit" /> : "Создать"}
+          </Button>
+        </Box>
       </form>
-    </Box>
+    </Paper>
   );
 };
 

@@ -13,6 +13,19 @@ export interface CommentType {
   deleted: boolean;
   company: CompanyTypeOne;
   user: User;
+  replies?: Reply[];
+  updated_at?: number;
+  updated_by?: string;
+}
+
+export interface Reply {
+  reply_id: string;
+  message: string;
+  reply_by: string;
+  reply_from: string;
+  reply_date: number;
+  updated_at: number;
+  updated_by: string;
 }
 
 export interface User {

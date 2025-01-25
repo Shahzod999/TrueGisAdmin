@@ -1,3 +1,5 @@
+import { CommentType } from "./commetType";
+
 export interface CompanyType {
   status: string;
   data: CompanyTypeOne[];
@@ -11,21 +13,21 @@ export interface CompanyTypeOne {
   google_id: string;
   place_id: string;
   google_mid: string;
-  phone_number?: string;
+  phone_number: string;
   name: string;
-  description?: string;
+  description: any;
   latitude: number;
   longitude: number;
   full_address: string;
-  review_count?: number;
-  rating?: number;
+  review_count: number;
+  rating: number;
   timezone: string;
   working_hours: WorkingHours;
-  website?: string;
+  website: string;
   verified: boolean;
   place_link: string;
   cid: string;
-  reviews_link?: string;
+  reviews_link: string;
   owner_id: string;
   owner_link: string;
   owner_name: string;
@@ -36,33 +38,38 @@ export interface CompanyTypeOne {
   subtypes: string[];
   photos_sample: PhotosSample[];
   reviews_per_rating: ReviewsPerRating;
-  photo_count?: number;
-  about?: About;
+  photo_count: number;
+  about: About;
   address: string;
   order_link: any;
   price_level: any;
-  district?: string;
-  street_address?: string;
+  district: string;
+  street_address: string;
   city: string;
-  zipcode?: string;
+  zipcode: any;
   state: string;
   country: string;
   owner_telegram_id: any;
   location: Location;
-  logo?: string;
-  logoThumbnail?: string;
+  logo: any;
+  logoThumbnail: any;
   order_type: any;
   is_accept_orders: boolean;
   is_partner: boolean;
   social_media: SocialMedia;
   mobile_apps: MobileApps;
-  createdBy: string;
-  dateCreated: number;
-  deleted: boolean;
+  created_by: string;
+  created_role: string;
   created_at: number;
-  created_by: any;
-  updated_at?: number;
-  email: any;
+  deleted: boolean;
+  has_menu: boolean;
+  support_chat_id: number;
+  support_number: string;
+  ai_enabled: boolean;
+  payment: any;
+  comments: CommentType[];
+  truegis_rating: number;
+  truegis_rating_count: number;
 }
 
 export interface WorkingHours {
@@ -173,9 +180,9 @@ export interface Planning {
 }
 
 export interface Parking {
+  "Free parking lot": boolean;
   "Free street parking": boolean;
 }
-
 export interface Location {
   type: string;
   coordinates: number[];

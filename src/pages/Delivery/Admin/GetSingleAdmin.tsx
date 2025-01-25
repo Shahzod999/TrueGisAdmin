@@ -40,7 +40,6 @@ const GetSingleAdmin = () => {
     { name: "full_name", label: "Full Name" },
     { name: "username", label: "username" },
     { name: "password", label: "password" },
-    { name: "admin_role", label: "admin_role" },
   ];
 
   if (isLoading) {

@@ -102,12 +102,12 @@ const AddNewProducts = () => {
   return (
     <Box
       display="flex"
-      gap={4}
       flexWrap={"wrap"}
       justifyContent={"center"}
       alignItems={"center"}
       maxWidth={"80%"}
       margin={"0 auto"}>
+        
       <UniversalImgUploader setImageUploaded={setImageUploaded} maxLenght={1} />
 
       <UniversalAddForm
@@ -117,24 +117,35 @@ const AddNewProducts = () => {
         isLoading={isLoading}
       />
 
-      <Box>
-        <Box sx={{ marginBottom: 3 }}>
+      <Box
+        display="flex"
+        flexWrap="wrap"
+        justifyContent={"space-between"}
+        gap={3}
+        p={2}
+        sx={{
+          width: "100%",
+          backgroundColor: "#f9f9f9",
+          borderRadius: 2,
+        }}>
+        <Box sx={{ minWidth: "250px", flex: 1 }}>
           <DropDownSelect
             data={variants}
             selectedValue={currency}
             handleChange={handleSelection}
             label="Валюта"
           />
+          <DropDownSelect
+            data={categoryData?.data}
+            selectedValue={selectedCategory}
+            handleChange={handleCategoryChange}
+            label="Категория"
+          />
         </Box>
 
-        <DropDownSelect
-          data={categoryData?.data}
-          selectedValue={selectedCategory}
-          handleChange={handleCategoryChange}
-          label="Категория"
-        />
-
-        <Discount discount={discount} handleDiscount={handleDiscountChange} />
+        <Box sx={{ minWidth: "250px", flex: 1 }}>
+          <Discount discount={discount} handleDiscount={handleDiscountChange} />
+        </Box>
       </Box>
     </Box>
   );

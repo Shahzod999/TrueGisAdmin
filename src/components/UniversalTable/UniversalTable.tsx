@@ -20,7 +20,7 @@ interface Column {
   field: string;
   headerName: string;
 }
-//
+
 interface UniversalTableProps {
   title: string;
   data: Array<Record<string, any>>;
@@ -68,30 +68,51 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
     await onDelete(_id);
   };
 
+  // Стили для hover-эффекта
+  const hoverStyles = {
+    transition: "background-color 0.3s ease",
+    "&:hover": {
+      backgroundColor: "#f5f5f5",
+      cursor: "pointer",
+    },
+  };
+
   return (
     <Box p={2}>
       <Typography variant="h4" gutterBottom>
         {title}
       </Typography>
+
       {isMobile ? (
+        // Мобильная версия — отображаем карточки
         <Box>
           {data.map((row, index) => (
             <Paper
               key={row._id || index}
+              // При клике на карточку вызываем onView
+              onClick={() => onView(row._id)}
               sx={{
                 mb: 2,
                 p: 2,
                 display: "flex",
                 flexDirection: "column",
-                background: row.status == "approved" ? "#e8f5e9" : "",
+                background: row.status === "approved" ? "#e8f5e9" : "",
+                ...hoverStyles,
               }}>
               {columns.map((col) => (
-                <Typography key={col.field} variant="body1">
-                  <strong>{col.headerName}:</strong>
+                <Typography key={col.field} variant="body1" sx={{ mb: 1 }}>
+                  <strong>{col.headerName}:</strong>{" "}
                   {getNestedValue(row, col.field)}
                 </Typography>
               ))}
-              <Box mt={1} display="flex" justifyContent="space-between">
+
+              {/* Блок с кнопками. Останавливаем всплытие клика, 
+                  чтобы onClick по карточке не сработал при нажатии на кнопку */}
+              <Box
+                mt={1}
+                display="flex"
+                justifyContent="space-between"
+                onClick={(e) => e.stopPropagation()}>
                 {handleOpenReplyModal && (
                   <Button
                     variant="outlined"
@@ -120,6 +141,7 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
           ))}
         </Box>
       ) : (
+        // Десктопная версия — отображаем таблицу
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -134,8 +156,11 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
               {data.map((row, index) => (
                 <TableRow
                   key={row._id || index}
+                  // При клике на всю строку — onView
+                  onClick={() => onView(row._id)}
                   sx={{
-                    background: row.status == "approved" ? "#e8f5e9" : "",
+                    background: row.status === "approved" ? "#e8f5e9" : "",
+                    ...hoverStyles,
                   }}>
                   {columns.map((col) => (
                     <TableCell key={col.field}>
@@ -143,7 +168,9 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
                     </TableCell>
                   ))}
 
-                  <TableCell>
+                  {/* Ячейка с кнопками. Останавливаем всплытие клика для строк, 
+                      чтобы клик на кнопку не вызывал onClick строки */}
+                  <TableCell onClick={(e) => e.stopPropagation()}>
                     {handleOpenReplyModal && (
                       <Button
                         variant="outlined"
@@ -154,13 +181,12 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
                         Ответить
                       </Button>
                     )}
-
                     <Button
                       variant="outlined"
                       color="primary"
                       size="small"
-                      onClick={() => onView(row._id)}
-                      sx={{ margin: "5px" }}>
+                      sx={{ margin: "5px" }}
+                      onClick={() => onView(row._id)}>
                       Подробнее
                     </Button>
                     <Button

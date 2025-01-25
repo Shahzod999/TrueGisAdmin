@@ -69,7 +69,7 @@ const GetAllCompany = () => {
   };
 
   console.log(data, debouncedSearch);
-  
+
   const columns = [
     { field: "name", headerName: "Название" },
     { field: "city", headerName: "Город" },
@@ -96,9 +96,9 @@ const GetAllCompany = () => {
         </Button>
       </Box>
 
-      <Box>
+      <Box padding={"10px 5%"}>
         <TextField
-          label="Поиск продуктов"
+          label="Поиск компании"
           variant="outlined"
           fullWidth
           value={search}

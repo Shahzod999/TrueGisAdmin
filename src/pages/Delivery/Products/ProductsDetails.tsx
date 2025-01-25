@@ -20,6 +20,9 @@ const ProductDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
 
+  const [currency, setCurrency] = useState<string>("");
+  const [choosenCurrency, setChoosenCurrency] = useState<string>("");
+
   const { data, isLoading } = useGetSingleProductsQuery({ id });
   const { data: categoryData, isLoading: categoryLoading } =
     useGetAllCategoryQuery({
@@ -31,11 +34,37 @@ const ProductDetails = () => {
   const [deleteProduct, { isLoading: deleteLoading }] =
     useDeleteProductsMutation();
 
+  const variants = [
+    { _id: "1", name: "USD" },
+    { _id: "2", name: "EUR" },
+    { _id: "3", name: "RUB" },
+    { _id: "4", name: "UZS" },
+    { _id: "5", name: "KZT" },
+    { _id: "6", name: "KGS" },
+  ];
+
   const [discount, setDiscount] = useState({
     price: data?.data?.discount?.price,
     start_date: data?.data?.discount?.start_date,
     end_date: data?.data?.discount?.end_date,
   });
+
+  const fetchData = async () => {
+    if (!data) throw new Error("Данные отсутствуют");
+    return data?.data;
+  };
+
+  useEffect(() => {
+    if (data?.data?.currency) {
+      const foundVariant = variants.find(
+        (item) => item.name === data.data.currency,
+      );
+      if (foundVariant) {
+        setCurrency(foundVariant._id);
+        setChoosenCurrency(foundVariant.name);
+      }
+    }
+  }, [data]);
 
   useEffect(() => {
     if (data?.data?.category_id && categoryData?.data) {
@@ -45,11 +74,6 @@ const ProductDetails = () => {
       setSelectedCategory(category?._id || "");
     }
   }, [data, categoryData]);
-
-  const fetchData = async () => {
-    if (!data) throw new Error("Данные отсутствуют");
-    return data?.data;
-  };
 
   const updateOneData = async (
     id: string,
@@ -61,6 +85,7 @@ const ProductDetails = () => {
         ...data?.data,
         ...updatedData,
         category_id: selectedCategory,
+        currency: choosenCurrency,
         ...(discount?.price ? { discount } : {}),
       },
     }).unwrap();
@@ -68,6 +93,7 @@ const ProductDetails = () => {
       ...data?.data,
       ...updatedData,
       category_id: selectedCategory,
+      currency: choosenCurrency,
       ...(discount?.price ? { discount } : {}),
     });
   };
@@ -113,6 +139,18 @@ const ProductDetails = () => {
     return images.length ? <ImageSlider images={images} /> : null;
   };
 
+  const handleSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedId = e.target.value;
+    setCurrency(selectedId);
+
+    // Находим вариант с таким ID и берём его название
+    const newCurrency = variants.find((variant) => variant._id === selectedId);
+    if (newCurrency) {
+      setChoosenCurrency(newCurrency.name);
+    }
+  };
+  console.log(currency, "33");
+
   if (isLoading || categoryLoading) return <Loading />;
   return (
     <>
@@ -120,7 +158,6 @@ const ProductDetails = () => {
       {renderImages()}
       <Box
         display="flex"
-        gap={4}
         flexWrap={"wrap"}
         justifyContent={"center"}
         alignItems={"center"}
@@ -134,14 +171,35 @@ const ProductDetails = () => {
           deleteData={deleteData}
           fields={fields}
         />
-        <Box>
-          <DropDownSelect
-            data={categoryData?.data}
-            selectedValue={selectedCategory}
-            handleChange={handleCategoryChange}
-            label="Категория"
-          />
-          <Discount discount={discount} handleDiscount={handleDiscount} />
+        <Box
+          display="flex"
+          flexWrap="wrap"
+          justifyContent={"space-between"}
+          gap={3}
+          p={2}
+          sx={{
+            width: "100%",
+            backgroundColor: "#f9f9f9",
+            borderRadius: 2,
+          }}>
+          <Box sx={{ minWidth: "250px", flex: 1 }}>
+            <DropDownSelect
+              data={variants}
+              selectedValue={currency}
+              handleChange={handleSelection}
+              label="Валюта"
+            />
+            <DropDownSelect
+              data={categoryData?.data}
+              selectedValue={selectedCategory}
+              handleChange={handleCategoryChange}
+              label="Категория"
+            />
+          </Box>
+
+          <Box sx={{ minWidth: "250px", flex: 1 }}>
+            <Discount discount={discount} handleDiscount={handleDiscount} />
+          </Box>
         </Box>
       </Box>
     </>
