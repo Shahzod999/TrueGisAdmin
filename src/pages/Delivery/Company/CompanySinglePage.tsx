@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   useGetSingleCompanyQuery,
@@ -6,11 +7,16 @@ import {
 } from "../../../app/api/deliverySlice";
 import UniversalDetails from "../../../components/UniversalDetails/UniversalDetails";
 import Loading from "../../../components/Loading";
-import ImageSlider from "../../../components/ImageSlider";
+import { Box } from "@mui/material";
+import UniversalImgUploader from "../../../components/UniversalImgUploader/UniversalImgUploader";
 
 const CompanySinglePage = () => {
   const navigate = useNavigate();
+  const [imageUploaded, setImageUploaded] = useState<string[]>([]);
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
+
   const { id } = useParams<{ id: string }>();
+  // console.log(imageUploaded, "33");
 
   const { data, isLoading } = useGetSingleCompanyQuery({ id });
   const [updateCompany] = useUpdateCompanyMutation();
@@ -37,11 +43,11 @@ const CompanySinglePage = () => {
 
   const fields = [
     { name: "name", label: "Название" },
+    { name: "description", label: "Описание" },
     { name: "city", label: "Город" },
     { name: "country", label: "Страна" },
     { name: "phone_number", label: "Телефон" },
     { name: "full_address", label: "Адрес" },
-    { name: "description", label: "Описание" },
     { name: "latitude", label: "Широта" },
     { name: "longitude", label: "Долгота" },
     { name: "rating", label: "Рейтинг" },
@@ -60,8 +66,15 @@ const CompanySinglePage = () => {
     { name: "social_media.facebook", label: "Facebook" },
     { name: "owner_name", label: "Имя владельца" },
     { name: "owner_link", label: "Ссылка на владельца" },
-    { name: "created_at", label: "Дата создания" },
-    { name: "updated_at", label: "Дата обновления" },
+    { name: "support_chat_id", label: "Чат для поддержки" },
+    { name: "support_number", label: "Номер поддержки" },
+    { name: "is_partner", label: "Партнер", type: "checkbox", position: "end" },
+    {
+      name: "is_accept_orders",
+      label: "Принимает заказы",
+      type: "checkbox",
+      position: "end",
+    },
   ];
 
   const renderImages = () => {
@@ -73,13 +86,28 @@ const CompanySinglePage = () => {
       );
     }
 
-    return images.length ? <ImageSlider images={images} /> : null;
+    return setPreviewImages(images);
+    // return images.length ? <ImageSlider images={images} /> : null;
   };
+
+  useEffect(() => {
+    renderImages();
+  }, [data]);
+
+  console.log([...data?.data?.photos_sample, ...imageUploaded], "9999");
 
   if (isLoading) return <Loading />;
   return (
     <>
-      {renderImages()}
+      <Box>
+        {/* {renderImages()} */}
+        <UniversalImgUploader
+          setImageUploaded={setImageUploaded}
+          maxLenght={99}
+          previewImages={previewImages}
+          setPreviewImages={setPreviewImages}
+        />
+      </Box>
 
       <UniversalDetails
         title="Детали компании"

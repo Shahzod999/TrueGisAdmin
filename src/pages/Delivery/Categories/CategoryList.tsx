@@ -17,8 +17,6 @@ const CategoryList = () => {
   const [deleteCategory] = useDeleteCategoryMutation();
   const navigate = useNavigate();
 
-  console.log(data);
-
   const handleDelete = async (id: string) => {
     await deleteCategory(id).unwrap();
   };

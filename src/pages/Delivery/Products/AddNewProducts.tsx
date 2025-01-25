@@ -13,6 +13,8 @@ import DropDownSelect from "../../../components/DropDownSelect/DropDownSelect";
 
 const AddNewProducts = () => {
   const [imageUploaded, setImageUploaded] = useState<string[]>([]);
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
+
   const [currency, setCurrency] = useState<string>("");
   const [choosenCurrency, setChoosenCurrency] = useState<string | undefined>();
   const [addNewProduct, { isLoading }] = useAddNewProductsMutation();
@@ -85,6 +87,7 @@ const AddNewProducts = () => {
       data: formattedData,
     }).unwrap();
     setImageUploaded([]);
+    setPreviewImages([]);
   };
 
   //поменять на бек чтобы значения приходили через бек
@@ -107,8 +110,12 @@ const AddNewProducts = () => {
       alignItems={"center"}
       maxWidth={"80%"}
       margin={"0 auto"}>
-        
-      <UniversalImgUploader setImageUploaded={setImageUploaded} maxLenght={1} />
+      <UniversalImgUploader
+        setImageUploaded={setImageUploaded}
+        setPreviewImages={setPreviewImages}
+        previewImages={previewImages}
+        maxLenght={1}
+      />
 
       <UniversalAddForm
         title="Добавить новый продукт"

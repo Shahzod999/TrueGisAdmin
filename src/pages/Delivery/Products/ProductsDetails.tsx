@@ -149,7 +149,6 @@ const ProductDetails = () => {
       setChoosenCurrency(newCurrency.name);
     }
   };
-  console.log(currency, "33");
 
   if (isLoading || categoryLoading) return <Loading />;
   return (

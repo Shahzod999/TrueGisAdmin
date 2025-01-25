@@ -39,7 +39,7 @@ const GetAllProducts = () => {
   ) => {
     setCurrentPage(newPage);
   };
-  console.log(data);
+
 
   const columns = [
     { field: "name", headerName: "Название" },

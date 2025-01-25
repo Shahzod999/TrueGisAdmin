@@ -35,7 +35,7 @@ const GetAllData = () => {
     { field: "created_at", headerName: "Дата создания" },
   ];
 
-  console.log(data);
+
 
   const tableData =
     data?.data.map((user: userTypeData) => ({

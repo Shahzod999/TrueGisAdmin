@@ -13,7 +13,7 @@ const CommentSinglePage = () => {
   const { id } = useParams<{ id: string }>();
 
   const { data, isLoading } = useGetOneCommentQuery({ id });
-  console.log(data);
+
 
   const [updateOneComment] = useUpdateOneCommentMutation();
   const [deleteOneComment] = useDeleteOneCommentMutation();

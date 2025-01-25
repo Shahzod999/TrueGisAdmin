@@ -14,14 +14,20 @@ export interface imgUploadedType {
 interface imgProps {
   setImageUploaded: React.Dispatch<React.SetStateAction<string[]>>;
   maxLenght: number;
+  previewImages: string[];
+  setPreviewImages: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const UniversalImgUploader = ({ setImageUploaded, maxLenght }: imgProps) => {
+const UniversalImgUploader = ({
+  setImageUploaded,
+  maxLenght,
+  previewImages,
+  setPreviewImages,
+}: imgProps) => {
   const triggerSnackbar = useSnackbar();
   const { handleImageUpload, isLoading, isError, isSuccess } = useUploadImage();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [imageQueue, setImageQueue] = useState<File[]>([]);
-  const [previewImages, setPreviewImages] = useState<string[]>([]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {

@@ -111,7 +111,7 @@ const UpdateCompanySinglePage = () => {
       </Button>
     );
 
-  console.log(data);
+
 
   return (
     <Box display="flex" flexDirection="column" gap={3} padding={3}>

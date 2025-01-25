@@ -8,7 +8,7 @@ import {
   FormControlLabel,
   Grid,
   Divider,
-  Switch, // <--- Добавляем Switch
+  Switch,
 } from "@mui/material";
 import useSnackbar from "../../app/hook/callSnackBar";
 import Loading from "../Loading";

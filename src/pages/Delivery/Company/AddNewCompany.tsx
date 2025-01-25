@@ -44,6 +44,8 @@ const AddNewCompany = () => {
     { name: "online_menu_link", label: "Ссылка на меню" },
     { name: "rating", label: "Рейтинг", type: "number" },
     { name: "review_count", label: "Количество отзывов", type: "number" },
+    { name: "support_chat_id", label: "Чат для поддержки" },
+    { name: "support_number", label: "Номер поддержки" },
     {
       name: "verified",
       label: "Подтверждено",
@@ -66,7 +68,7 @@ const AddNewCompany = () => {
 
     let res = await addNewCompany({ data: formattedData }).unwrap();
     console.log(res);
-    
+
     navigate("/companies");
   };
 
