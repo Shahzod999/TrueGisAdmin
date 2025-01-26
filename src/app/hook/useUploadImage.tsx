@@ -4,32 +4,45 @@ const useUploadImage = () => {
   const [uploadImg, { isLoading, isError, isSuccess, data, error }] =
     useUploadImgMutation();
 
-  const handleImageUpload = async (file: File) => {
+  const handleImagesUpload = async (files: File[]) => {
     return new Promise(async (resolve, reject) => {
-      if (!file) {
+      if (!files || files.length === 0) {
         reject("NO file provided");
         return;
       }
 
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("page", "truegis");
-      
-      try {
-        const res = await uploadImg({ formData }).unwrap();
-        if (res) {
-          resolve(res);
-        } else {
-          reject("No Url returned from server");
+      const uploadedImages: string[] = [];
+      let hasError = false;
+
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("page", "truegis");
+
+        try {
+          const res = await uploadImg({ formData }).unwrap();
+          if (res) {
+            uploadedImages.push(res);
+          } else {
+            hasError = true;
+            reject(`No URL returned for file: ${file.name}`);
+            break;
+          }
+        } catch (error) {
+          hasError = true;
+          reject("Image upload failed");
+          break;
         }
-      } catch (error) {
-        reject("Image upload failed");
+      }
+
+      if (!hasError) {
+        resolve(uploadedImages);
       }
     });
   };
 
   return {
-    handleImageUpload,
+    handleImagesUpload,
     isLoading,
     isError,
     isSuccess,

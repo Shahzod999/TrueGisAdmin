@@ -7,8 +7,8 @@ import {
 import Loading from "../../../components/Loading";
 import { Box, Typography, Paper, Button } from "@mui/material";
 import useSnackbar from "../../../app/hook/callSnackBar";
-import StandardImageList from "../../../components/UniversalImgUploader/StandardImageList";
 import { PhotosSample } from "../../../app/types/companyType";
+import ImagesList from "../../../components/UniversalImgUploader/ImagesList";
 
 export interface Root {
   error: Error;
@@ -111,8 +111,6 @@ const UpdateCompanySinglePage = () => {
       </Button>
     );
 
-
-
   return (
     <Box display="flex" flexDirection="column" gap={3} padding={3}>
       <Typography variant="h4" align="center">
@@ -159,7 +157,7 @@ const UpdateCompanySinglePage = () => {
           sx={{ flex: 1, padding: 2, backgroundColor: "#f0f4f8" }}>
           <Typography variant="h6">Текущие данные</Typography>
           <Box sx={{ margin: "20px 0" }}>
-            <StandardImageList
+            <ImagesList
               imageData={data?.data?.current_data?.photos_sample?.map(
                 (item: PhotosSample) => item.photo_url,
               )}
@@ -178,7 +176,7 @@ const UpdateCompanySinglePage = () => {
           sx={{ flex: 1, padding: 2, backgroundColor: "#e8f5e9" }}>
           <Typography variant="h6">Запрошенные изменения</Typography>
           <Box sx={{ margin: "20px 0" }}>
-            <StandardImageList
+            <ImagesList
               imageData={data?.data?.requested_changes?.photos_sample?.map(
                 (item: PhotosSample) => item.photo_url,
               )}

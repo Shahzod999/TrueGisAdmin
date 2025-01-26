@@ -93,6 +93,11 @@ export interface PhotosSample {
   photo_datetime_utc?: string;
   photo_timestamp?: number;
 }
+export interface imgUploadedType {
+  status: string;
+  image: string;
+  thumbnail: string;
+}
 
 export interface ReviewsPerRating {
   "1"?: number;

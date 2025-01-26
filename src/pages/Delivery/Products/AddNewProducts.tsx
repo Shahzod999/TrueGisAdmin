@@ -19,7 +19,7 @@ const AddNewProducts = () => {
       thumbnail: string;
     }[]
   >([]);
-  const [previewImages, setPreviewImages] = useState<string[]>([]);
+  const [previewImages, setPreviewImages] = useState<File[]>([]);
 
   const [currency, setCurrency] = useState<string>("");
   const [choosenCurrency, setChoosenCurrency] = useState<string | undefined>();
@@ -116,12 +116,10 @@ const AddNewProducts = () => {
       alignItems={"center"}
       maxWidth={"80%"}
       margin={"0 auto"}>
-        
       <UniversalImgUploader
-        setImageUploaded={setImageUploaded}
-        setPreviewImages={setPreviewImages}
-        previewImages={previewImages}
         maxLenght={1}
+        imagePrev={previewImages}
+        setImagePrev={setPreviewImages}
       />
 
       <UniversalAddForm

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   useGetSingleCompanyQuery,
@@ -9,6 +9,10 @@ import UniversalDetails from "../../../components/UniversalDetails/UniversalDeta
 import Loading from "../../../components/Loading";
 import { Box, Typography } from "@mui/material";
 import UniversalImgUploader from "../../../components/UniversalImgUploader/UniversalImgUploader";
+import useUploadImage from "../../../app/hook/useUploadImage";
+import { imgUploadedType, PhotosSample } from "../../../app/types/companyType";
+import DataPhotosSample from "./DataPhotosSample";
+import LogoPhoto from "./LogoPhoto";
 
 const fields = [
   { name: "name", label: "Название" },
@@ -55,125 +59,122 @@ const fields = [
 
 const CompanySinglePage = () => {
   const navigate = useNavigate();
-  const [imageUploaded, setImageUploaded] = useState<
-    {
-      image: string;
-      status: string;
-      thumbnail: string;
-    }[]
-  >([]);
-
-  // 1
-  const [previewImages, setPreviewImages] = useState<string[]>([]);
-  const [logoPrev, setLogoPrev] = useState<string[]>([]);
-
-  const [logoUpload, setLogoUpload] = useState<
-    {
-      image: string;
-      status: string;
-      thumbnail: string;
-    }[]
-  >([]);
-
-  console.log(imageUploaded);
-
   const { id } = useParams<{ id: string }>();
-  const { data, isLoading } = useGetSingleCompanyQuery({ id });
+
+  const { data, isLoading, isFetching } = useGetSingleCompanyQuery({ id });
   const [updateCompany] = useUpdateCompanyMutation();
   const [deleteCompany] = useDeleteCompanyMutation();
 
-  const fetchData = async () => {
-    if (!data) throw new Error("Данные отсутствуют");
-    return data?.data;
-  };
+  const { handleImagesUpload, isLoading: loadingUploadImg } = useUploadImage();
+
+  const [dataPhotosSample, setDataPhotosSample] = useState<PhotosSample[]>([]);
+  const [dataLogoPhoto, setDataLogoPhoto] = useState<string>("");
+
+  const [imagePrev, setImagePrev] = useState<File[]>([]);
+  const [logoPrev, setLogoPrev] = useState<File[]>([]);
 
   const updateOneData = async (
     id: string,
     updatedData: Record<string, any>,
   ) => {
-    const updatedPhotos = [
-      ...previewImages?.map((item) => ({
-        photo_url_thumbnail: item,
-        photo_url: item,
-        photo_url_large: item,
-      })),
-      ...imageUploaded?.map((item) => ({
-        photo_url_thumbnail: item.thumbnail,
-        photo_url: item.image,
-        photo_url_large: item.image,
-      })),
-    ];
+    let uploadedUrls: any = [];
+
+    if (imagePrev.length > 0) {
+      try {
+        uploadedUrls = await handleImagesUpload(imagePrev);
+        console.log("Uploaded images:", uploadedUrls);
+      } catch (error) {
+        console.error("Upload photos_sample error:", error);
+      }
+    }
+
+    let newlogo: any = [];
+    if (logoPrev.length > 0) {
+      try {
+        newlogo = await handleImagesUpload(logoPrev);
+        console.log("Uploaded Logo:", newlogo);
+      } catch (error) {
+        console.error("Upload logo error:", error);
+      }
+    }
 
     const updatedCompanyData = {
+      ...data?.data,
       ...updatedData,
-      logo: logoUpload.length > 0 ? logoUpload[0].image : logoPrev[0] || "", // Используем существующий или новый логотип
-      photos_sample: updatedPhotos, // Обновляем все фото
+      photos_sample: [
+        ...(dataPhotosSample || []), // Существующие фото, если есть
+        ...uploadedUrls.map((item: imgUploadedType) => ({
+          photo_url_thumbnail: item.thumbnail,
+          photo_url: item.image,
+          photo_url_large: item.image,
+        })),
+      ],
+      logo: newlogo?.[0]?.image || dataLogoPhoto || "",
     };
 
     console.log(updatedCompanyData);
+
     try {
       await updateCompany({
         id,
         data: updatedCompanyData,
       }).unwrap();
+      setImagePrev([]);
+      setLogoPrev([]);
     } catch (error) {
       console.log(error);
     }
   };
-  console.log(data);
 
   const deleteData = async (id: string) => {
     await deleteCompany({ id });
-
-    navigate(-1); // Перенаправление после удаления
+    navigate(-1);
   };
 
-  const renderImages = () => {
-    if (data?.data?.logo) {
-      setLogoPrev([data.data.logo]);
-    } else {
-      setLogoPrev([]);
-    }
-
-    if (data?.data?.photos_sample) {
-      setPreviewImages(
-        data.data.photos_sample.map((photo: any) => photo.photo_url),
-      );
-    } else {
-      setPreviewImages([]);
-    }
-  };
-
-  useEffect(() => {
-    renderImages();
-  }, [data]);
+  console.log(dataLogoPhoto, "ss");
+  console.log(logoPrev);
 
   if (isLoading) return <Loading />;
 
   return (
     <>
-      <Box display={"flex"} justifyContent={"space-between"} flexWrap={"wrap"}>
+      {(loadingUploadImg || isFetching) && <Loading />}
+      <Box
+        display={"flex"}
+        justifyContent={"space-between"}
+        p={2}
+        gap={3}
+        flexWrap={"wrap"}>
         <Box flex={1}>
           <Typography variant="h5" sx={{ marginBottom: "0.5rem" }}>
-            Добавьте Изображения
+            Логотип
           </Typography>
           <UniversalImgUploader
-            setImageUploaded={setImageUploaded}
-            maxLenght={99}
-            previewImages={previewImages}
-            setPreviewImages={setPreviewImages}
+            maxLenght={1}
+            imagePrev={logoPrev}
+            setImagePrev={setLogoPrev}
+          />
+          <LogoPhoto
+            dataLogoPhoto={dataLogoPhoto}
+            setDataLogoPhoto={setDataLogoPhoto}
+            logo={data?.data?.logo}
           />
         </Box>
 
         <Box flex={1}>
           <Typography variant="h5" sx={{ marginBottom: "0.5rem" }}>
-            {logoPrev?.length ? "Изменить логотип" : "Добавить логотип"}
+            Изображения
           </Typography>
           <UniversalImgUploader
-            setImageUploaded={setLogoUpload}
-            maxLenght={1}
-            previewImages={logoPrev}
-            setPreviewImages={setLogoPrev}
+            maxLenght={99}
+            imagePrev={imagePrev}
+            setImagePrev={setImagePrev}
+          />
+
+          <DataPhotosSample
+            dataPhotosSample={dataPhotosSample}
+            setDataPhotosSample={setDataPhotosSample}
+            photoSample={data?.data?.photos_sample}
           />
         </Box>
       </Box>
@@ -181,7 +182,7 @@ const CompanySinglePage = () => {
       <UniversalDetails
         title="Детали компании"
         id={id || ""}
-        fetchData={fetchData}
+        fetchData={() => data?.data}
         updateData={updateOneData}
         deleteData={deleteData}
         fields={fields}
