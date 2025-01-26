@@ -10,22 +10,17 @@ import Loading from "../../../components/Loading";
 import { Box } from "@mui/material";
 import UniversalImgUploader from "../../../components/UniversalImgUploader/UniversalImgUploader";
 import DropDownSelect from "../../../components/DropDownSelect/DropDownSelect";
+import useUploadImage from "../../../app/hook/useUploadImage";
 
 const AddNewProducts = () => {
-  const [imageUploaded, setImageUploaded] = useState<
-    {
-      image: string;
-      status: string;
-      thumbnail: string;
-    }[]
-  >([]);
   const [previewImages, setPreviewImages] = useState<File[]>([]);
-
   const [currency, setCurrency] = useState<string>("");
   const [choosenCurrency, setChoosenCurrency] = useState<string | undefined>();
   const [addNewProduct, { isLoading }] = useAddNewProductsMutation();
   const { data: categoryData, isLoading: categoryLoading } =
     useGetAllCategoryQuery({ page: 1 });
+  const { handleImagesUpload, isLoading: loadingUploadImg } = useUploadImage();
+
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [discount, setDiscount] = useState({
     price: 0,
@@ -65,7 +60,7 @@ const AddNewProducts = () => {
   ];
 
   const handleSubmit = async (data: Record<string, string>) => {
-    if (imageUploaded.length == 0) {
+    if (previewImages.length == 0) {
       throw {
         data: { message: "Вы забыли загрузить фотографию" },
       };
@@ -76,9 +71,19 @@ const AddNewProducts = () => {
       };
     }
 
+    let newPhotoProduct: any = [];
+    if (previewImages.length > 0) {
+      try {
+        newPhotoProduct = await handleImagesUpload(previewImages);
+        console.log("Uploaded Logo:", newPhotoProduct);
+      } catch (error) {
+        console.error("Upload logo error:", error);
+      }
+    }
+
     const formattedData = {
       ...data,
-      image: imageUploaded?.[0].image || "",
+      image: newPhotoProduct?.[0].image || "",
       price: data?.price,
       category_id: selectedCategory,
       discount: discount.price ? discount : undefined,
@@ -92,9 +97,10 @@ const AddNewProducts = () => {
       category_id: selectedCategory,
       data: formattedData,
     }).unwrap();
-    setImageUploaded([]);
     setPreviewImages([]);
   };
+
+  console.log(previewImages);
 
   //поменять на бек чтобы значения приходили через бек
   const variants = [
@@ -116,6 +122,7 @@ const AddNewProducts = () => {
       alignItems={"center"}
       maxWidth={"80%"}
       margin={"0 auto"}>
+      {loadingUploadImg && <Loading />}
       <UniversalImgUploader
         maxLenght={1}
         imagePrev={previewImages}

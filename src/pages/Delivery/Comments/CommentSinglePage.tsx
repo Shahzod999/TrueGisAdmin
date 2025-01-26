@@ -65,6 +65,8 @@ const CommentSinglePage = () => {
     );
   };
 
+  console.log(data);
+  
   if (isLoading) return <Loading />;
 
   return (

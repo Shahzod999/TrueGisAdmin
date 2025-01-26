@@ -255,10 +255,7 @@ export const deliverySlice = apiSlice.injectEndpoints({
       invalidatesTags: ["Category"],
     }),
     // products
-    getAllProducts: builder.query<
-      ProductsTypesAll,
-      { page: string; limit: string }
-    >({
+    getAllProducts: builder.query< ProductsTypesAll, { page: string; limit: string }>({
       query: ({ page, limit = 15 }) => ({
         url: "/delivery/root/product",
         params: {
@@ -268,10 +265,7 @@ export const deliverySlice = apiSlice.injectEndpoints({
       }),
       providesTags: ["Products"],
     }),
-    getSingleProducts: builder.query<
-      SingleProductTypesAll,
-      { id: string | undefined }
-    >({
+    getSingleProducts: builder.query<SingleProductTypesAll, { id: string | undefined }>({
       query: ({ id }) => `/delivery/root/product/${id}`,
       providesTags: ["Products"],
     }),

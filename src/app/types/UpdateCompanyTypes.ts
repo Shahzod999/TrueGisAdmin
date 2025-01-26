@@ -70,42 +70,15 @@ export interface CompanyUpdateRequestedChanges {
   logo: string;
   logoThumbnail: string;
   full_address: string;
-  working_hours: WorkingHours2;
+  working_hours: WorkingHours;
   website: any;
-  photos_sample: PhotosSample2[];
-  social_media: SocialMedia2;
-  mobile_apps: MobileApps2;
+  photos_sample: PhotosSample[];
+  social_media: SocialMedia;
+  mobile_apps: MobileApps;
   email: any;
 }
 
-export interface WorkingHours2 {
-  Tuesday: string[];
-  Wednesday: string[];
-  Thursday: string[];
-  Friday: string[];
-  Saturday: string[];
-  Sunday: string[];
-  Monday: string[];
-}
 
-export interface PhotosSample2 {
-  photo_id: string;
-  photo_url: string;
-  photo_url_large: string;
-}
-
-export interface SocialMedia2 {
-  telegram: any;
-  instagram: any;
-  facebook: any;
-  twitter: any;
-  youtube: any;
-}
-
-export interface MobileApps2 {
-  ios: any;
-  android: any;
-}
 
 export interface CompanyUpdate {
   _id: string;
@@ -122,7 +95,7 @@ export interface CompanyUpdate {
   review_count: number;
   rating: number;
   timezone: string;
-  working_hours: WorkingHours3;
+  working_hours: WorkingHours;
   website: any;
   verified: boolean;
   place_link: string;
@@ -136,7 +109,7 @@ export interface CompanyUpdate {
   business_status: string;
   type: string;
   subtypes: string[];
-  photos_sample: PhotosSample3[];
+  photos_sample: PhotosSample[];
   reviews_per_rating: ReviewsPerRating;
   photo_count: number;
   about: About;
@@ -158,8 +131,8 @@ export interface CompanyUpdate {
   is_accept_orders: boolean;
   has_menu: boolean;
   is_partner: boolean;
-  social_media: SocialMedia3;
-  mobile_apps: MobileApps3;
+  social_media: SocialMedia;
+  mobile_apps: MobileApps;
   email: any;
   created_by: string;
   created_role: string;
@@ -167,27 +140,8 @@ export interface CompanyUpdate {
   deleted: boolean;
 }
 
-export interface WorkingHours3 {
-  Tuesday: string[];
-  Wednesday: string[];
-  Thursday: string[];
-  Friday: string[];
-  Saturday: string[];
-  Sunday: string[];
-  Monday: string[];
-}
 
-export interface PhotosSample3 {
-  photo_id: string;
-  photo_url: string;
-  photo_url_large: string;
-  video_thumbnail_url: any;
-  latitude: number;
-  longitude: number;
-  type: string;
-  photo_datetime_utc: string;
-  photo_timestamp: number;
-}
+
 
 export interface ReviewsPerRating {
   "1": number;
@@ -216,15 +170,3 @@ export interface Location {
   coordinates: number[];
 }
 
-export interface SocialMedia3 {
-  telegram: any;
-  instagram: any;
-  facebook: any;
-  twitter: any;
-  youtube: any;
-}
-
-export interface MobileApps3 {
-  ios: any;
-  android: any;
-}

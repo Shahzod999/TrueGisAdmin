@@ -60,7 +60,7 @@ const DataPhotosSample = ({
           </IconButton>
         </ImageListItem>
       ))}
-      {dataPhotosSample.length !== photoSample.length && (
+      {dataPhotosSample?.length !== photoSample?.length && (
         <Button onClick={handleReturn}>Отменить</Button>
       )}
     </ImageList>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   useGetSingleCompanyQuery,
@@ -10,9 +10,14 @@ import Loading from "../../../components/Loading";
 import { Box, Typography } from "@mui/material";
 import UniversalImgUploader from "../../../components/UniversalImgUploader/UniversalImgUploader";
 import useUploadImage from "../../../app/hook/useUploadImage";
-import { imgUploadedType, PhotosSample } from "../../../app/types/companyType";
+import {
+  imgUploadedType,
+  PhotosSample,
+  WorkingHours,
+} from "../../../app/types/companyType";
 import DataPhotosSample from "./DataPhotosSample";
 import LogoPhoto from "./LogoPhoto";
+import TimePicker from "../../../components/TimePicker";
 
 const fields = [
   { name: "name", label: "Название" },
@@ -72,6 +77,16 @@ const CompanySinglePage = () => {
 
   const [imagePrev, setImagePrev] = useState<File[]>([]);
   const [logoPrev, setLogoPrev] = useState<File[]>([]);
+  const [workingHours, setWorkingHours] = useState(
+    data?.data?.working_hours || {},
+  );
+
+  // woringHours
+  useEffect(() => {
+    if (data?.data?.working_hours) {
+      setWorkingHours(data.data.working_hours);
+    }
+  }, [data]);
 
   const updateOneData = async (
     id: string,
@@ -101,6 +116,7 @@ const CompanySinglePage = () => {
     const updatedCompanyData = {
       ...data?.data,
       ...updatedData,
+      working_hours: { ...workingHours },
       photos_sample: [
         ...(dataPhotosSample || []), // Существующие фото, если есть
         ...uploadedUrls.map((item: imgUploadedType) => ({
@@ -130,15 +146,20 @@ const CompanySinglePage = () => {
     await deleteCompany({ id });
     navigate(-1);
   };
+  console.log(data);
 
-  console.log(dataLogoPhoto, "ss");
-  console.log(logoPrev);
+  const handleWorkingHoursChange = (newHours: WorkingHours) => {
+    setWorkingHours(newHours);
+  };
 
+  console.log(workingHours);
+  
   if (isLoading) return <Loading />;
 
   return (
     <>
       {(loadingUploadImg || isFetching) && <Loading />}
+
       <Box
         display={"flex"}
         justifyContent={"space-between"}
@@ -177,6 +198,16 @@ const CompanySinglePage = () => {
             photoSample={data?.data?.photos_sample}
           />
         </Box>
+      </Box>
+
+      <Box p={2} gap={3} flexWrap={"wrap"}>
+        <Typography variant="h5" sx={{ marginBottom: "0.5rem" }}>
+          Время работы
+        </Typography>
+        <TimePicker
+          workingHours={workingHours}
+          setWorkingHours={handleWorkingHoursChange}
+        />
       </Box>
 
       <UniversalDetails

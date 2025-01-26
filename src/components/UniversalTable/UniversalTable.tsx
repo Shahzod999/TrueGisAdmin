@@ -44,12 +44,35 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const getNestedValue = (obj: Record<string, any>, path: string): any => {
-    return path
+    const value = path
       .split(".")
       .reduce(
         (acc, key) => (acc && acc[key] !== undefined ? acc[key] : ""),
         obj,
       );
+
+    // Список полей, которые могут содержать временные метки
+    const dateFields = ["created_at", "reply_date", "updated_at"];
+
+    if (
+      dateFields.includes(path) &&
+      (typeof value === "string" || typeof value === "number")
+    ) {
+      const timestamp = typeof value === "string" ? parseInt(value, 10) : value;
+
+      // Проверяем, корректен ли timestamp, и только затем преобразуем в дату
+      if (!isNaN(timestamp)) {
+        return new Date(timestamp).toLocaleDateString("ru-RU", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      }
+    }
+
+    return value;
   };
 
   if (isLoading) {

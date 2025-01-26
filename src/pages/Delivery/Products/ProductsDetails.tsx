@@ -118,18 +118,6 @@ const ProductDetails = () => {
     { name: "price", label: "Цена", type: "number" },
     { name: "weight", label: "Вес", type: "number" },
     { name: "active", label: "Активный", type: "checkbox" },
-    {
-      name: "created_at",
-      label: "Дата создания",
-      type: "text",
-      noteditable: true,
-    },
-    {
-      name: "updated_at",
-      label: "Дата обновления",
-      type: "text",
-      noteditable: true,
-    },
   ];
 
   const renderImages = () => {
