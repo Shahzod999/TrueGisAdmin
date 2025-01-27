@@ -1,37 +1,29 @@
 import { useState } from "react";
-import UniversalTable from "../../../components/UniversalTable/UniversalTable";
 import { Box, Stack, Pagination, PaginationItem } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { useNavigate } from "react-router";
-import useSnackbar from "../../../app/hook/callSnackBar";
 import {
-  useDeleteProductsMutation,
+  useGetAllCategoryQuery,
   useGetAllProductsQuery,
 } from "../../../app/api/deliverySlice";
+import { useParams } from "react-router";
+import CategoryButtons from "./CategoryButtons";
+import Loading from "../../../components/Loading";
+import ProductCards from "./ProductCards";
 
 const GetAllProducts = () => {
-  const navigate = useNavigate();
-  const triggerSnackbar = useSnackbar();
+  const { companyId } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
-  const [deleteProduct] = useDeleteProductsMutation();
+
+  const { data: categoryData, isLoading: categoryLoading } =
+    useGetAllCategoryQuery({ company_id: companyId }, { skip: !companyId });
+
   const { data, isLoading, isFetching } = useGetAllProductsQuery({
     page: currentPage.toString(),
     limit: "15",
+    category_id: "",
+    company_id: "",
   });
-
-  const handleDelete = async (id: string) => {
-    try {
-      await deleteProduct({ id }).unwrap();
-      triggerSnackbar("Продукт успешно удален", "success");
-    } catch (error) {
-      triggerSnackbar("Произошла ошибка при удалении продукта", "error");
-    }
-  };
-
-  const handleView = (id: string) => {
-    navigate(id);
-  };
 
   const handlePageChange = (
     _event: React.ChangeEvent<unknown>,
@@ -39,26 +31,28 @@ const GetAllProducts = () => {
   ) => {
     setCurrentPage(newPage);
   };
+  const handleCategorySelect = (categoryId: string) => {
+    console.log("Выбранная категория ID:", categoryId);
+  };
 
-
-  const columns = [
-    { field: "name", headerName: "Название" },
-    { field: "category_id", headerName: "Категория ID" },
-    { field: "price", headerName: "Цена" },
-    { field: "company_id", headerName: "Компания ID" },
-    { field: "description", headerName: "Описание" },
-  ];
-
+  if (isLoading) return <Loading />;
   return (
     <div>
-      <UniversalTable
-        title="Продукты"
-        data={data?.data || []}
-        columns={columns}
-        isLoading={isLoading || isFetching}
-        onDelete={handleDelete}
-        onView={handleView}
-      />
+      {isFetching && <Loading />}
+
+      {categoryLoading ? (
+        <Loading />
+      ) : (
+        <CategoryButtons
+          categories={categoryData?.data}
+          onSelect={handleCategorySelect}
+        />
+      )}
+
+      {/* <Box>Продукт есть или нет если нет дать возможности добавить</Box> */}
+
+      <ProductCards products={data?.data || []} />
+
       <Box display="flex" justifyContent="center" mt={2}>
         <Stack spacing={2}>
           <Pagination

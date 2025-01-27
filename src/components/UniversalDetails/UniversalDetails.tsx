@@ -275,22 +275,6 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
           Удалить
         </Button>
       </Box>
-
-      {data.has_menu && (
-        <Box sx={{ mt: 2 }}>
-          <Divider sx={{ mb: 1 }} />
-          <Typography variant="subtitle1" sx={{ mb: 1 }}>
-            Дополнительные действия
-          </Typography>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={() => navigate(`/companies/${data.companyId}/products`)}
-            size="small">
-            Продукты компании
-          </Button>
-        </Box>
-      )}
     </Paper>
   );
 };

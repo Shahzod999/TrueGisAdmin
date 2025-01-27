@@ -7,7 +7,7 @@ import {
 } from "../../../app/api/deliverySlice";
 import UniversalDetails from "../../../components/UniversalDetails/UniversalDetails";
 import Loading from "../../../components/Loading";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import UniversalImgUploader from "../../../components/UniversalImgUploader/UniversalImgUploader";
 import useUploadImage from "../../../app/hook/useUploadImage";
 import {
@@ -57,6 +57,12 @@ const fields = [
   {
     name: "is_accept_orders",
     label: "Принимает заказы",
+    type: "checkbox",
+    position: "end",
+  },
+  {
+    name: "has_menu",
+    label: "Есть Меню",
     type: "checkbox",
     position: "end",
   },
@@ -131,13 +137,16 @@ const CompanySinglePage = () => {
     console.log(updatedCompanyData);
 
     try {
-      await updateCompany({
+      let res = await updateCompany({
         id,
         data: updatedCompanyData,
       }).unwrap();
+      console.log(res, " werwer");
+
       setImagePrev([]);
       setLogoPrev([]);
     } catch (error) {
+      throw new Error("Ошибка обновления данных");
       console.log(error);
     }
   };
@@ -152,8 +161,6 @@ const CompanySinglePage = () => {
     setWorkingHours(newHours);
   };
 
-  console.log(workingHours);
-  
   if (isLoading) return <Loading />;
 
   return (
@@ -202,12 +209,23 @@ const CompanySinglePage = () => {
 
       <Box p={2} gap={3} flexWrap={"wrap"}>
         <Typography variant="h5" sx={{ marginBottom: "0.5rem" }}>
-          Время работы
+          Дополнительно
         </Typography>
-        <TimePicker
-          workingHours={workingHours}
-          setWorkingHours={handleWorkingHoursChange}
-        />
+
+        <Box display={"flex"} gap={3}>
+          <TimePicker
+            workingHours={workingHours}
+            setWorkingHours={handleWorkingHoursChange}
+          />
+
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => navigate(`/delivery-products/${data?.data?._id}`)}
+            size="small">
+            Продукты компании
+          </Button>
+        </Box>
       </Box>
 
       <UniversalDetails

@@ -8,12 +8,18 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import UniversalTable from "../../../components/UniversalTable/UniversalTable";
 import { Box, Pagination, PaginationItem, Stack } from "@mui/material";
 import { useState } from "react";
+import { useParams } from "react-router";
 
 // List of categories
 const CategoryList = () => {
+  const { companyId } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data, isLoading } = useGetAllCategoryQuery({ page: currentPage });
+  const { data, isLoading } = useGetAllCategoryQuery({
+    page: currentPage,
+    company_id: companyId,
+  });
+  
   const [deleteCategory] = useDeleteCategoryMutation();
   const navigate = useNavigate();
 

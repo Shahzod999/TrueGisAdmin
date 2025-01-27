@@ -18,7 +18,7 @@ import DropDownSelect from "../../../components/DropDownSelect/DropDownSelect";
 
 const ProductDetails = () => {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
+  const { id, companyId } = useParams();
 
   const [currency, setCurrency] = useState<string>("");
   const [choosenCurrency, setChoosenCurrency] = useState<string>("");
@@ -27,6 +27,7 @@ const ProductDetails = () => {
   const { data: categoryData, isLoading: categoryLoading } =
     useGetAllCategoryQuery({
       page: 1,
+      company_id: companyId,
     });
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [updateProduct, { isLoading: updateLoading }] =

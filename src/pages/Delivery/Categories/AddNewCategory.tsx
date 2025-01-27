@@ -1,16 +1,19 @@
+import { useParams } from "react-router";
 import { useAddNewCategoryMutation } from "../../../app/api/deliverySlice";
 import UniversalAddForm from "../../../components/UniversalAddForm/UniversalAddForm";
 
 type FormData = Record<string, string>;
 
 const AddNewCategory = () => {
+  const { companyId } = useParams();
+
   const [addNewCategory, { isLoading }] = useAddNewCategoryMutation();
 
   // мы тут
   const handleSubmit = async (data: FormData) => {
     await addNewCategory({
       data,
-      companyID: "673a89577d6d20cabf0ad3d5",
+      companyID: companyId,
     }).unwrap();
   };
 

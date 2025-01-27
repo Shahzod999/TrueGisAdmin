@@ -221,9 +221,9 @@ export const deliverySlice = apiSlice.injectEndpoints({
     }),
     // category
     getAllCategory: builder.query({
-      query: ({ page }) => ({
+      query: ({ page, company_id }) => ({
         url: "/delivery/root/category",
-        params: { page },
+        params: { page, company_id },
       }),
       providesTags: ["Category"],
     }),
@@ -255,17 +255,25 @@ export const deliverySlice = apiSlice.injectEndpoints({
       invalidatesTags: ["Category"],
     }),
     // products
-    getAllProducts: builder.query< ProductsTypesAll, { page: string; limit: string }>({
-      query: ({ page, limit = 15 }) => ({
+    getAllProducts: builder.query<
+      ProductsTypesAll,
+      { page: string; limit: string; company_id: string; category_id: string }
+    >({
+      query: ({ page, limit = 15, company_id = "", category_id = "" }) => ({
         url: "/delivery/root/product",
         params: {
           page,
           limit,
+          company_id,
+          category_id,
         },
       }),
       providesTags: ["Products"],
     }),
-    getSingleProducts: builder.query<SingleProductTypesAll, { id: string | undefined }>({
+    getSingleProducts: builder.query<
+      SingleProductTypesAll,
+      { id: string | undefined }
+    >({
       query: ({ id }) => `/delivery/root/product/${id}`,
       providesTags: ["Products"],
     }),

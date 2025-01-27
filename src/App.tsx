@@ -77,12 +77,12 @@ const App = () => {
             <Route index element={<UserTable />} />
             <Route path=":id" element={<UserDetails />} />
           </Route>
-          <Route path="delivery-categories" element={<Categories />}>
+          <Route path="delivery-categories/:companyId" element={<Categories />}>
             <Route index element={<CategoryList />} />
             <Route path=":id" element={<CategoryDetails />} />
             <Route path="add-categories" element={<AddNewCategory />} />
           </Route>
-          <Route path="delivery-products" element={<Products />}>
+          <Route path="delivery-products/:companyId" element={<Products />}>
             <Route index element={<ProductsList />} />
             <Route path=":id" element={<ProductsDetails />} />
             <Route path="add-newProduct" element={<AddNewProducts />} />
