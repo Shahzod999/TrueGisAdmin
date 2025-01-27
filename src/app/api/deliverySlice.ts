@@ -303,10 +303,10 @@ export const deliverySlice = apiSlice.injectEndpoints({
 
     // orders
     getAllOrders: builder.query({
-      query: ({ page, limit = 16 }) => ({
+      query: ({ page, limit = 16, company_id }) => ({
         url: "/delivery/root/order",
         params: {
-          company_id: "324729384723489",
+          company_id,
           page,
           limit,
         },

@@ -63,7 +63,7 @@ export interface CategoryType {
   name?: string;
   image?: any;
   imageThumbnail?: any;
-  company_id?: string;
+  company_id: string;
   created_by?: string;
   created_at?: number;
   deleted?: boolean;

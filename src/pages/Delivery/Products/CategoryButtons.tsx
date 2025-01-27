@@ -29,14 +29,14 @@ const CategoryButtons = ({ categories, onSelect }: categoryButtonsProps) => {
       spacing={2}
       sx={{ flexWrap: "wrap", justifyContent: "center", mt: 2 }}>
       <Button
-        onClick={handleNavigate}
+        onClick={() => handleSelect("")}
         sx={{
           textTransform: "none",
           padding: "12px 24px",
           fontSize: "1rem",
           fontWeight: "bold",
         }}>
-        Категории
+        Все
       </Button>
       {categories.map((category: CategoryType) => (
         <Button
@@ -62,6 +62,16 @@ const CategoryButtons = ({ categories, onSelect }: categoryButtonsProps) => {
           {category.name}
         </Button>
       ))}
+      <Button
+        onClick={handleNavigate}
+        sx={{
+          textTransform: "none",
+          padding: "12px 24px",
+          fontSize: "1rem",
+          fontWeight: "bold",
+        }}>
+        Категории
+      </Button>
     </Stack>
   );
 };

@@ -28,7 +28,7 @@ const ProductCards: React.FC<ProductCardsProps> = ({ products }) => {
       : text;
   };
 
-  console.log(products[0].image);
+  console.log(products);
 
   return (
     <Grid container spacing={3} padding={2} justifyContent="center">

@@ -11,17 +11,22 @@ import { Box } from "@mui/material";
 import UniversalImgUploader from "../../../components/UniversalImgUploader/UniversalImgUploader";
 import DropDownSelect from "../../../components/DropDownSelect/DropDownSelect";
 import useUploadImage from "../../../app/hook/useUploadImage";
+import { useParams } from "react-router";
 
 const AddNewProducts = () => {
+  const { companyId } = useParams();
   const [previewImages, setPreviewImages] = useState<File[]>([]);
   const [currency, setCurrency] = useState<string>("");
   const [choosenCurrency, setChoosenCurrency] = useState<string | undefined>();
   const [addNewProduct, { isLoading }] = useAddNewProductsMutation();
   const { data: categoryData, isLoading: categoryLoading } =
-    useGetAllCategoryQuery({ page: 1 });
+    useGetAllCategoryQuery({ page: 1, company_id: companyId });
   const { handleImagesUpload, isLoading: loadingUploadImg } = useUploadImage();
 
+  console.log(categoryData);
+
   const [selectedCategory, setSelectedCategory] = useState<string>("");
+
   const [discount, setDiscount] = useState({
     price: 0,
     start_date: "",

@@ -225,6 +225,13 @@ const CompanySinglePage = () => {
             size="small">
             Продукты компании
           </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => navigate(`/delivery-orders/${data?.data?._id}`)}
+            size="small">
+            Заказы компании
+          </Button>
         </Box>
       </Box>
 

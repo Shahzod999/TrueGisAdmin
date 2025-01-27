@@ -91,7 +91,7 @@ const App = () => {
             <Route index element={<ReportList />} />
             <Route path=":id" element={<ReportSingle />} />
           </Route>
-          <Route path="delivery-orders" element={<Orders />}>
+          <Route path="delivery-orders/:companyId" element={<Orders />}>
             <Route index element={<OrderList />} />
             <Route path=":id" element={<OrderSingle />} />
           </Route>

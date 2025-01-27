@@ -9,8 +9,10 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useNavigate } from "react-router";
 import useSnackbar from "../../../app/hook/callSnackBar";
+import { useParams } from "react-router";
 
 const OrderList = () => {
+  const { companyId } = useParams();
   const navigate = useNavigate();
   const triggerSnackbar = useSnackbar();
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,6 +20,7 @@ const OrderList = () => {
   const { data, isLoading, isFetching } = useGetAllOrdersQuery({
     page: currentPage,
     limit: 16,
+    company_id: companyId,
   });
 
   const handleDelete = async (id: string) => {
@@ -47,6 +50,7 @@ const OrderList = () => {
     { field: "total_amount", headerName: "Сумма заказа" },
     { field: "created_at", headerName: "Дата создания" },
   ];
+  console.log(companyId);
 
   return (
     <div>

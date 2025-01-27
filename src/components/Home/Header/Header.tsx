@@ -171,13 +171,13 @@ const Header = () => {
                     onClick={handleDrawerToggle}>
                     <ListItemText primary="Types" />
                   </ListItemButton>
-                  <ListItemButton
+                  {/* <ListItemButton
                     sx={{ pl: 4 }}
                     component={Link}
                     to="/delivery-categories"
                     onClick={handleDrawerToggle}>
                     <ListItemText primary="Category" />
-                  </ListItemButton>
+                  </ListItemButton> */}
                   <ListItemButton
                     sx={{ pl: 4 }}
                     component={Link}
@@ -185,13 +185,13 @@ const Header = () => {
                     onClick={handleDrawerToggle}>
                     <ListItemText primary="User" />
                   </ListItemButton>
-                  <ListItemButton
+                  {/* <ListItemButton
                     sx={{ pl: 4 }}
                     component={Link}
                     to="/delivery-products"
                     onClick={handleDrawerToggle}>
                     <ListItemText primary="Products" />
-                  </ListItemButton>
+                  </ListItemButton> */}
                   <ListItemButton
                     sx={{ pl: 4 }}
                     component={Link}
@@ -199,13 +199,13 @@ const Header = () => {
                     onClick={handleDrawerToggle}>
                     <ListItemText primary="Report" />
                   </ListItemButton>
-                  <ListItemButton
+                  {/* <ListItemButton
                     sx={{ pl: 4 }}
                     component={Link}
                     to="/delivery-orders"
                     onClick={handleDrawerToggle}>
                     <ListItemText primary="Orders" />
-                  </ListItemButton>
+                  </ListItemButton> */}
                 </List>
               </Collapse>
               <ListItemButton

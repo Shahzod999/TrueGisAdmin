@@ -14,16 +14,20 @@ import ProductCards from "./ProductCards";
 const GetAllProducts = () => {
   const { companyId } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   const { data: categoryData, isLoading: categoryLoading } =
     useGetAllCategoryQuery({ company_id: companyId }, { skip: !companyId });
 
-  const { data, isLoading, isFetching } = useGetAllProductsQuery({
-    page: currentPage.toString(),
-    limit: "15",
-    category_id: "",
-    company_id: "",
-  });
+  const { data, isLoading, isFetching } = useGetAllProductsQuery(
+    {
+      page: currentPage.toString(),
+      limit: "15",
+      category_id: selectedCategory,
+      company_id: companyId,
+    },
+    { skip: !companyId },
+  );
 
   const handlePageChange = (
     _event: React.ChangeEvent<unknown>,
@@ -33,6 +37,7 @@ const GetAllProducts = () => {
   };
   const handleCategorySelect = (categoryId: string) => {
     console.log("Выбранная категория ID:", categoryId);
+    setSelectedCategory(categoryId);
   };
 
   if (isLoading) return <Loading />;
