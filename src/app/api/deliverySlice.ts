@@ -259,7 +259,7 @@ export const deliverySlice = apiSlice.injectEndpoints({
       ProductsTypesAll,
       { page: string; limit: string; company_id: string; category_id: string }
     >({
-      query: ({ page, limit = 15, company_id = "", category_id = "" }) => ({
+      query: ({ page, limit = 15, company_id, category_id }) => ({
         url: "/delivery/root/product",
         params: {
           page,

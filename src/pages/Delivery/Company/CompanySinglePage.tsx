@@ -18,6 +18,7 @@ import {
 import DataPhotosSample from "./DataPhotosSample";
 import LogoPhoto from "./LogoPhoto";
 import TimePicker from "../../../components/TimePicker";
+import BusinessSettingsForm from "./ChekBox";
 
 const fields = [
   { name: "name", label: "Название" },
@@ -53,19 +54,6 @@ const fields = [
     type: "number",
   },
   { name: "requester_position", label: "Позиция отправителя" },
-  { name: "is_partner", label: "Партнер", type: "checkbox", position: "end" },
-  {
-    name: "is_accept_orders",
-    label: "Принимает заказы",
-    type: "checkbox",
-    position: "end",
-  },
-  {
-    name: "has_menu",
-    label: "Есть Меню",
-    type: "checkbox",
-    position: "end",
-  },
 ];
 
 const CompanySinglePage = () => {
@@ -91,6 +79,15 @@ const CompanySinglePage = () => {
   useEffect(() => {
     if (data?.data?.working_hours) {
       setWorkingHours(data.data.working_hours);
+    }
+
+    if (data?.data) {
+      setSettings({
+        is_partner: data.data.is_partner ?? false,
+        is_accept_orders: data.data.is_accept_orders ?? false,
+        order_type: data.data.order_type ?? "delivery_pickup",
+        has_menu: data.data.has_menu ?? false,
+      });
     }
   }, [data]);
 
@@ -122,6 +119,7 @@ const CompanySinglePage = () => {
     const updatedCompanyData = {
       ...data?.data,
       ...updatedData,
+      ...settings,
       working_hours: { ...workingHours },
       photos_sample: [
         ...(dataPhotosSample || []), // Существующие фото, если есть
@@ -147,7 +145,6 @@ const CompanySinglePage = () => {
       setLogoPrev([]);
     } catch (error) {
       throw new Error("Ошибка обновления данных");
-      console.log(error);
     }
   };
 
@@ -160,6 +157,19 @@ const CompanySinglePage = () => {
   const handleWorkingHoursChange = (newHours: WorkingHours) => {
     setWorkingHours(newHours);
   };
+
+  const [settings, setSettings] = useState({
+    is_partner: false,
+    is_accept_orders: false,
+    order_type: "",
+    has_menu: false,
+  });
+
+  const handleChange = (name: string, value: boolean | string) => {
+    setSettings((prev) => ({ ...prev, [name]: value }));
+  };
+
+  console.log(settings);
 
   if (isLoading) return <Loading />;
 
@@ -244,6 +254,8 @@ const CompanySinglePage = () => {
         fields={fields}
         redirectAfterDelete="/companies"
       />
+
+      <BusinessSettingsForm values={settings} onChange={handleChange} />
     </>
   );
 };

@@ -24,7 +24,7 @@ const GetAllProducts = () => {
       page: currentPage.toString(),
       limit: "15",
       category_id: selectedCategory,
-      company_id: companyId,
+      company_id: companyId || "",
     },
     { skip: !companyId },
   );
