@@ -7,6 +7,31 @@ import {
 import UniversalDetails from "../../../components/UniversalDetails/UniversalDetails";
 import Loading from "../../../components/Loading";
 import ImageSlider from "../../../components/ImageSlider";
+import BusinessSettingsForm, { FieldConfig } from "../Company/ChekBox";
+import { useEffect, useState } from "react";
+
+const fields = [
+  { name: "user.telegram_name", label: "Имя пользователя" },
+  { name: "user.telegram_username", label: "Телеграм Имя" },
+  { name: "rating", label: "Рейтинг" },
+  { name: "message", label: "Сообщение", type: "textarea" },
+  { name: "created_at", label: "Дата создания" },
+  { name: "company.name", label: "Название компании" },
+  { name: "company.full_address", label: "Адрес компании" },
+];
+
+const fieldsSetting: FieldConfig[] = [
+  {
+    name: "status",
+    label: "Статус",
+    type: "select",
+    options: [
+      { value: "accepted", label: "Принять" },
+      { value: "rejected", label: "Отклонить" },
+      { value: "pending", label: "Ожидание" },
+    ],
+  },
+];
 
 const CommentSinglePage = () => {
   const navigate = useNavigate();
@@ -14,9 +39,17 @@ const CommentSinglePage = () => {
 
   const { data, isLoading } = useGetOneCommentQuery({ id });
 
-
   const [updateOneComment] = useUpdateOneCommentMutation();
   const [deleteOneComment] = useDeleteOneCommentMutation();
+  const [settings, setSettings] = useState({
+    status: "pending",
+  });
+
+  useEffect(() => {
+    setSettings({
+      status: data?.data?.status,
+    });
+  }, [data]);
 
   const fetchData = async () => {
     if (!data) throw new Error("Данные отсутствуют");
@@ -35,7 +68,12 @@ const CommentSinglePage = () => {
   };
 
   const updateData = async (id: string, updatedData: Record<string, any>) => {
-    let res = await updateOneComment({ id, data: updatedData }).unwrap();
+    // console.log({ id, data: { ...updatedData, ...settings } });
+
+    let res = await updateOneComment({
+      id,
+      data: { ...updatedData, ...settings },
+    }).unwrap();
     console.log(res);
   };
 
@@ -44,17 +82,6 @@ const CommentSinglePage = () => {
     console.log(res);
     navigate(-1);
   };
-
-  const fields = [
-    { name: "user.telegram_name", label: "Имя пользователя" },
-    { name: "user.telegram_username", label: "Телеграм Имя" },
-    { name: "rating", label: "Рейтинг" },
-    { name: "message", label: "Сообщение", type: "textarea" },
-    { name: "created_at", label: "Дата создания" },
-    { name: "status", label: "Статус" },
-    { name: "company.name", label: "Название компании" },
-    { name: "company.full_address", label: "Адрес компании" },
-  ];
 
   const renderImages = (images: string[] | undefined) => {
     if (!images || images.length === 0) return null;
@@ -65,8 +92,10 @@ const CommentSinglePage = () => {
     );
   };
 
-  console.log(data);
-  
+  const handleChangeSettings = (name: string, value: boolean | string) => {
+    setSettings((prev) => ({ ...prev, [name]: value }));
+  };
+
   if (isLoading) return <Loading />;
 
   return (
@@ -80,6 +109,11 @@ const CommentSinglePage = () => {
         deleteData={deleteData}
         fields={fields}
         redirectAfterDelete="/delivery-comments"
+      />
+      <BusinessSettingsForm
+        values={settings}
+        onChange={handleChangeSettings}
+        fields={fieldsSetting}
       />
     </>
   );

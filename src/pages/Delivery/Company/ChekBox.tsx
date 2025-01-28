@@ -7,29 +7,27 @@ import {
   MenuItem,
   Switch,
   Typography,
-  useMediaQuery,
-  FormLabel
+  FormLabel,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 
-// Определение типов свойств
+export interface FieldConfig {
+  name: string;
+  label: string;
+  type: "switch" | "select"; // Ограничиваем тип только на разрешенные значения
+  options?: { value: string; label: string }[]; // Опционально, только для "select"
+}
+
 interface BusinessSettingsFormProps {
-  values: {
-    is_partner: boolean;
-    is_accept_orders: boolean;
-    has_menu: boolean;
-    order_type: string;
-  };
+  values: { [key: string]: boolean | string };
   onChange: (name: string, value: boolean | string) => void;
+  fields: FieldConfig[];
 }
 
 const BusinessSettingsForm: React.FC<BusinessSettingsFormProps> = ({
   values,
   onChange,
+  fields,
 }) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
   return (
     <Box
       sx={{
@@ -40,67 +38,61 @@ const BusinessSettingsForm: React.FC<BusinessSettingsFormProps> = ({
         maxWidth: "98%",
         mx: "auto",
         backgroundColor: "#fff",
-      }}
-    >
+      }}>
       <Typography variant="h6" sx={{ mb: 2, textAlign: "center" }}>
         Опции
       </Typography>
 
-      {/* Ползунки в строку */}
       <Box
         sx={{
           display: "flex",
-          flexDirection: isMobile ? "column" : "row",
-          alignItems: "center",
+          flexWrap: "wrap",
           gap: 2,
           mb: 3,
-        }}
-      >
-        <FormControlLabel
-          control={
-            <Switch
-              checked={values.is_partner}
-              onChange={(e) => onChange("is_partner", e.target.checked)}
-            />
+        }}>
+        {fields?.map((field) => {
+          if (field.type === "switch") {
+            return (
+              <FormControlLabel
+                key={field.name}
+                control={
+                  <Switch
+                    checked={!!values[field.name]}
+                    onChange={(e) => onChange(field.name, e.target.checked)}
+                  />
+                }
+                label={field.label}
+              />
+            );
           }
-          label="Партнер"
-        />
-        <FormControlLabel
-          control={
-            <Switch
-              checked={values.is_accept_orders}
-              onChange={(e) => onChange("is_accept_orders", e.target.checked)}
-            />
-          }
-          label="Принимает заказы"
-        />
-        <FormControlLabel
-          control={
-            <Switch
-              checked={values.has_menu}
-              onChange={(e) => onChange("has_menu", e.target.checked)}
-            />
-          }
-          label="Есть Меню"
-        />
-      </Box>
 
-      {/* Выбор типа заказа */}
-      <FormControl fullWidth sx={{ mb: 2 }}>
-        <FormLabel sx={{ mb: 1, fontWeight: "bold" }}>Тип заказа</FormLabel>
-        <Select
-          value={values.order_type}
-          onChange={(e) => onChange("order_type", e.target.value)}
-          displayEmpty
-          variant="outlined"
-        >
-          <MenuItem value="" disabled>
-            Выберите тип заказа
-          </MenuItem>
-          <MenuItem value="delivery_pickup">Самовывоз/Доставка</MenuItem>
-          <MenuItem value="appointment">По записи</MenuItem>
-        </Select>
-      </FormControl>
+          if (field.type === "select") {
+            return (
+              <FormControl key={field.name} fullWidth>
+                <FormLabel sx={{ mb: 1, fontWeight: "bold" }}>
+                  {field.label}
+                </FormLabel>
+                <Select
+                  value={values[field.name] || ""}
+                  onChange={(e) => onChange(field.name, e.target.value)}
+                  displayEmpty
+                  variant="outlined">
+                  <MenuItem value="" disabled>
+                    Выберите {field.label.toLowerCase()}
+                  </MenuItem>
+                  {field.options?.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            );
+          }
+
+          return null; // Игнорируем неизвестные типы
+        })}
+      </Box>
     </Box>
   );
 };

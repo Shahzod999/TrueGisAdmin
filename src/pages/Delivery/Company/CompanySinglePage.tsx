@@ -18,7 +18,7 @@ import {
 import DataPhotosSample from "./DataPhotosSample";
 import LogoPhoto from "./LogoPhoto";
 import TimePicker from "../../../components/TimePicker";
-import BusinessSettingsForm from "./ChekBox";
+import BusinessSettingsForm, { FieldConfig } from "./ChekBox";
 
 const fields = [
   { name: "name", label: "Название" },
@@ -56,6 +56,21 @@ const fields = [
   { name: "requester_position", label: "Позиция отправителя" },
 ];
 
+const fieldsSetting: FieldConfig[] = [
+  { name: "is_partner", label: "Партнер", type: "switch" },
+  { name: "is_accept_orders", label: "Принимает заказы", type: "switch" },
+  { name: "has_menu", label: "Есть Меню", type: "switch" },
+  {
+    name: "order_type",
+    label: "Тип заказа",
+    type: "select",
+    options: [
+      { value: "delivery_pickup", label: "Самовывоз/Доставка" },
+      { value: "appointment", label: "По записи" },
+    ],
+  },
+];
+
 const CompanySinglePage = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
@@ -74,6 +89,12 @@ const CompanySinglePage = () => {
   const [workingHours, setWorkingHours] = useState(
     data?.data?.working_hours || {},
   );
+  const [settings, setSettings] = useState({
+    is_partner: false,
+    is_accept_orders: false,
+    has_menu: false,
+    order_type: "",
+  });
 
   // woringHours
   useEffect(() => {
@@ -158,25 +179,15 @@ const CompanySinglePage = () => {
     setWorkingHours(newHours);
   };
 
-  const [settings, setSettings] = useState({
-    is_partner: false,
-    is_accept_orders: false,
-    order_type: "",
-    has_menu: false,
-  });
-
-  const handleChange = (name: string, value: boolean | string) => {
+  const handleChangeSettings = (name: string, value: boolean | string) => {
     setSettings((prev) => ({ ...prev, [name]: value }));
   };
-
-  console.log(settings);
 
   if (isLoading) return <Loading />;
 
   return (
     <>
       {(loadingUploadImg || isFetching) && <Loading />}
-
       <Box
         display={"flex"}
         justifyContent={"space-between"}
@@ -216,7 +227,6 @@ const CompanySinglePage = () => {
           />
         </Box>
       </Box>
-
       <Box p={2} gap={3} flexWrap={"wrap"}>
         <Typography variant="h5" sx={{ marginBottom: "0.5rem" }}>
           Дополнительно
@@ -244,7 +254,6 @@ const CompanySinglePage = () => {
           </Button>
         </Box>
       </Box>
-
       <UniversalDetails
         title="Детали компании"
         id={id || ""}
@@ -254,8 +263,12 @@ const CompanySinglePage = () => {
         fields={fields}
         redirectAfterDelete="/companies"
       />
-
-      <BusinessSettingsForm values={settings} onChange={handleChange} />
+      <BusinessSettingsForm
+        values={settings}
+        onChange={handleChangeSettings}
+        fields={fieldsSetting}
+      />
+      ;
     </>
   );
 };

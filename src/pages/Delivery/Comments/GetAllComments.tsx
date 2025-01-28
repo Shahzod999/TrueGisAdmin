@@ -89,7 +89,10 @@ const GetAllComments = () => {
     { field: "message", headerName: "Сообщение" },
     { field: "created_at", headerName: "Дата создания" },
     { field: "company.name", headerName: "Компания" },
+    { field: "status", headerName: "СТАТУС" },
   ];
+
+  console.log(data);
 
   const [modalReply, setModalReply] = useState<string | null>(null);
 
