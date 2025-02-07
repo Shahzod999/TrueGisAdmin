@@ -22,6 +22,7 @@ import BusinessSettingsForm, { FieldConfig } from "./ChekBox";
 
 const fields = [
   { name: "name", label: "Название" },
+  { name: "email", label: "Email" },
   { name: "description", label: "Описание" },
   { name: "city", label: "Город" },
   { name: "country", label: "Страна" },
