@@ -56,6 +56,7 @@ const GetAllUpdateCompany = () => {
 
   const columns = [
     { field: "company_id", headerName: "ID Company" },
+    { field: "company.name", headerName: "Company" },
     { field: "status", headerName: "Статус" },
     { field: "updated_at", headerName: "Дата обновления" },
     { field: "requester_name", headerName: "Инициатор" },
