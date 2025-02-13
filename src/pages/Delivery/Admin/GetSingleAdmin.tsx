@@ -7,7 +7,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import UniversalDetails from "../../../components/UniversalDetails/UniversalDetails";
 
 import Loading from "../../../components/Loading";
-import AssignUnAssignCompany from "./assignUnAssignCompany";
+import AssignUnAssignCompany from "./AssignUnAssignCompany";
 
 const GetSingleAdmin = () => {
   const { id } = useParams<{ id: string }>();

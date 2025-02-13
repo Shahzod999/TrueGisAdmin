@@ -7,6 +7,7 @@ import { useState } from "react";
 import GetAllCompany from "../Company/GetAllCompany";
 import Loading from "../../../components/Loading";
 import PermissionsPopup, { permissionsType } from "./PermissionsPopup";
+import useSnackbar from "../../../app/hook/callSnackBar";
 
 interface AssignUnAssignCompanyProps {
   adminId: string | undefined;
@@ -19,6 +20,7 @@ const AssignUnAssignCompany = ({ adminId }: AssignUnAssignCompanyProps) => {
     useAdminUnAssignCompanyMutation();
   const [open, setOpen] = useState(false);
   const [isPopupOpen, setPopupOpen] = useState<string>("");
+  const triggerSnackbar = useSnackbar();
 
   const handleSetAssignIdCompany = async (id: string, is_assigned: boolean) => {
     if (is_assigned) {
@@ -42,8 +44,10 @@ const AssignUnAssignCompany = ({ adminId }: AssignUnAssignCompanyProps) => {
         },
       }).unwrap();
       console.log("Компания успешно назначена:", res);
+      triggerSnackbar("Компания успешно назначена", "success");
     } catch (error) {
       console.error("Ошибка при назначении компании:", error);
+      triggerSnackbar("Ошибка при назначении компании", "error");
     }
   };
 
@@ -59,8 +63,10 @@ const AssignUnAssignCompany = ({ adminId }: AssignUnAssignCompanyProps) => {
         },
       }).unwrap();
       console.log("Компания успешно удалена у админа:", res);
+      triggerSnackbar("Компания успешно удалена у админа:", "success");
     } catch (error) {
       console.error("Ошибка при удалении компании у админа:", error);
+      triggerSnackbar("Ошибка при удалении компании у админа:", "error");
     }
   };
 

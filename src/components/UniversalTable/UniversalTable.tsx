@@ -153,7 +153,7 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
                 {handleSetAssignIdCompany && (
                   <Button
                     variant="outlined"
-                    color="primary"
+                    color={row.is_assigned ? "warning" : "success"}
                     size="small"
                     onClick={() =>
                       handleSetAssignIdCompany(row._id, row.is_assigned)
