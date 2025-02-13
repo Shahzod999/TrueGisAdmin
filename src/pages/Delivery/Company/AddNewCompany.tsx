@@ -7,9 +7,10 @@ const AddNewCompany = () => {
   const navigate = useNavigate();
 
   const fields = [
-    { name: "phone_number", label: "Телефон", required: true },
     { name: "name", label: "Название", required: true },
+    { name: "email", label: "Email", required: true },
     { name: "description", label: "Описание" },
+    { name: "phone_number", label: "Телефон", required: true },
     { name: "latitude", label: "Широта", required: true, type: "number" },
     { name: "longitude", label: "Долгота", required: true, type: "number" },
     { name: "full_address", label: "Полный адрес", required: true },

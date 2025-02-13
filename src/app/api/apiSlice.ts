@@ -17,6 +17,7 @@ export const apiSlice = createApi({
   tagTypes: [
     "User",
     "DeliverAdmin",
+    "AssignCompany",
     "Company",
     "Comments",
     "Type",

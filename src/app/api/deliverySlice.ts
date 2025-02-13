@@ -40,18 +40,20 @@ export const deliverySlice = apiSlice.injectEndpoints({
       invalidatesTags: ["DeliverAdmin"],
     }),
     adminAssignCompany: builder.mutation({
-      query: (data) => ({
+      query: ({ data }) => ({
         url: "/delivery/root/admin/assign-company",
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["DeliverAdmin", "AssignCompany"],
     }),
     adminUnAssignCompany: builder.mutation({
-      query: (data) => ({
+      query: ({ data }) => ({
         url: "/delivery/root/admin/unassign-company",
         method: "",
         body: data,
       }),
+      invalidatesTags: ["DeliverAdmin", "AssignCompany"],
     }),
     // company
     getAllCompany: builder.query<CompanyType, any>({
@@ -63,7 +65,7 @@ export const deliverySlice = apiSlice.injectEndpoints({
           admin_id,
         },
       }),
-      providesTags: ["Company"],
+      providesTags: ["Company", "AssignCompany"],
     }),
     getSingleCompany: builder.query({
       query: ({ id }) => ({

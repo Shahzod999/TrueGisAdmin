@@ -29,7 +29,10 @@ interface UniversalTableProps {
   onDelete: (_id: string) => Promise<void>;
   onView: (_id: string) => void;
   handleOpenReplyModal?: (id: string) => void;
-  handleSetAssignIdCompany?: (id: string, is_assigned: boolean) => void;
+  handleSetAssignIdCompany?: (
+    id: string,
+    is_assigned: boolean,
+  ) => Promise<void> | null;
 }
 
 const UniversalTable: React.FC<UniversalTableProps> = ({
@@ -77,12 +80,10 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
     return value;
   };
 
-  if (isLoading) {
-    return <Loading />;
-  }
-
   if (!data || data.length === 0) {
-    return (
+    return isLoading ? (
+      <Loading />
+    ) : (
       <Typography align="center" variant="body1">
         Нет данных для отображения.
       </Typography>
@@ -104,6 +105,7 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
 
   return (
     <Box p={2}>
+      {isLoading && <Loading />}
       <Typography variant="h4" gutterBottom>
         {title}
       </Typography>
@@ -222,9 +224,9 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
                     {handleSetAssignIdCompany && (
                       <Button
                         variant="outlined"
-                        color="primary"
+                        color={row.is_assigned ? "warning" : "success"}
                         size="small"
-                        sx={{ margin: "5px" }}
+                        sx={{ margin: "5px", fontWeight: "bold" }}
                         onClick={() =>
                           handleSetAssignIdCompany(row._id, row.is_assigned)
                         }>
@@ -234,7 +236,7 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
 
                     <Button
                       variant="outlined"
-                      color="primary"
+                      color="info"
                       size="small"
                       sx={{ margin: "5px" }}
                       onClick={() => onView(row._id)}>

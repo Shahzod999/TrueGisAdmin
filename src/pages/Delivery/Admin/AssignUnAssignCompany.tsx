@@ -1,25 +1,66 @@
 import { Button, Paper } from "@mui/material";
-// import {
-//   useAdminAssignCompanyMutation,
-//   useAdminUnAssignCompanyMutation,
-// } from "../../../app/api/deliverySlice";
+import {
+  useAdminAssignCompanyMutation,
+  useAdminUnAssignCompanyMutation,
+} from "../../../app/api/deliverySlice";
 import { useState } from "react";
 import GetAllCompany from "../Company/GetAllCompany";
+import Loading from "../../../components/Loading";
+import PermissionsPopup, { permissionsType } from "./PermissionsPopup";
 
 interface AssignUnAssignCompanyProps {
   adminId: string | undefined;
 }
 
 const AssignUnAssignCompany = ({ adminId }: AssignUnAssignCompanyProps) => {
-  //   const { data } = useAdminAssignCompanyMutation();
-  //   const { isLoading } = useAdminUnAssignCompanyMutation();
+  const [adminAssignCompany, { isLoading: assignLoading }] =
+    useAdminAssignCompanyMutation();
+  const [adminUnAssignCompany, { isLoading: unAssignLoading }] =
+    useAdminUnAssignCompanyMutation();
   const [open, setOpen] = useState(false);
+  const [isPopupOpen, setPopupOpen] = useState<string>("");
 
-  const handleSetAssignIdCompany = (id: string, is_assigned: boolean) => {
+  const handleSetAssignIdCompany = async (id: string, is_assigned: boolean) => {
     if (is_assigned) {
-      console.log("уже связанно");
+      handleUnassign(adminId, id);
     } else {
-      console.log(id, is_assigned);
+      setPopupOpen(id);
+    }
+  };
+
+  const handleAssign = async (
+    adminId: string | undefined,
+    companyId: string,
+    permissions: permissionsType,
+  ) => {
+    try {
+      const res = await adminAssignCompany({
+        data: {
+          admin_id: adminId,
+          company_id: companyId,
+          permissions,
+        },
+      }).unwrap();
+      console.log("Компания успешно назначена:", res);
+    } catch (error) {
+      console.error("Ошибка при назначении компании:", error);
+    }
+  };
+
+  const handleUnassign = async (
+    adminId: string | undefined,
+    companyId: string,
+  ) => {
+    try {
+      const res = await adminUnAssignCompany({
+        data: {
+          admin_id: adminId,
+          company_id: companyId,
+        },
+      }).unwrap();
+      console.log("Компания успешно удалена у админа:", res);
+    } catch (error) {
+      console.error("Ошибка при удалении компании у админа:", error);
     }
   };
 
@@ -31,6 +72,7 @@ const AssignUnAssignCompany = ({ adminId }: AssignUnAssignCompanyProps) => {
         padding: "1rem",
         borderRadius: "8px",
       }}>
+      {(assignLoading || unAssignLoading) && <Loading />}
       <Button
         color="secondary"
         variant="contained"
@@ -43,6 +85,13 @@ const AssignUnAssignCompany = ({ adminId }: AssignUnAssignCompanyProps) => {
         onClick={() => setOpen(!open)}>
         Связать Админа
       </Button>
+
+      <PermissionsPopup
+        onClose={() => setPopupOpen("")}
+        onAssign={handleAssign}
+        adminId={adminId}
+        companyId={isPopupOpen}
+      />
 
       {open && (
         <GetAllCompany

@@ -18,8 +18,11 @@ import { useNavigate } from "react-router";
 import useSnackbar from "../../../app/hook/callSnackBar";
 import { Link } from "react-router-dom";
 interface GetAllCompanyProps {
-  handleSetAssignIdCompany?: (id: string, is_assigned: boolean) => void | null;
-  adminId: string | undefined;
+  handleSetAssignIdCompany?: (
+    id: string,
+    is_assigned: boolean,
+  ) => Promise<void> | null;
+  adminId?: string | undefined;
 }
 
 const GetAllCompany = ({
@@ -40,12 +43,7 @@ const GetAllCompany = ({
     admin_id: adminId,
   });
 
-  console.log(adminId);
-  console.log(data?.data);
-
   const handleDelete = async (id: string) => {
-    console.log(id);
-
     try {
       await deleteCompany({ id }).unwrap();
       triggerSnackbar("Пользователь успешно удален", "success");
@@ -86,6 +84,8 @@ const GetAllCompany = ({
     { field: "phone_number", headerName: "Телефон" },
     { field: "full_address", headerName: "Адрес" },
   ];
+
+  console.log(isFetching);
 
   return (
     <div>
