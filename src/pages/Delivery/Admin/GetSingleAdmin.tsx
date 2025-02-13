@@ -7,6 +7,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import UniversalDetails from "../../../components/UniversalDetails/UniversalDetails";
 
 import Loading from "../../../components/Loading";
+import AssignUnAssignCompany from "./assignUnAssignCompany";
 
 const GetSingleAdmin = () => {
   const { id } = useParams<{ id: string }>();
@@ -47,15 +48,19 @@ const GetSingleAdmin = () => {
   }
 
   return (
-    <UniversalDetails
-      title="Admin Details"
-      id={id || ""}
-      fetchData={fetchData}
-      updateData={updateData}
-      deleteData={deleteData}
-      fields={fields}
-      redirectAfterDelete="/delivery/admin"
-    />
+    <>
+      <UniversalDetails
+        title="Admin Details"
+        id={id || ""}
+        fetchData={fetchData}
+        updateData={updateData}
+        deleteData={deleteData}
+        fields={fields}
+        redirectAfterDelete="/delivery/admin"
+      />
+
+      <AssignUnAssignCompany adminId={id} />
+    </>
   );
 };
 

@@ -29,6 +29,7 @@ interface UniversalTableProps {
   onDelete: (_id: string) => Promise<void>;
   onView: (_id: string) => void;
   handleOpenReplyModal?: (id: string) => void;
+  handleSetAssignIdCompany?: (id: string, is_assigned: boolean) => void;
 }
 
 const UniversalTable: React.FC<UniversalTableProps> = ({
@@ -39,6 +40,7 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
   onDelete,
   onView,
   handleOpenReplyModal,
+  handleSetAssignIdCompany,
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -145,6 +147,19 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
                     Ответить
                   </Button>
                 )}
+
+                {handleSetAssignIdCompany && (
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    size="small"
+                    onClick={() =>
+                      handleSetAssignIdCompany(row._id, row.is_assigned)
+                    }>
+                    {row.is_assigned ? "Развязать" : "Связать"}
+                  </Button>
+                )}
+
                 <Button
                   variant="outlined"
                   color="primary"
@@ -204,6 +219,19 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
                         Ответить
                       </Button>
                     )}
+                    {handleSetAssignIdCompany && (
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        size="small"
+                        sx={{ margin: "5px" }}
+                        onClick={() =>
+                          handleSetAssignIdCompany(row._id, row.is_assigned)
+                        }>
+                        {row.is_assigned ? "Развязать" : "Связать"}
+                      </Button>
+                    )}
+
                     <Button
                       variant="outlined"
                       color="primary"

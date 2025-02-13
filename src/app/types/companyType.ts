@@ -70,6 +70,7 @@ export interface CompanyTypeOne {
   comments: CommentType[];
   truegis_rating: number;
   truegis_rating_count: number;
+  is_assigned: boolean;
 }
 
 export interface WorkingHours {

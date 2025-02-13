@@ -17,8 +17,15 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useNavigate } from "react-router";
 import useSnackbar from "../../../app/hook/callSnackBar";
 import { Link } from "react-router-dom";
+interface GetAllCompanyProps {
+  handleSetAssignIdCompany?: (id: string, is_assigned: boolean) => void | null;
+  adminId: string | undefined;
+}
 
-const GetAllCompany = () => {
+const GetAllCompany = ({
+  adminId,
+  handleSetAssignIdCompany,
+}: GetAllCompanyProps) => {
   const navigate = useNavigate();
   const triggerSnackbar = useSnackbar();
   const [currentPage, setCurrentPage] = useState(1);
@@ -30,7 +37,11 @@ const GetAllCompany = () => {
   const { data, isLoading, isFetching, refetch } = useGetAllCompanyQuery({
     page: currentPage,
     keyword: debouncedSearch,
+    admin_id: adminId,
   });
+
+  console.log(adminId);
+  console.log(data?.data);
 
   const handleDelete = async (id: string) => {
     console.log(id);
@@ -44,7 +55,7 @@ const GetAllCompany = () => {
   };
 
   const handleView = (id: string) => {
-    navigate(id);
+    navigate(`/delivery-company/${id}`);
   };
 
   const handlePageChange = (
@@ -67,8 +78,6 @@ const GetAllCompany = () => {
       refetch();
     }, 500);
   };
-
-  console.log(data, debouncedSearch);
 
   const columns = [
     { field: "name", headerName: "Название" },
@@ -112,6 +121,7 @@ const GetAllCompany = () => {
         isLoading={isLoading || isFetching}
         onDelete={handleDelete}
         onView={handleView}
+        handleSetAssignIdCompany={handleSetAssignIdCompany}
       />
       <Box display="flex" justifyContent="center" mt={2}>
         <Stack spacing={2}>
