@@ -46,6 +46,7 @@ const GetSingleAdmin = () => {
   if (isLoading) {
     return <Loading />;
   }
+  console.log();
 
   return (
     <>
