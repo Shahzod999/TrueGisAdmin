@@ -50,7 +50,7 @@ export const deliverySlice = apiSlice.injectEndpoints({
     adminUnAssignCompany: builder.mutation({
       query: ({ data }) => ({
         url: "/delivery/root/admin/unassign-company",
-        method: "",
+        method: "DELETE",
         body: data,
       }),
       invalidatesTags: ["DeliverAdmin", "AssignCompany"],
