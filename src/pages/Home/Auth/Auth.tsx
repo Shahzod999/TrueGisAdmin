@@ -28,8 +28,6 @@ const Auth = () => {
       const response = await login({
         data: { username, password },
       }).unwrap(); // Разворачиваем ответ
-
-      console.log("Login successful:", response);
       dispatch(setUserInfo(response));
       alert("Вы успешно вошли!");
     } catch (err: any) {

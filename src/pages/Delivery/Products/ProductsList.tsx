@@ -6,14 +6,16 @@ import {
   useGetAllCategoryQuery,
   useGetAllProductsQuery,
 } from "../../../app/api/deliverySlice";
-import { useParams } from "react-router";
+import { useParams, useSearchParams } from "react-router";
 import CategoryButtons from "./CategoryButtons";
 import Loading from "../../../components/Loading";
 import ProductCards from "./ProductCards";
 
 const GetAllProducts = () => {
   const { companyId } = useParams();
-  const [currentPage, setCurrentPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams(); //тут
+  const initialPage = Number(searchParams.get("page")) || 1;
+
   const [selectedCategory, setSelectedCategory] = useState("");
 
   const { data: categoryData, isLoading: categoryLoading } =
@@ -21,7 +23,7 @@ const GetAllProducts = () => {
 
   const { data, isLoading, isFetching } = useGetAllProductsQuery(
     {
-      page: currentPage.toString(),
+      page: initialPage.toString(),
       limit: "15",
       category_id: selectedCategory,
       company_id: companyId || "",
@@ -33,7 +35,7 @@ const GetAllProducts = () => {
     _event: React.ChangeEvent<unknown>,
     newPage: number,
   ) => {
-    setCurrentPage(newPage);
+    setSearchParams({ page: newPage.toString() });
   };
   const handleCategorySelect = (categoryId: string) => {
     console.log("Выбранная категория ID:", categoryId);
@@ -62,7 +64,7 @@ const GetAllProducts = () => {
         <Stack spacing={2}>
           <Pagination
             count={data?.pagination?.totalPages || 1}
-            page={currentPage}
+            page={initialPage}
             onChange={handlePageChange}
             renderItem={(item) => (
               <PaginationItem

@@ -8,7 +8,7 @@ import { Box, Stack, Pagination, PaginationItem } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import useSnackbar from "../../../app/hook/callSnackBar";
 import Loading from "../../../components/Loading";
 import DropDownSelect from "../../../components/DropDownSelect/DropDownSelect";
@@ -17,20 +17,21 @@ import { UpdateCompanyType } from "../../../app/types/UpdateCompanyTypes";
 const GetAllUpdateCompany = () => {
   const navigate = useNavigate();
   const triggerSnackbar = useSnackbar();
+  const [searchParams, setSearchParams] = useSearchParams(); //тут
+  const initialPage = Number(searchParams.get("page")) || 1;
 
-  const [currentPage, setCurrentPage] = useState(1);
   const [filterStatus, setFilterStatus] = useState("all");
 
   const [deleteCompany] = useDeleteUpdateCompanyMutation();
   const { data, isLoading, isFetching } = useGetUpdateCompanyQuery({
-    page: currentPage,
+    page: initialPage,
   });
 
   const handlePageChange = (
     _event: React.ChangeEvent<unknown>,
     newPage: number,
   ) => {
-    setCurrentPage(newPage);
+    setSearchParams({ page: newPage.toString() });
   };
 
   const handleView = (id: string) => {
@@ -99,7 +100,7 @@ const GetAllUpdateCompany = () => {
         <Stack spacing={2}>
           <Pagination
             count={data?.pagination?.totalPages || 1}
-            page={currentPage}
+            page={initialPage}
             onChange={handlePageChange}
             renderItem={(item) => (
               <PaginationItem

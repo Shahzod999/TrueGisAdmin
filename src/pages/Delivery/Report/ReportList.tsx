@@ -1,18 +1,19 @@
-import React, { useState } from "react";
 import { useGetAllReportsQuery } from "../../../app/api/deliverySlice";
 import UniversalTable from "../../../components/UniversalTable/UniversalTable";
 import { Box, Stack, Pagination, PaginationItem } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import useSnackbar from "../../../app/hook/callSnackBar";
 
 const ReportList = () => {
   const triggerSnackbar = useSnackbar();
   const navigate = useNavigate();
-  const [currentPage, setCurrentPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams(); //тут
+  const initialPage = Number(searchParams.get("page")) || 1;
+
   const { data, isLoading, isFetching } = useGetAllReportsQuery({
-    page: currentPage,
+    page: initialPage,
     limit: 15,
   });
 
@@ -32,7 +33,7 @@ const ReportList = () => {
     _event: React.ChangeEvent<unknown>,
     newPage: number,
   ) => {
-    setCurrentPage(newPage);
+    setSearchParams({ page: newPage.toString() });
   };
 
   const columns = [
@@ -56,7 +57,7 @@ const ReportList = () => {
         <Stack spacing={2}>
           <Pagination
             count={data?.pagination?.totalPages || 1}
-            page={currentPage}
+            page={initialPage}
             onChange={handlePageChange}
             renderItem={(item) => (
               <PaginationItem

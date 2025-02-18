@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import UniversalTable from "../../../components/UniversalTable/UniversalTable";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
@@ -6,19 +6,43 @@ import {
   useDeleteDeliveryUserMutation,
   useGetAllDeliveryUsersQuery,
 } from "../../../app/api/deliverySlice";
-import { useNavigate } from "react-router";
-import { Box, Pagination, PaginationItem, Stack } from "@mui/material";
+import { useNavigate, useSearchParams } from "react-router";
+import {
+  Box,
+  Pagination,
+  PaginationItem,
+  Stack,
+  TextField,
+} from "@mui/material";
 
 const UserTable = () => {
   const navigate = useNavigate();
-  const [search, setSearch] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const { data, isLoading } = useGetAllDeliveryUsersQuery({
-    page: currentPage,
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const initialPage = Number(searchParams.get("page")) || 1;
+  const searchKey = searchParams.get("search") || "";
+
+  const { data, isLoading, isFetching } = useGetAllDeliveryUsersQuery({
+    page: initialPage,
     limit: 15,
-    search,
+    search: searchKey,
   });
+
   const [deleteUser] = useDeleteDeliveryUserMutation();
+  const [search, setSearch] = useState(searchKey);
+
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      // Сохраняем текущую страницу, если она уже есть в параметрах
+      setSearchParams((prev) => {
+        const params = new URLSearchParams(prev);
+        params.set("search", search);
+        return params;
+      });
+    }, 500); // Дебаунс 500мс для оптимизации запросов
+
+    return () => clearTimeout(delayDebounce);
+  }, [search, setSearchParams]);
 
   const handleDelete = async (id: string) => {
     await deleteUser(id).unwrap();
@@ -30,14 +54,13 @@ const UserTable = () => {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
-    setCurrentPage(1); // Reset to the first page when searching
   };
 
   const handlePageChange = (
     _event: React.ChangeEvent<unknown>,
     newPage: number,
   ) => {
-    setCurrentPage(newPage);
+    setSearchParams({ page: newPage.toString(), search });
   };
 
   const columns = [
@@ -52,18 +75,21 @@ const UserTable = () => {
 
   return (
     <Box>
-      <input
-        type="text"
-        value={search}
-        onChange={handleSearchChange}
-        placeholder="Поиск пользователей"
-        style={{ marginBottom: "1rem", padding: "0.5rem", width: "100%" }}
-      />
+      <Box padding={"10px 5%"}>
+        <TextField
+          label="Поиск пользователей"
+          variant="outlined"
+          fullWidth
+          value={search}
+          onChange={handleSearchChange}
+        />
+      </Box>
+
       <UniversalTable
         title="Список пользователей"
         data={data?.data || []}
         columns={columns}
-        isLoading={isLoading}
+        isLoading={isLoading || isFetching}
         onDelete={handleDelete}
         onView={handleView}
       />
@@ -71,7 +97,7 @@ const UserTable = () => {
         <Stack spacing={2}>
           <Pagination
             count={data?.pagination?.totalPages || 1}
-            page={currentPage}
+            page={initialPage}
             onChange={handlePageChange}
             renderItem={(item) => (
               <PaginationItem

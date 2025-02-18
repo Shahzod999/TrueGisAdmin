@@ -18,18 +18,20 @@ import {
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import AddReplyComment from "./AddReplyComment";
 import Loading from "../../../components/Loading";
 import useSnackbar from "../../../app/hook/callSnackBar";
 
 const GetAllComments = () => {
+  const [searchParams, setSearchParams] = useSearchParams(); //тут
+  const initialPage = Number(searchParams.get("page")) || 1;
+
   const navigate = useNavigate();
-  const [currentPage, setCurrentPage] = useState<number>(1);
   const triggerSnackbar = useSnackbar();
 
   const { data, isLoading, isFetching, error } = useGetAllCommentsQuery({
-    page: currentPage,
+    page: initialPage,
   });
   const [deleteComment] = useDeleteOneCommentMutation();
   const [updateReply] = useUpdateOneReplyMutation();
@@ -52,7 +54,7 @@ const GetAllComments = () => {
     _event: React.ChangeEvent<unknown>,
     newPage: number,
   ) => {
-    setCurrentPage(newPage);
+    setSearchParams({ page: newPage.toString() });
   };
 
   const handleUpdateReply = async (
@@ -234,7 +236,7 @@ const GetAllComments = () => {
         <Stack spacing={2}>
           <Pagination
             count={data?.pagination?.totalPages || 1}
-            page={currentPage}
+            page={initialPage}
             onChange={handlePageChange}
             renderItem={(item) => (
               <PaginationItem

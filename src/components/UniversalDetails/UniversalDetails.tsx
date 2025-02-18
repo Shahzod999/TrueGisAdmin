@@ -194,43 +194,54 @@ const UniversalDetails: React.FC<UniversalDetailsProps> = ({
         Информация
       </Typography>
       <Grid container spacing={1}>
-        {fields.map((field) => (
-          <Grid key={field.name} item xs={12} sm={6}>
-            {field.type === "checkbox" ? (
-              <FormControlLabel
-                sx={{ marginTop: 0 }}
-                control={
-                  <Switch
-                    name={field.name}
-                    checked={!!formData[field.name]}
-                    onChange={handleInputChange}
-                    disabled={!isEditing || field.noteditable}
-                  />
-                }
-                label={
-                  <Typography variant="body2" sx={{ lineHeight: 1.3 }}>
-                    {field.label}
-                  </Typography>
-                }
-              />
-            ) : (
-              <TextField
-                fullWidth
-                variant="outlined"
-                size="medium"
-                margin="dense"
-                label={field.label}
-                name={field.name}
-                value={formData[field.name] || ""}
-                onChange={handleInputChange}
-                type={field.type || "text"}
-                InputProps={{
-                  readOnly: !isEditing || field.noteditable,
-                }}
-              />
-            )}
-          </Grid>
-        ))}
+        {fields.map((field) =>
+          field.type === "header" ? (
+            <Box
+              key={field.name || field.label}
+              width={"100%"}
+              textAlign={"center"}>
+              <Typography variant="h4" sx={{ marginTop: 2, marginBottom: 1 }}>
+                {field.label}
+              </Typography>
+            </Box>
+          ) : (
+            <Grid key={field.name || field.label} item xs={12} sm={6}>
+              {field.type === "checkbox" ? (
+                <FormControlLabel
+                  sx={{ marginTop: 0 }}
+                  control={
+                    <Switch
+                      name={field.name}
+                      checked={!!formData[field.name]}
+                      onChange={handleInputChange}
+                      disabled={!isEditing || field.noteditable}
+                    />
+                  }
+                  label={
+                    <Typography variant="body2" sx={{ lineHeight: 1.3 }}>
+                      {field.label}
+                    </Typography>
+                  }
+                />
+              ) : (
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  size="medium"
+                  margin="dense"
+                  label={field.label}
+                  name={field.name}
+                  value={formData[field.name] || ""}
+                  onChange={handleInputChange}
+                  type={field.type || "text"}
+                  InputProps={{
+                    readOnly: !isEditing || field.noteditable,
+                  }}
+                />
+              )}
+            </Grid>
+          ),
+        )}
       </Grid>
 
       <Divider sx={{ my: 2 }} />

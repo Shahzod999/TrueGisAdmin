@@ -198,6 +198,7 @@ export interface SocialMedia {
   telegram?: string;
   instagram?: string;
   facebook?: string;
+  whatsApp?: string;
   twitter: any;
   youtube: any;
 }

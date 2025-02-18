@@ -21,29 +21,37 @@ import TimePicker from "../../../components/TimePicker";
 import BusinessSettingsForm, { FieldConfig } from "./ChekBox";
 
 const fields = [
+  { type: "header", label: "Главное", name: "" },
   { name: "name", label: "Название" },
   { name: "email", label: "Email" },
-  { name: "description", label: "Описание" },
-  { name: "city", label: "Город" },
-  { name: "country", label: "Страна" },
   { name: "phone_number", label: "Телефон" },
-  { name: "full_address", label: "Адрес" },
-  { name: "latitude", label: "Широта" },
-  { name: "longitude", label: "Долгота" },
+  { name: "social_media.telegram", label: "Telegram" },
+  { name: "social_media.instagram", label: "Instagram" },
+  { name: "social_media.facebook", label: "Facebook" },
+  { name: "social_media.whatsApp", label: "WhatsApp" },
+// 
+  { type: "header", label: "Подробнее", name: "" },
+  { name: "description", label: "Описание" },
   { name: "rating", label: "Рейтинг" },
   { name: "review_count", label: "Количество отзывов" },
   { name: "verified", label: "Подтверждено" },
   { name: "business_status", label: "Статус бизнеса" },
   { name: "type", label: "Тип" },
   { name: "subtypes", label: "Подтипы" },
+// 
+  { type: "header", label: "Адрес", name: "" },
+  { name: "city", label: "Город" },
+  { name: "country", label: "Страна" },
+  { name: "latitude", label: "Широта" },
+  { name: "longitude", label: "Долгота" },
+  { name: "full_address", label: "Адрес" },
   { name: "district", label: "Район" },
   { name: "street_address", label: "Улица" },
   { name: "zipcode", label: "Почтовый индекс" },
   { name: "state", label: "Штат" },
   { name: "timezone", label: "Часовой пояс" },
-  { name: "social_media.telegram", label: "Telegram" },
-  { name: "social_media.instagram", label: "Instagram" },
-  { name: "social_media.facebook", label: "Facebook" },
+// 
+  { type: "header", label: "Владелец", name: "" },
   { name: "owner_name", label: "Имя владельца" },
   { name: "owner_link", label: "Ссылка на владельца" },
   { name: "support_chat_id", label: "Чат для поддержки" },
@@ -77,6 +85,8 @@ const CompanySinglePage = () => {
   const { id } = useParams<{ id: string }>();
 
   const { data, isLoading, isFetching } = useGetSingleCompanyQuery({ id });
+  console.log(data);
+
   const [updateCompany] = useUpdateCompanyMutation();
   const [deleteCompany] = useDeleteCompanyMutation();
 

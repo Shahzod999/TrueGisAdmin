@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   useDeleteCompanyMutation,
   useGetAllCompanyQuery,
@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import useSnackbar from "../../../app/hook/callSnackBar";
 import { Link } from "react-router-dom";
 interface GetAllCompanyProps {
@@ -29,17 +29,20 @@ const GetAllCompany = ({
   adminId,
   handleSetAssignIdCompany,
 }: GetAllCompanyProps) => {
+  const [searchParams, setSearchParams] = useSearchParams(); //тут
+  const initialPage = Number(searchParams.get("page")) || 1;
+  const searchKey = searchParams.get("search") || "";
+
   const navigate = useNavigate();
   const triggerSnackbar = useSnackbar();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
-  const timerRef = useRef<null | ReturnType<typeof setTimeout>>(null);
+
+  const [search, setSearch] = useState(searchKey);
+
   const [deleteCompany] = useDeleteCompanyMutation();
 
-  const { data, isLoading, isFetching, refetch } = useGetAllCompanyQuery({
-    page: currentPage,
-    keyword: debouncedSearch,
+  const { data, isLoading, isFetching } = useGetAllCompanyQuery({
+    page: initialPage,
+    keyword: searchKey,
     admin_id: adminId,
   });
 
@@ -56,25 +59,28 @@ const GetAllCompany = ({
     navigate(`/delivery-company/${id}`);
   };
 
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      // Сохраняем текущую страницу, если она уже есть в параметрах
+      setSearchParams((prev) => {
+        const params = new URLSearchParams(prev);
+        params.set("search", search);
+        return params;
+      });
+    }, 500); // Дебаунс 500мс для оптимизации запросов
+
+    return () => clearTimeout(delayDebounce);
+  }, [search, setSearchParams]);
+
   const handlePageChange = (
     _event: React.ChangeEvent<unknown>,
     newPage: number,
   ) => {
-    setCurrentPage(newPage);
+    setSearchParams({ page: newPage.toString(), search });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setSearch(value);
-
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-    }
-
-    timerRef.current = setTimeout(() => {
-      setDebouncedSearch(value);
-      refetch();
-    }, 500);
+    setSearch(e.target.value);
   };
 
   const columns = [
@@ -127,7 +133,7 @@ const GetAllCompany = ({
         <Stack spacing={2}>
           <Pagination
             count={data?.pagination?.totalPages || 1}
-            page={currentPage}
+            page={initialPage}
             onChange={handlePageChange}
             renderItem={(item) => (
               <PaginationItem
