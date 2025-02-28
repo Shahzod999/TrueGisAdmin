@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  useAdminAssignedCompanyQuery,
   useDeleteCompanyMutation,
   useGetAllCompanyQuery,
 } from "../../../app/api/deliverySlice";
@@ -17,17 +18,20 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useNavigate, useSearchParams } from "react-router";
 import useSnackbar from "../../../app/hook/callSnackBar";
 import { Link } from "react-router-dom";
+import { CompanyTypeOne } from "../../../app/types/companyType";
 interface GetAllCompanyProps {
   handleSetAssignIdCompany?: (
     id: string,
     is_assigned: boolean,
   ) => Promise<void> | null;
   adminId?: string | undefined;
+  parent: "Company" | "Admin";
 }
 
 const GetAllCompany = ({
   adminId,
   handleSetAssignIdCompany,
+  parent,
 }: GetAllCompanyProps) => {
   const [searchParams, setSearchParams] = useSearchParams(); //тут
   const initialPage = Number(searchParams.get("page")) || 1;
@@ -40,11 +44,21 @@ const GetAllCompany = ({
 
   const [deleteCompany] = useDeleteCompanyMutation();
 
-  const { data, isLoading, isFetching } = useGetAllCompanyQuery({
-    page: initialPage,
-    keyword: searchKey,
-    admin_id: adminId,
-  });
+  const { data, isLoading, isFetching } = useGetAllCompanyQuery(
+    {
+      page: initialPage,
+      keyword: searchKey,
+      admin_id: adminId,
+    },
+    { skip: parent == "Admin" },
+  );
+
+  const { data: asignedCompanies } = useAdminAssignedCompanyQuery(
+    {
+      admin_id: adminId,
+    },
+    { skip: parent == "Company" },
+  );
 
   const handleDelete = async (id: string) => {
     try {
@@ -91,44 +105,55 @@ const GetAllCompany = ({
     { field: "full_address", headerName: "Адрес" },
   ];
 
-  console.log(isFetching);
+  const allCompanyAssigned = asignedCompanies?.data?.map(
+    (item: CompanyTypeOne) => ({
+      ...item,
+      is_assigned: true,
+    }),
+  );
 
   return (
     <div>
-      <Box sx={{ textAlign: "right" }}>
-        <Button
-          component={Link}
-          to="add-newCompany"
-          color="secondary"
-          variant="contained"
-          sx={{
-            textTransform: "none",
-            fontWeight: "bold",
-            backgroundColor: "#1976d2",
-            "&:hover": { backgroundColor: "#125ea8" },
-          }}>
-          Создать Компанию
-        </Button>
-      </Box>
+      {parent !== "Admin" && (
+        <>
+          <Box sx={{ textAlign: "right" }}>
+            <Button
+              component={Link}
+              to="add-newCompany"
+              color="secondary"
+              variant="contained"
+              sx={{
+                textTransform: "none",
+                fontWeight: "bold",
+                backgroundColor: "#1976d2",
+                "&:hover": { backgroundColor: "#125ea8" },
+              }}>
+              Создать Компанию
+            </Button>
+          </Box>
 
-      <Box padding={"10px 5%"}>
-        <TextField
-          label="Поиск компании"
-          variant="outlined"
-          fullWidth
-          value={search}
-          onChange={handleChange}
-        />
-      </Box>
+          <Box padding={"10px 5%"}>
+            <TextField
+              label="Поиск компании"
+              variant="outlined"
+              fullWidth
+              value={search}
+              onChange={handleChange}
+            />
+          </Box>
+        </>
+      )}
+
       <UniversalTable
-        title="Компании"
-        data={data?.data || []}
+        title={parent == "Admin" ? "Связанные Компании" : "Компании"}
+        data={data?.data || allCompanyAssigned || []}
         columns={columns}
         isLoading={isLoading || isFetching}
         onDelete={handleDelete}
         onView={handleView}
         handleSetAssignIdCompany={handleSetAssignIdCompany}
       />
+
       <Box display="flex" justifyContent="center" mt={2}>
         <Stack spacing={2}>
           <Pagination

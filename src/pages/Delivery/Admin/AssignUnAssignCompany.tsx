@@ -79,6 +79,12 @@ const AssignUnAssignCompany = ({ adminId }: AssignUnAssignCompanyProps) => {
         borderRadius: "8px",
       }}>
       {(assignLoading || unAssignLoading) && <Loading />}
+
+      <GetAllCompany
+        handleSetAssignIdCompany={handleSetAssignIdCompany}
+        adminId={adminId}
+        parent="Admin"
+      />
       <Button
         color="secondary"
         variant="contained"
@@ -103,6 +109,7 @@ const AssignUnAssignCompany = ({ adminId }: AssignUnAssignCompanyProps) => {
         <GetAllCompany
           handleSetAssignIdCompany={handleSetAssignIdCompany}
           adminId={adminId}
+          parent="Company"
         />
       )}
     </Paper>

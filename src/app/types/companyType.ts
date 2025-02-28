@@ -71,6 +71,7 @@ export interface CompanyTypeOne {
   truegis_rating: number;
   truegis_rating_count: number;
   is_assigned: boolean;
+  status: string;
 }
 
 export interface WorkingHours {

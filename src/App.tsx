@@ -51,7 +51,7 @@ const App = () => {
           <Route path=":id" element={<SinglePage />} />
 
           <Route path="delivery-company" element={<UpdateCompany />}>
-            <Route index element={<GetAllCompany />} />
+            <Route index element={<GetAllCompany parent="Company" />} />
             <Route path=":id" element={<CompanySinglePage />} />
             <Route path="add-newCompany" element={<AddNewCompany />} />
           </Route>

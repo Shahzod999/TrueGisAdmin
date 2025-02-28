@@ -47,6 +47,11 @@ export const deliverySlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["DeliverAdmin", "AssignCompany"],
     }),
+    adminAssignedCompany: builder.query({
+      query: ({ admin_id }) =>
+        `/delivery/root/admin/assigned-companies/${admin_id}`,
+      providesTags: ["DeliverAdmin", "AssignCompany"],
+    }),
     adminUnAssignCompany: builder.mutation({
       query: ({ data }) => ({
         url: "/delivery/root/admin/unassign-company",
@@ -368,6 +373,7 @@ export const deliverySlice = apiSlice.injectEndpoints({
 });
 
 export const {
+  useAdminAssignedCompanyQuery,
   useAdminAssignCompanyMutation,
   useAdminUnAssignCompanyMutation,
   useGetAdminDataQuery,

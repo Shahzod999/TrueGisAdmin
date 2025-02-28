@@ -15,6 +15,7 @@ import {
 import { useTheme } from "@mui/material/styles";
 
 import Loading from "../Loading";
+import { CompanyTypeOne } from "../../app/types/companyType";
 
 interface Column {
   field: string;
@@ -23,7 +24,7 @@ interface Column {
 
 interface UniversalTableProps {
   title: string;
-  data: Array<Record<string, any>>;
+  data: CompanyTypeOne[];
   columns: Column[];
   isLoading: boolean;
   onDelete: (_id: string) => Promise<void>;
