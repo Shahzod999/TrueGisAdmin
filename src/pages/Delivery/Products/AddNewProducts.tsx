@@ -94,6 +94,7 @@ const AddNewProducts = () => {
       discount: discount.price ? discount : undefined,
       active: data.active == "true",
       currency: choosenCurrency,
+      company_id: companyId,
     };
 
     console.log(formattedData);
@@ -104,8 +105,6 @@ const AddNewProducts = () => {
     }).unwrap();
     setPreviewImages([]);
   };
-
-  console.log(previewImages);
 
   //поменять на бек чтобы значения приходили через бек
   const variants = [

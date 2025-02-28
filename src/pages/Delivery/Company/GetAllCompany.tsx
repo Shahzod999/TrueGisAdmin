@@ -26,12 +26,14 @@ interface GetAllCompanyProps {
   ) => Promise<void> | null;
   adminId?: string | undefined;
   parent: "Company" | "Admin";
+  assignedCompanies?: string[];
 }
 
 const GetAllCompany = ({
   adminId,
   handleSetAssignIdCompany,
   parent,
+  assignedCompanies,
 }: GetAllCompanyProps) => {
   const [searchParams, setSearchParams] = useSearchParams(); //тут
   const initialPage = Number(searchParams.get("page")) || 1;
@@ -112,8 +114,9 @@ const GetAllCompany = ({
     }),
   );
 
-
-  
+  const filteredCompanyAssigned = assignedCompanies
+    ? data?.data?.filter((item: any) => !assignedCompanies?.includes(item._id))
+    : data?.data;
 
   return (
     <div>
@@ -149,7 +152,7 @@ const GetAllCompany = ({
 
       <UniversalTable
         title={parent == "Admin" ? "Связанные Компании" : "Компании"}
-        data={data?.data || allCompanyAssigned || []}
+        data={filteredCompanyAssigned || allCompanyAssigned || []}
         columns={columns}
         isLoading={isLoading || isFetching}
         onDelete={handleDelete}

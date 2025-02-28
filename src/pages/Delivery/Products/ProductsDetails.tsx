@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import UniversalDetails from "../../../components/UniversalDetails/UniversalDetails";
 import Loading from "../../../components/Loading";
 import ImageSlider from "../../../components/ImageSlider";
-import { Box, Button, Paper, Typography } from "@mui/material";
+import { Box, Button, Paper } from "@mui/material";
 import {
   useAddCompanyLinkMutation,
   useDeleteProductsMutation,
@@ -13,12 +13,13 @@ import {
   useUpdateProductsMutation,
 } from "../../../app/api/deliverySlice";
 import { useEffect, useState } from "react";
-import { CategoryType, CompaniesType } from "../../../app/types/productsTypes";
+import { CategoryType } from "../../../app/types/productsTypes";
 
 import Discount from "../../../components/Discount/Discount";
 import DropDownSelect from "../../../components/DropDownSelect/DropDownSelect";
 import GetAllCompany from "../Company/GetAllCompany";
 import useSnackbar from "../../../app/hook/callSnackBar";
+import UniversalTable from "../../../components/UniversalTable/UniversalTable";
 
 const ProductDetails = () => {
   const navigate = useNavigate();
@@ -34,9 +35,9 @@ const ProductDetails = () => {
   const [open, setOpen] = useState(false);
   const [currency, setCurrency] = useState<string>("");
   const [choosenCurrency, setChoosenCurrency] = useState<string>("");
-  const [companyLinked, setCompanyLinked] = useState<string[]>([]);
-
+  const [assignedCompanies, setAssignedCompanies] = useState<string[]>([]);
   const { data, isLoading } = useGetSingleProductsQuery({ id });
+
   const { data: categoryData, isLoading: categoryLoading } =
     useGetAllCategoryQuery({
       page: 1,
@@ -80,11 +81,12 @@ const ProductDetails = () => {
     }
 
     if (data?.data?.companies) {
-      setCompanyLinked(
-        data?.data?.companies?.map((item: CompaniesType) => item._id),
-      );
+      let assignedCompanies = data.data.companies.map((item: any) => item._id);
+      setAssignedCompanies(assignedCompanies);
     }
   }, [data]);
+
+  // filter
 
   useEffect(() => {
     if (data?.data?.category_id && categoryData?.data) {
@@ -158,12 +160,12 @@ const ProductDetails = () => {
     }
   };
 
-  const handleSetAssignIdCompany = async (companyId: string) => {
+  const handleAssignCompany = async (companyId: string) => {
     try {
       let res = await addCompanyLink({
         data: {
           product_id: id,
-          company_ids: [...companyLinked, companyId],
+          company_ids: [...assignedCompanies, companyId],
         },
       }).unwrap();
 
@@ -200,6 +202,34 @@ const ProductDetails = () => {
       );
     }
   };
+
+  const handleSetAssignIdCompany = async (
+    companyId: string,
+    is_assigned: boolean,
+  ) => {
+    if (is_assigned) {
+      handleRemoveCompany(companyId);
+    } else {
+      handleAssignCompany(companyId);
+    }
+  };
+
+  const columns = [
+    { field: "name", headerName: "Название" },
+    { field: "city", headerName: "Город" },
+    { field: "country", headerName: "Страна" },
+    { field: "phone_number", headerName: "Телефон" },
+    { field: "full_address", headerName: "Адрес" },
+  ];
+  const handleView = (id: string) => {
+    navigate(`/delivery-company/${id}`);
+  };
+
+  const allCompanyAssigned =
+    data?.data?.companies?.map((item: any) => ({
+      ...item,
+      is_assigned: true,
+    })) || [];
 
   if (isLoading || categoryLoading) return <Loading />;
   return (
@@ -263,26 +293,16 @@ const ProductDetails = () => {
             borderRadius: "8px",
             width: "100%",
           }}>
-          <Box>
-            <Typography variant="h4" gutterBottom>
-              Связанные компании
-            </Typography>
-
-            <Box display="flex" flexWrap="wrap" gap={2} mt={2} mb={4}>
-              {companyLinked.map((item) => (
-                <Button
-                  key={item}
-                  onClick={() => handleRemoveCompany(item)}
-                  sx={{
-                    backgroundColor: "#1976d2",
-                    "&:hover": { backgroundColor: "#125ea8" },
-                    fontWeight: "bold",
-                    color: "white",
-                  }}>
-                  {item}
-                </Button>
-              ))}
-            </Box>
+          <Box gap={2} mt={2} mb={4}>
+            <UniversalTable
+              title={"Связанные Компании"}
+              data={allCompanyAssigned}
+              columns={columns}
+              isLoading={isLoading}
+              onDelete={handleRemoveCompany}
+              onView={handleView}
+              handleSetAssignIdCompany={handleSetAssignIdCompany}
+            />
           </Box>
 
           <Button
@@ -300,7 +320,8 @@ const ProductDetails = () => {
           {open && (
             <GetAllCompany
               parent="Company"
-              handleSetAssignIdCompany={handleSetAssignIdCompany}
+              handleSetAssignIdCompany={handleAssignCompany}
+              assignedCompanies={assignedCompanies}
             />
           )}
         </Paper>
