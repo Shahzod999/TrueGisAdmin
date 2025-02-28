@@ -50,6 +50,14 @@ export interface SingleProductType {
   created_at: number;
   deleted: boolean;
   discount?: DiscountType;
+  companies: CompaniesType[];
+}
+
+export interface CompaniesType {
+  _id: string;
+  name: string;
+  address: string;
+  logo: string;
 }
 
 export interface DiscountType {

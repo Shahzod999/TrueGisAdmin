@@ -112,6 +112,9 @@ const GetAllCompany = ({
     }),
   );
 
+
+  
+
   return (
     <div>
       {parent !== "Admin" && (

@@ -323,6 +323,24 @@ export const deliverySlice = apiSlice.injectEndpoints({
       invalidatesTags: ["Products"],
     }),
 
+    addCompanyLink: builder.mutation({
+      query: ({ data }) => ({
+        url: "/delivery/root/product/add-company-link",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Products"],
+    }),
+
+    removeCompanyLinks: builder.mutation({
+      query: ({ data }) => ({
+        url: "/delivery/root/product/remove-company-link",
+        method: "DELETE",
+        body: data,
+      }),
+      invalidatesTags: ["Products"],
+    }),
+
     // orders
     getAllOrders: builder.query({
       query: ({ page, limit = 16, company_id }) => ({
@@ -422,6 +440,8 @@ export const {
   useUpdateProductsMutation,
   useDeleteProductsMutation,
   useAddNewProductsMutation,
+  useAddCompanyLinkMutation,
+  useRemoveCompanyLinksMutation,
   // orders
   useGetAllOrdersQuery,
   useGetSingleOrderQuery,

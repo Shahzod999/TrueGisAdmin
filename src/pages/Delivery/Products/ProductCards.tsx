@@ -19,7 +19,7 @@ const ProductCards: React.FC<ProductCardsProps> = ({ products }) => {
   const navigate = useNavigate();
   const handleClick = (productId: string) => {
     console.log("Выбранный продукт ID:", productId);
-    navigate(productId)
+    navigate(productId);
   };
 
   const truncateText = (text: string, maxLength: number) => {
@@ -27,8 +27,6 @@ const ProductCards: React.FC<ProductCardsProps> = ({ products }) => {
       ? text.substring(0, maxLength) + "..."
       : text;
   };
-
-  console.log(products);
 
   return (
     <Grid container spacing={3} padding={2} justifyContent="center">

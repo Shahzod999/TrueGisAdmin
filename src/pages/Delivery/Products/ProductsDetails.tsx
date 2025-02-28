@@ -3,25 +3,38 @@ import { useNavigate, useParams } from "react-router-dom";
 import UniversalDetails from "../../../components/UniversalDetails/UniversalDetails";
 import Loading from "../../../components/Loading";
 import ImageSlider from "../../../components/ImageSlider";
-import { Box } from "@mui/material";
+import { Box, Button, Paper, Typography } from "@mui/material";
 import {
+  useAddCompanyLinkMutation,
   useDeleteProductsMutation,
   useGetAllCategoryQuery,
   useGetSingleProductsQuery,
+  useRemoveCompanyLinksMutation,
   useUpdateProductsMutation,
 } from "../../../app/api/deliverySlice";
 import { useEffect, useState } from "react";
-import { CategoryType } from "../../../app/types/productsTypes";
+import { CategoryType, CompaniesType } from "../../../app/types/productsTypes";
 
 import Discount from "../../../components/Discount/Discount";
 import DropDownSelect from "../../../components/DropDownSelect/DropDownSelect";
+import GetAllCompany from "../Company/GetAllCompany";
+import useSnackbar from "../../../app/hook/callSnackBar";
 
 const ProductDetails = () => {
   const navigate = useNavigate();
+  const triggerSnackbar = useSnackbar();
+
+  const [addCompanyLink, { isLoading: addCompanyLinkLoadiog }] =
+    useAddCompanyLinkMutation();
+  const [removeCompanyLinks, { isLoading: removeCompanyLinkLoadiog }] =
+    useRemoveCompanyLinksMutation();
+
   const { id, companyId } = useParams();
 
+  const [open, setOpen] = useState(false);
   const [currency, setCurrency] = useState<string>("");
   const [choosenCurrency, setChoosenCurrency] = useState<string>("");
+  const [companyLinked, setCompanyLinked] = useState<string[]>([]);
 
   const { data, isLoading } = useGetSingleProductsQuery({ id });
   const { data: categoryData, isLoading: categoryLoading } =
@@ -64,6 +77,12 @@ const ProductDetails = () => {
         setCurrency(foundVariant._id);
         setChoosenCurrency(foundVariant.name);
       }
+    }
+
+    if (data?.data?.companies) {
+      setCompanyLinked(
+        data?.data?.companies?.map((item: CompaniesType) => item._id),
+      );
     }
   }, [data]);
 
@@ -139,10 +158,56 @@ const ProductDetails = () => {
     }
   };
 
+  const handleSetAssignIdCompany = async (companyId: string) => {
+    try {
+      let res = await addCompanyLink({
+        data: {
+          product_id: id,
+          company_ids: [...companyLinked, companyId],
+        },
+      }).unwrap();
+
+      triggerSnackbar(
+        `${res?.status} успешно добавлен!` || "успешно добавлен!",
+        "success",
+      );
+    } catch (err) {
+      console.log(err);
+      triggerSnackbar(
+        (err as any).data.message || "Произошла неизвестная ошибка",
+        "error",
+      );
+    }
+  };
+
+  const handleRemoveCompany = async (companyId: string) => {
+    try {
+      let res = await removeCompanyLinks({
+        data: {
+          product_id: id,
+          company_ids: [companyId],
+        },
+      }).unwrap();
+      triggerSnackbar(
+        `${res?.status} успешно удален!` || "успешно удален!",
+        "success",
+      );
+    } catch (err) {
+      console.log(err);
+      triggerSnackbar(
+        (err as any).data.message || "Произошла неизвестная ошибка",
+        "error",
+      );
+    }
+  };
+
   if (isLoading || categoryLoading) return <Loading />;
   return (
     <>
-      {updateLoading || (deleteLoading && <Loading />)}
+      {(updateLoading ||
+        deleteLoading ||
+        addCompanyLinkLoadiog ||
+        removeCompanyLinkLoadiog) && <Loading />}
       {renderImages()}
       <Box
         display="flex"
@@ -189,6 +254,56 @@ const ProductDetails = () => {
             <Discount discount={discount} handleDiscount={handleDiscount} />
           </Box>
         </Box>
+
+        <Paper
+          elevation={2}
+          sx={{
+            margin: "1rem",
+            padding: "1rem",
+            borderRadius: "8px",
+            width: "100%",
+          }}>
+          <Box>
+            <Typography variant="h4" gutterBottom>
+              Связанные компании
+            </Typography>
+
+            <Box display="flex" flexWrap="wrap" gap={2} mt={2} mb={4}>
+              {companyLinked.map((item) => (
+                <Button
+                  key={item}
+                  onClick={() => handleRemoveCompany(item)}
+                  sx={{
+                    backgroundColor: "#1976d2",
+                    "&:hover": { backgroundColor: "#125ea8" },
+                    fontWeight: "bold",
+                    color: "white",
+                  }}>
+                  {item}
+                </Button>
+              ))}
+            </Box>
+          </Box>
+
+          <Button
+            color="secondary"
+            variant="contained"
+            sx={{
+              textTransform: "none",
+              fontWeight: "bold",
+              backgroundColor: "#1976d2",
+              "&:hover": { backgroundColor: "#125ea8" },
+            }}
+            onClick={() => setOpen(!open)}>
+            Связать Компанию
+          </Button>
+          {open && (
+            <GetAllCompany
+              parent="Company"
+              handleSetAssignIdCompany={handleSetAssignIdCompany}
+            />
+          )}
+        </Paper>
       </Box>
     </>
   );
