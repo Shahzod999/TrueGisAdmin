@@ -49,6 +49,7 @@ const GetAllAdmin = () => {
       </div>
     );
   }
+console.log(tableData);
 
   return (
     <UniversalTable

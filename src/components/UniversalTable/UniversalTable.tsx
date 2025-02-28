@@ -24,7 +24,7 @@ interface Column {
 
 interface UniversalTableProps {
   title: string;
-  data: CompanyTypeOne[];
+  data: CompanyTypeOne[] | Record<string, any>[];
   columns: Column[];
   isLoading: boolean;
   onDelete: (_id: string) => Promise<void>;
