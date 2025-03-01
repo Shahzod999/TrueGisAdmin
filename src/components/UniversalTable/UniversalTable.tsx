@@ -34,6 +34,7 @@ interface UniversalTableProps {
     id: string,
     is_assigned: boolean,
   ) => Promise<void> | null;
+  parent?: "Company" | "Products" | "Admin";
 }
 
 const UniversalTable: React.FC<UniversalTableProps> = ({
@@ -45,6 +46,7 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
   onView,
   handleOpenReplyModal,
   handleSetAssignIdCompany,
+  parent,
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -170,13 +172,16 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
                   onClick={() => onView(row._id)}>
                   Подробнее
                 </Button>
-                <Button
-                  variant="outlined"
-                  color="error"
-                  size="small"
-                  onClick={() => handleDelete(row._id)}>
-                  Удалить
-                </Button>
+
+                {parent !== "Products" && (
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    size="small"
+                    onClick={() => handleDelete(row._id)}>
+                    Удалить
+                  </Button>
+                )}
               </Box>
             </Paper>
           ))}
@@ -243,14 +248,17 @@ const UniversalTable: React.FC<UniversalTableProps> = ({
                       onClick={() => onView(row._id)}>
                       Подробнее
                     </Button>
-                    <Button
-                      variant="outlined"
-                      color="error"
-                      size="small"
-                      sx={{ margin: "5px" }}
-                      onClick={() => handleDelete(row._id)}>
-                      Удалить
-                    </Button>
+
+                    {parent !== "Products" && (
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        size="small"
+                        sx={{ margin: "5px" }}
+                        onClick={() => handleDelete(row._id)}>
+                        Удалить
+                      </Button>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}

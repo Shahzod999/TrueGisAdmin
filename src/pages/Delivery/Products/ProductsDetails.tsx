@@ -302,6 +302,7 @@ const ProductDetails = () => {
               onDelete={handleRemoveCompany}
               onView={handleView}
               handleSetAssignIdCompany={handleSetAssignIdCompany}
+              parent="Products"
             />
           </Box>
 
@@ -319,7 +320,7 @@ const ProductDetails = () => {
           </Button>
           {open && (
             <GetAllCompany
-              parent="Company"
+              parent="Products"
               handleSetAssignIdCompany={handleAssignCompany}
               assignedCompanies={assignedCompanies}
             />

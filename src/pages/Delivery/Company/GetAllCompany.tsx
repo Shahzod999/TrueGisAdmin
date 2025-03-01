@@ -25,7 +25,7 @@ interface GetAllCompanyProps {
     is_assigned: boolean,
   ) => Promise<void> | null;
   adminId?: string | undefined;
-  parent: "Company" | "Admin";
+  parent: "Company" | "Admin" | "Products";
   assignedCompanies?: string[];
 }
 
@@ -59,7 +59,7 @@ const GetAllCompany = ({
     {
       admin_id: adminId,
     },
-    { skip: parent == "Company" },
+    { skip: parent == "Company" || parent == "Products" },
   );
 
   const handleDelete = async (id: string) => {
@@ -120,7 +120,7 @@ const GetAllCompany = ({
 
   return (
     <div>
-      {parent !== "Admin" && (
+      {parent !== "Admin" && parent !== "Products" && (
         <>
           <Box sx={{ textAlign: "right" }}>
             <Button
@@ -151,13 +151,18 @@ const GetAllCompany = ({
       )}
 
       <UniversalTable
-        title={parent == "Admin" ? "Связанные Компании" : "Компании"}
+        title={
+          parent == "Admin" || parent == "Products"
+            ? "Связанные Компании"
+            : "Компании"
+        }
         data={filteredCompanyAssigned || allCompanyAssigned || []}
         columns={columns}
         isLoading={isLoading || isFetching}
         onDelete={handleDelete}
         onView={handleView}
         handleSetAssignIdCompany={handleSetAssignIdCompany}
+        parent={parent}
       />
 
       <Box display="flex" justifyContent="center" mt={2}>
