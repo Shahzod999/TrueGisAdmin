@@ -41,12 +41,13 @@ const GetSingleAdmin = () => {
     { name: "full_name", label: "Full Name" },
     { name: "username", label: "username" },
     { name: "password", label: "password" },
+    { name: "signature", label: "signature" },
   ];
 
   if (isLoading) {
     return <Loading />;
   }
-  console.log();
+  console.log(data);
 
   return (
     <>
