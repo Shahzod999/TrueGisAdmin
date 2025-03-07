@@ -1,13 +1,16 @@
 import { useAddNewAdminDeliveryMutation } from "../../../app/api/deliverySlice";
 import UniversalAddForm from "../../../components/UniversalAddForm/UniversalAddForm";
 import { ErrorType } from "../../../app/types/userType";
+import { useNavigate } from "react-router";
 
 const AddUser = () => {
+  const navigate = useNavigate();
   const [addNewAdminDelivery, { isLoading }] = useAddNewAdminDeliveryMutation();
 
   const handleSubmit = async (formData: Record<string, string>) => {
     try {
       const response = await addNewAdminDelivery(formData).unwrap();
+      navigate("/delivery-admin");
       return response; // Возвращаем, чтобы UniversalAddForm обработал успех
     } catch (error) {
       if (

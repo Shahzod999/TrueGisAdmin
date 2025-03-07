@@ -58,7 +58,7 @@ const GetSingleAdmin = () => {
         updateData={updateData}
         deleteData={deleteData}
         fields={fields}
-        redirectAfterDelete="/delivery/admin"
+        redirectAfterDelete="/delivery-admin"
       />
 
       <AssignUnAssignCompany adminId={id} />
