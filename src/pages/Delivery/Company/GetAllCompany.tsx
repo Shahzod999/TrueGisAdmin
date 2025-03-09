@@ -120,7 +120,7 @@ const GetAllCompany = ({
 
   return (
     <div>
-      {parent !== "Admin" && parent !== "Products" && (
+      {parent !== "Admin" && (
         <>
           <Box sx={{ textAlign: "right" }}>
             <Button
