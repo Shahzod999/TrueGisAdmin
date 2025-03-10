@@ -11,10 +11,16 @@ const AddNewCategory = () => {
 
   // мы тут
   const handleSubmit = async (data: FormData) => {
-    await addNewCategory({
-      data,
-      companyID: companyId,
-    }).unwrap();
+    try {
+      const res = await addNewCategory({
+        ...data,
+        company_id: companyId,
+      }).unwrap();
+
+      return res;
+    } catch (error) {
+      throw error;
+    }
   };
 
   const fields = [

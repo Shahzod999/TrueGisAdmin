@@ -67,8 +67,12 @@ const AddNewCompany = () => {
 
     console.log(formattedData, "22");
 
-    let res = await addNewCompany({ data: formattedData }).unwrap();
-    console.log(res);
+    try {
+      let res = await addNewCompany({ data: formattedData }).unwrap();
+      return res;
+    } catch (err) {
+      throw err;
+    }
 
     navigate("/companies");
   };

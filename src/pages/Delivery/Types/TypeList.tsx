@@ -6,7 +6,7 @@ import {
 import UniversalTable from "../../../components/UniversalTable/UniversalTable";
 
 const TypeList = () => {
-  const { data, isLoading } = useGetAllTypesQuery({});
+  const { data, isLoading, isFetching } = useGetAllTypesQuery({});
   const [deleteType] = useDeleteTypeMutation();
   const navigate = useNavigate();
 
@@ -30,7 +30,7 @@ const TypeList = () => {
       title="Список типов"
       data={data?.data || []}
       columns={columns}
-      isLoading={isLoading}
+      isLoading={isLoading || isFetching}
       onDelete={handleDelete}
       onView={handleView}
     />

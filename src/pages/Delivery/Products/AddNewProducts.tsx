@@ -99,11 +99,16 @@ const AddNewProducts = () => {
 
     console.log(formattedData);
 
-    await addNewProduct({
-      category_id: selectedCategory,
-      data: formattedData,
-    }).unwrap();
-    setPreviewImages([]);
+    try {
+      let res = await addNewProduct({
+        category_id: selectedCategory,
+        data: formattedData,
+      }).unwrap();
+      setPreviewImages([]);
+      return res;
+    } catch (err) {
+      throw err;
+    }
   };
 
   //поменять на бек чтобы значения приходили через бек

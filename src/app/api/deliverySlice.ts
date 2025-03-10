@@ -250,8 +250,8 @@ export const deliverySlice = apiSlice.injectEndpoints({
       providesTags: ["Category"],
     }),
     addNewCategory: builder.mutation({
-      query: ({ data, companyID }) => ({
-        url: `/delivery/root/category/${companyID}`,
+      query: (data) => ({
+        url: "/delivery/root/category/",
         method: "POST",
         body: data,
       }),

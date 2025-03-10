@@ -7,9 +7,12 @@ const AddTypeForm = () => {
   const [addNewType, { isLoading }] = useAddNewTypeMutation();
 
   const handleSubmit = async (data: FormData) => {
-    console.log(data);
-
-    return await addNewType(data).unwrap();
+    try {
+      let res = await addNewType(data).unwrap();
+      return res;
+    } catch (err) {
+      throw err;
+    }
   };
 
   const fields = [{ name: "name", label: "Название типа", required: true }];

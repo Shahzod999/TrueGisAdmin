@@ -9,7 +9,7 @@ import {
   Paper,
   Grid,
   Divider,
-  Switch,       
+  Switch,
 } from "@mui/material";
 import useSnackbar from "../../app/hook/callSnackBar";
 
@@ -51,7 +51,8 @@ const UniversalAddForm: React.FC<UniversalAddFormProps> = ({
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" || type === "switch" ? String(checked) : value,
+      [name]:
+        type === "checkbox" || type === "switch" ? String(checked) : value,
     }));
   };
 
@@ -62,12 +63,14 @@ const UniversalAddForm: React.FC<UniversalAddFormProps> = ({
 
     try {
       const response = await onSubmit(formData);
+      console.log(response);
+
       setSuccessMessage(
-        `${response?.status} успешно создан!` || "успешно создан!"
+        response?.message || "успешно создан!",
       );
       triggerSnackbar(
-        `${response?.status} успешно создан!` || "успешно создан!",
-        "success"
+        response?.message || "успешно создан!",
+        "success",
       );
 
       // Сброс формы
@@ -105,8 +108,7 @@ const UniversalAddForm: React.FC<UniversalAddFormProps> = ({
         padding: "1.5rem",
         borderRadius: "8px",
         margin: "1rem 0", // небольшой вертикальный отступ
-      }}
-    >
+      }}>
       {/* Заголовок */}
       <Typography variant="h5" sx={{ mb: 1 }}>
         {title}
@@ -115,9 +117,9 @@ const UniversalAddForm: React.FC<UniversalAddFormProps> = ({
       {/* Короткое пояснение (опционально) */}
       <Typography
         variant="body2"
-        sx={{ mb: 2, color: "text.secondary", lineHeight: 1.4 }}
-      >
-        Заполните поля формы и нажмите «Создать». Обязательные поля помечены как required.
+        sx={{ mb: 2, color: "text.secondary", lineHeight: 1.4 }}>
+        Заполните поля формы и нажмите «Создать». Обязательные поля помечены как
+        required.
       </Typography>
 
       <Divider sx={{ mb: 2 }} />
@@ -177,9 +179,12 @@ const UniversalAddForm: React.FC<UniversalAddFormProps> = ({
             variant="contained"
             color="primary"
             disabled={isLoading}
-            sx={{ minWidth: "120px" }}
-          >
-            {isLoading ? <CircularProgress size={24} color="inherit" /> : "Создать"}
+            sx={{ minWidth: "120px" }}>
+            {isLoading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              "Создать"
+            )}
           </Button>
         </Box>
       </form>
