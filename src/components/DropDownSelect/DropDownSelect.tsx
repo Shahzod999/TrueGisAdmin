@@ -1,4 +1,4 @@
-import { MenuItem, TextField, Typography } from "@mui/material";
+import { Box, MenuItem, TextField, Typography } from "@mui/material";
 
 interface DropDownSelectProps<T extends { _id: string; name: string }> {
   data: T[] | undefined;
@@ -14,8 +14,21 @@ const DropDownSelect = <T extends { _id: string; name: string }>({
   label,
 }: DropDownSelectProps<T>) => {
   return (
-    <>
-      <Typography variant="h6" sx={{ marginBottom: 3 }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minWidth: "100px",
+        flex: 1,
+      }}>
+      <Typography
+        variant="h6"
+        sx={{
+          marginBottom: 3,
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}>
         {label}
       </Typography>
       <TextField
@@ -25,15 +38,14 @@ const DropDownSelect = <T extends { _id: string; name: string }>({
         value={selectedValue}
         onChange={handleChange}
         InputLabelProps={{ shrink: true }}
-        sx={{ marginBottom: 3 }}
-      >
+        sx={{ marginBottom: 3 }}>
         {data?.map((item) => (
           <MenuItem key={item._id} value={item._id}>
             {item.name}
           </MenuItem>
         ))}
       </TextField>
-    </>
+    </Box>
   );
 };
 

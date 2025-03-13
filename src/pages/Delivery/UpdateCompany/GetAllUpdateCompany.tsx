@@ -79,7 +79,7 @@ const GetAllUpdateCompany = () => {
   return (
     <div>
       {isFetching && <Loading />}
-      <Box>
+      <Box sx={{ padding: 2 }}>
         <DropDownSelect
           data={statusOptions}
           selectedValue={filterStatus}

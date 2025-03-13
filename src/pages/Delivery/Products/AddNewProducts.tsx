@@ -16,8 +16,13 @@ import { useParams } from "react-router";
 const AddNewProducts = () => {
   const { companyId } = useParams();
   const [previewImages, setPreviewImages] = useState<File[]>([]);
+
   const [currency, setCurrency] = useState<string>("");
   const [choosenCurrency, setChoosenCurrency] = useState<string | undefined>();
+
+  const [measure, setMeasure] = useState<string>("");
+  const [choosenMeasure, setChoosenMeasure] = useState<string | undefined>();
+
   const [addNewProduct, { isLoading }] = useAddNewProductsMutation();
   const { data: categoryData, isLoading: categoryLoading } =
     useGetAllCategoryQuery({ page: 1, company_id: companyId });
@@ -56,6 +61,14 @@ const AddNewProducts = () => {
     setChoosenCurrency(newCurrency?.name);
   };
 
+  const handleUnitMeasure = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let selectedId = e.target.value;
+    const newCurrency = unitMeasure.find((measur) => measur._id === selectedId);
+    setMeasure(e.target.value);
+
+    setChoosenMeasure(newCurrency?.name);
+  };
+
   const fields = [
     { name: "name", label: "Название", required: true },
     { name: "description", label: "Описание" },
@@ -73,6 +86,11 @@ const AddNewProducts = () => {
     if (choosenCurrency == "" || choosenCurrency == undefined) {
       throw {
         data: { message: "Выберите валюту" },
+      };
+    }
+    if (choosenMeasure == "" || choosenMeasure == undefined) {
+      throw {
+        data: { message: "Выберите Единицу Измерения" },
       };
     }
 
@@ -95,9 +113,10 @@ const AddNewProducts = () => {
       active: data.active == "true",
       currency: choosenCurrency,
       company_id: companyId,
+      unit_measure: choosenMeasure,
     };
 
-    console.log(formattedData);
+    console.log(formattedData, "3323223");
 
     try {
       let res = await addNewProduct({
@@ -121,6 +140,14 @@ const AddNewProducts = () => {
     { _id: "6", name: "KGS" },
   ];
 
+  const unitMeasure = [
+    { _id: "1", name: "кг" },
+    { _id: "2", name: "г" },
+    { _id: "3", name: "шт" },
+    { _id: "4", name: "л" },
+    { _id: "5", name: "мл" },
+  ];
+
   if (categoryLoading) return <Loading />;
 
   return (
@@ -129,7 +156,9 @@ const AddNewProducts = () => {
       flexWrap={"wrap"}
       justifyContent={"center"}
       alignItems={"center"}
-      maxWidth={"80%"}
+      width="80%"
+      minWidth="300px"
+      maxWidth="95%"
       margin={"0 auto"}>
       {loadingUploadImg && <Loading />}
       <UniversalImgUploader
@@ -146,23 +175,34 @@ const AddNewProducts = () => {
       />
 
       <Box
-        display="flex"
-        flexWrap="wrap"
-        justifyContent={"space-between"}
-        gap={3}
         p={2}
         sx={{
           width: "100%",
           backgroundColor: "#f9f9f9",
           borderRadius: 2,
         }}>
-        <Box sx={{ minWidth: "250px", flex: 1 }}>
+        <Box
+          sx={{
+            minWidth: "250px",
+            flex: 1,
+            display: "flex",
+            gap: 2,
+            flexWrap: "wrap",
+          }}>
+          <DropDownSelect
+            data={unitMeasure}
+            selectedValue={measure}
+            handleChange={handleUnitMeasure}
+            label="Ед. измерения"
+          />
+
           <DropDownSelect
             data={variants}
             selectedValue={currency}
             handleChange={handleSelection}
             label="Валюта"
           />
+
           <DropDownSelect
             data={categoryData?.data}
             selectedValue={selectedCategory}

@@ -33,8 +33,13 @@ const ProductDetails = () => {
   const { id, companyId } = useParams();
 
   const [open, setOpen] = useState(false);
+
   const [currency, setCurrency] = useState<string>("");
   const [choosenCurrency, setChoosenCurrency] = useState<string>("");
+
+  const [measure, setMeasure] = useState<string>("");
+  const [choosenMeasure, setChoosenMeasure] = useState<string | undefined>();
+
   const [assignedCompanies, setAssignedCompanies] = useState<string[]>([]);
   const { data, isLoading } = useGetSingleProductsQuery({ id });
 
@@ -56,6 +61,14 @@ const ProductDetails = () => {
     { _id: "4", name: "UZS" },
     { _id: "5", name: "KZT" },
     { _id: "6", name: "KGS" },
+  ];
+
+  const unitMeasure = [
+    { _id: "1", name: "кг" },
+    { _id: "2", name: "г" },
+    { _id: "3", name: "шт" },
+    { _id: "4", name: "л" },
+    { _id: "5", name: "мл" },
   ];
 
   const [discount, setDiscount] = useState({
@@ -107,6 +120,7 @@ const ProductDetails = () => {
         ...data?.data,
         ...updatedData,
         category_id: selectedCategory,
+        unit_measure: choosenMeasure,
         currency: choosenCurrency,
         ...(discount?.price ? { discount } : {}),
       },
@@ -116,6 +130,7 @@ const ProductDetails = () => {
       ...updatedData,
       category_id: selectedCategory,
       currency: choosenCurrency,
+      unit_measure: choosenMeasure,
       ...(discount?.price ? { discount } : {}),
     });
   };
@@ -214,6 +229,16 @@ const ProductDetails = () => {
     }
   };
 
+  const handleUnitMeasure = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let selectedId = e.target.value;
+    const newCurrency = unitMeasure.find(
+      (measure) => measure._id === selectedId,
+    );
+    setMeasure(e.target.value);
+
+    setChoosenMeasure(newCurrency?.name);
+  };
+
   const columns = [
     { field: "name", headerName: "Название" },
     { field: "city", headerName: "Город" },
@@ -244,7 +269,9 @@ const ProductDetails = () => {
         flexWrap={"wrap"}
         justifyContent={"center"}
         alignItems={"center"}
-        maxWidth={"80%"}
+        width="80%"
+        minWidth="300px"
+        maxWidth="95%"
         margin={"0 auto"}>
         <UniversalDetails
           title="Детали продукта"
@@ -255,22 +282,31 @@ const ProductDetails = () => {
           fields={fields}
         />
         <Box
-          display="flex"
-          flexWrap="wrap"
-          justifyContent={"space-between"}
-          gap={3}
           p={2}
           sx={{
             width: "100%",
             backgroundColor: "#f9f9f9",
             borderRadius: 2,
           }}>
-          <Box sx={{ minWidth: "250px", flex: 1 }}>
+          <Box
+            sx={{
+              minWidth: "250px",
+              flex: 1,
+              display: "flex",
+              gap: 2,
+              flexWrap: "wrap",
+            }}>
             <DropDownSelect
               data={variants}
               selectedValue={currency}
               handleChange={handleSelection}
               label="Валюта"
+            />
+            <DropDownSelect
+              data={unitMeasure}
+              selectedValue={measure}
+              handleChange={handleUnitMeasure}
+              label="Ед. измерения"
             />
             <DropDownSelect
               data={categoryData?.data}

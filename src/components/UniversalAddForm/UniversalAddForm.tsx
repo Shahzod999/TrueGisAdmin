@@ -39,7 +39,7 @@ const UniversalAddForm: React.FC<UniversalAddFormProps> = ({
   const [formData, setFormData] = useState<Record<string, string>>(() => {
     const initialState: Record<string, string> = {};
     fields.forEach((field) => {
-      initialState[field.name] = field.type === "checkbox" ? "false" : "";
+      initialState[field.name] = field.type === "checkbox" ? "true" : "";
     });
     return initialState;
   });
@@ -65,13 +65,8 @@ const UniversalAddForm: React.FC<UniversalAddFormProps> = ({
       const response = await onSubmit(formData);
       console.log(response);
 
-      setSuccessMessage(
-        response?.message || "успешно создан!",
-      );
-      triggerSnackbar(
-        response?.message || "успешно создан!",
-        "success",
-      );
+      setSuccessMessage(response?.message || "успешно создан!");
+      triggerSnackbar(response?.message || "успешно создан!", "success");
 
       // Сброс формы
       const resetState: Record<string, string> = {};
